@@ -643,6 +643,11 @@
     <string name="frame_rate_matching_summary">Switches the refresh rate of the TV to the frame rate of the video when playback starts, and keeps it matched while playing</string>
     <string name="tv_speak_now">Speak now…</string>
     <string name="tv_chat_layout">Chat layout</string>
+    <string name="tv_video_color">Picture</string>
+    <string name="tv_video_brightness">Brightness</string>
+    <string name="tv_video_contrast">Contrast</string>
+    <string name="tv_video_saturation">Saturation</string>
+    <string name="tv_video_reset">Reset</string>
     <string name="tv_chat_position">Position</string>
     <string name="tv_chat_width">Width</string>
     <string name="tv_chat_height">Height</string>

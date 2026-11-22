@@ -620,6 +620,11 @@
     <string name="frame_rate_matching_summary">再生開始時にテレビのリフレッシュレートを動画のフレームレートに合わせ、再生中も一致させ続けます</string>
     <string name="tv_speak_now">お話しください…</string>
     <string name="tv_chat_layout">チャットのレイアウト</string>
+    <string name="tv_video_color">画像</string>
+    <string name="tv_video_brightness">明るさ</string>
+    <string name="tv_video_contrast">コントラスト</string>
+    <string name="tv_video_saturation">彩度</string>
+    <string name="tv_video_reset">リセット</string>
     <string name="tv_chat_position">位置</string>
     <string name="tv_chat_width">幅</string>
     <string name="tv_chat_height">高さ</string>

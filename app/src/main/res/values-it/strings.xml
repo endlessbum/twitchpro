@@ -620,6 +620,11 @@
     <string name="frame_rate_matching_summary">Imposta la frequenza di aggiornamento della TV su quella del video all\'avvio della riproduzione e la mantiene allineata durante la riproduzione</string>
     <string name="tv_speak_now">Parla ora…</string>
     <string name="tv_chat_layout">Disposizione chat</string>
+    <string name="tv_video_color">Immagine</string>
+    <string name="tv_video_brightness">Luminosità</string>
+    <string name="tv_video_contrast">Contrasto</string>
+    <string name="tv_video_saturation">Saturazione</string>
+    <string name="tv_video_reset">Reimposta</string>
     <string name="tv_chat_position">Posizione</string>
     <string name="tv_chat_width">Larghezza</string>
     <string name="tv_chat_height">Altezza</string>

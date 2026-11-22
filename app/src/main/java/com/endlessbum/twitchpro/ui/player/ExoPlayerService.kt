@@ -1190,6 +1190,8 @@ class ExoPlayerService : BasePlaybackService() {
             }.build()
             this.player = player
             player.addListener(playerListener)
+            // video color rendition from the sliders (no-op on neutral 100/100/100)
+            VideoColorAdjustment.applyTo(player, this)
             if (BuildConfig.DEBUG) {
                 // debug: time of the playlists and of the first piece of video of a stream that starts
                 player.addAnalyticsListener(object : androidx.media3.exoplayer.analytics.AnalyticsListener {
@@ -2833,6 +2835,7 @@ class ExoPlayerService : BasePlaybackService() {
                 setLivePlaybackSpeedControl(createLivePlaybackSpeedControl())
             }.build()
             player.addListener(playerListener)
+            VideoColorAdjustment.applyTo(player, this@ExoPlayerService)
             matchSecondaryQuality(player)
             startAdMainWatch()
             var playlistStatusCode = 0

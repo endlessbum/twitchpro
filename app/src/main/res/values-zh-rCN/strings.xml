@@ -620,6 +620,11 @@
     <string name="frame_rate_matching_summary">开始播放时将电视的刷新率切换为视频的帧率，并在播放期间保持匹配</string>
     <string name="tv_speak_now">请说话…</string>
     <string name="tv_chat_layout">聊天布局</string>
+    <string name="tv_video_color">画面</string>
+    <string name="tv_video_brightness">亮度</string>
+    <string name="tv_video_contrast">对比度</string>
+    <string name="tv_video_saturation">饱和度</string>
+    <string name="tv_video_reset">重置</string>
     <string name="tv_chat_position">位置</string>
     <string name="tv_chat_width">宽度</string>
     <string name="tv_chat_height">高度</string>

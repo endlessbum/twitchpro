@@ -621,6 +621,11 @@
     <string name="frame_rate_matching_summary">Mengubah refresh rate TV sesuai frame rate video saat pemutaran dimulai, dan menjaganya tetap sesuai selama pemutaran</string>
     <string name="tv_speak_now">Bicara sekarang…</string>
     <string name="tv_chat_layout">Tata letak chat</string>
+    <string name="tv_video_color">Gambar</string>
+    <string name="tv_video_brightness">Kecerahan</string>
+    <string name="tv_video_contrast">Kontras</string>
+    <string name="tv_video_saturation">Saturasi</string>
+    <string name="tv_video_reset">Setel ulang</string>
     <string name="tv_chat_position">Posisi</string>
     <string name="tv_chat_width">Lebar</string>
     <string name="tv_chat_height">Tinggi</string>

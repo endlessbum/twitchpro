@@ -620,6 +620,11 @@
     <string name="frame_rate_matching_summary">Переключает частоту обновления телевизора на частоту кадров видео при запуске воспроизведения и поддерживает её во время просмотра</string>
     <string name="tv_speak_now">Говорите…</string>
     <string name="tv_chat_layout">Расположение чата</string>
+    <string name="tv_video_color">Картинка</string>
+    <string name="tv_video_brightness">Яркость</string>
+    <string name="tv_video_contrast">Контраст</string>
+    <string name="tv_video_saturation">Насыщенность</string>
+    <string name="tv_video_reset">Сбросить</string>
     <string name="tv_chat_position">Положение</string>
     <string name="tv_chat_width">Ширина</string>
     <string name="tv_chat_height">Высота</string>

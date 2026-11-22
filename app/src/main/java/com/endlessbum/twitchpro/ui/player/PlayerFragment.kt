@@ -4147,6 +4147,63 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     }
 
     /** TV: dimming and Night Shift (warm light) levels (OK held on its button), seen live while adjusted. */
+    /** TV: video color rendition sliders (brightness/contrast/saturation), applied to the picture live. */
+    private fun showVideoColorPanel() {
+        val context = requireContext()
+        com.endlessbum.twitchpro.ui.tv.TvDialogs.show(context) { dismiss ->
+            com.endlessbum.twitchpro.ui.tv.SidePanel(title = getString(R.string.tv_video_color), scrollable = true) {
+                val requester = androidx.compose.runtime.remember { androidx.compose.ui.focus.FocusRequester() }
+                fun applyColor() {
+                    (playbackService as? ExoPlayerService)?.player?.let {
+                        VideoColorAdjustment.applyTo(it, context)
+                    }
+                }
+                com.endlessbum.twitchpro.ui.tv.SliderRow(
+                    getString(R.string.tv_video_brightness),
+                    VideoColorAdjustment.brightness(context),
+                    VideoColorAdjustment.BRIGHTNESS_RANGE,
+                    step = 5,
+                    valueText = { "$it %" },
+                    modifier = androidx.compose.ui.Modifier.focusRequester(requester),
+                ) {
+                    context.prefs().edit().putInt(C.TV_VIDEO_BRIGHTNESS, it).apply()
+                    applyColor()
+                }
+                androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(10.dp))
+                com.endlessbum.twitchpro.ui.tv.SliderRow(
+                    getString(R.string.tv_video_contrast),
+                    VideoColorAdjustment.contrast(context),
+                    VideoColorAdjustment.CONTRAST_RANGE,
+                    step = 5,
+                    valueText = { "$it %" },
+                ) {
+                    context.prefs().edit().putInt(C.TV_VIDEO_CONTRAST, it).apply()
+                    applyColor()
+                }
+                androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(10.dp))
+                com.endlessbum.twitchpro.ui.tv.SliderRow(
+                    getString(R.string.tv_video_saturation),
+                    VideoColorAdjustment.saturation(context),
+                    VideoColorAdjustment.SATURATION_RANGE,
+                    step = 5,
+                    valueText = { "$it %" },
+                ) {
+                    context.prefs().edit().putInt(C.TV_VIDEO_SATURATION, it).apply()
+                    applyColor()
+                }
+                androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(14.dp))
+                com.endlessbum.twitchpro.ui.tv.ButtonRow(label = getString(R.string.tv_video_reset)) {
+                    VideoColorAdjustment.reset(context)
+                    applyColor()
+                    dismiss()
+                }
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    runCatching { requester.requestFocus() }
+                }
+            }
+        }
+    }
+
     private fun showTvDimPanel() {
         val context = requireContext()
         // set while choosing it: seen at once
@@ -5562,6 +5619,14 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 chatLayoutSettings?.setOnClickListener {
                     showController(force = true)
                     showChatLayoutPanel()
+                }
+            }
+
+            if (prefs.getBoolean(C.TV_BUTTON_VIDEO_COLOR, true)) {
+                videoColorSettings?.visibility = View.VISIBLE
+                videoColorSettings?.setOnClickListener {
+                    showController(force = true)
+                    showVideoColorPanel()
                 }
             }
             if (isStreamScreen() && prefs.getBoolean(C.TV_BUTTON_MULTI_STREAM, true)) {

@@ -272,6 +272,12 @@ object C {
     const val TV_BUTTON_CHAT_MESSAGE = "tv_button_chat_message"
     const val TV_BUTTON_MULTI_STREAM = "tv_button_multi_stream"
     const val TV_BUTTON_CHAT_LAYOUT = "tv_button_chat_layout"
+    /** TV: button of the video color adjustment panel in the player. */
+    const val TV_BUTTON_VIDEO_COLOR = "tv_button_video_color"
+    /** TV: video color rendition, brightness/contrast/saturation in % (100 = unchanged). */
+    const val TV_VIDEO_BRIGHTNESS = "tv_video_brightness"
+    const val TV_VIDEO_CONTRAST = "tv_video_contrast"
+    const val TV_VIDEO_SATURATION = "tv_video_saturation"
     const val TV_BUTTON_DIM = "tv_button_dim"
     /** TV: button of the custom proxy in the player. */
     const val TV_BUTTON_PROXY = "tv_button_proxy"

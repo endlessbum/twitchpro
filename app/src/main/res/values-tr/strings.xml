@@ -621,6 +621,11 @@
     <string name="frame_rate_matching_summary">Oynatma başladığında TV\'nin yenileme hızını videonun kare hızına ayarlar ve oynatma sırasında eşleşmiş tutar</string>
     <string name="tv_speak_now">Şimdi konuşun…</string>
     <string name="tv_chat_layout">Sohbet düzeni</string>
+    <string name="tv_video_color">Görüntü</string>
+    <string name="tv_video_brightness">Parlaklık</string>
+    <string name="tv_video_contrast">Kontrast</string>
+    <string name="tv_video_saturation">Doygunluk</string>
+    <string name="tv_video_reset">Sıfırla</string>
     <string name="tv_chat_position">Konum</string>
     <string name="tv_chat_width">Genişlik</string>
     <string name="tv_chat_height">Yükseklik</string>

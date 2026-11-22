@@ -620,6 +620,11 @@
     <string name="frame_rate_matching_summary">Stellt die Bildwiederholrate des Fernsehers beim Start der Wiedergabe auf die Bildrate des Videos ein und hält sie während der Wiedergabe angepasst</string>
     <string name="tv_speak_now">Jetzt sprechen…</string>
     <string name="tv_chat_layout">Chat-Anordnung</string>
+    <string name="tv_video_color">Bild</string>
+    <string name="tv_video_brightness">Helligkeit</string>
+    <string name="tv_video_contrast">Kontrast</string>
+    <string name="tv_video_saturation">Sättigung</string>
+    <string name="tv_video_reset">Zurücksetzen</string>
     <string name="tv_chat_position">Position</string>
     <string name="tv_chat_width">Breite</string>
     <string name="tv_chat_height">Höhe</string>

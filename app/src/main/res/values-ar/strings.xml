@@ -620,6 +620,11 @@
     <string name="frame_rate_matching_summary">يضبط معدل تحديث التلفاز على معدل إطارات الفيديو عند بدء التشغيل ويحافظ على مطابقته أثناء التشغيل</string>
     <string name="tv_speak_now">تحدث الآن…</string>
     <string name="tv_chat_layout">تخطيط الدردشة</string>
+    <string name="tv_video_color">الصورة</string>
+    <string name="tv_video_brightness">السطوع</string>
+    <string name="tv_video_contrast">التباين</string>
+    <string name="tv_video_saturation">التشبع</string>
+    <string name="tv_video_reset">إعادة تعيين</string>
     <string name="tv_chat_position">الموضع</string>
     <string name="tv_chat_width">العرض</string>
     <string name="tv_chat_height">الارتفاع</string>

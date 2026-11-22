@@ -620,6 +620,11 @@
     <string name="frame_rate_matching_summary">Ajusta a taxa de atualização da TV à taxa de quadros do vídeo ao iniciar a reprodução e a mantém ajustada durante a reprodução</string>
     <string name="tv_speak_now">Fale agora…</string>
     <string name="tv_chat_layout">Layout do chat</string>
+    <string name="tv_video_color">Imagem</string>
+    <string name="tv_video_brightness">Brilho</string>
+    <string name="tv_video_contrast">Contraste</string>
+    <string name="tv_video_saturation">Saturação</string>
+    <string name="tv_video_reset">Redefinir</string>
     <string name="tv_chat_position">Posição</string>
     <string name="tv_chat_width">Largura</string>
     <string name="tv_chat_height">Altura</string>
