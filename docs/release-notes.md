@@ -16,4 +16,8 @@
 - **Navigation & focus fixes**: fixed pressing Back inside a game category or channel closing the app instead of returning to the previous screen, fixed overlapping root screens when leaving a category via the side menu, and refined focus retention across Chat and PiP panels.
 
 ### Install
-Download `TwitchPro-1.4.6.4-tv.apk` below and install it over the previous version, your settings and account are kept.
+Download `TwitchPro-1.4.6.4-tv.apk` below and install it.
+
+**Updating TwitchPro → TwitchPro:** installs over any previous TwitchPro version — your settings and account are kept.
+
+**Switching from Xtra TV:** TwitchPro has its own package name, so it installs **next to** Xtra TV as a separate app; settings and login are **not** carried over automatically. To move your data: in Xtra TV make a backup (TV settings → Backup), then in TwitchPro restore that zip — the restore file picker accepts the old `XtraTV-backup.zip` name. Deleting Xtra TV afterwards does not affect TwitchPro.

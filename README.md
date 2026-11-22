@@ -14,11 +14,11 @@ It brings a full TV interface designed for the remote, a built-in ad blocker (Pr
 
 ## Download
 
-Get the latest APK from the [Releases](https://github.com/endlessbum/twitch/releases/latest) page.
+Get the latest APK from the [Releases](https://github.com/endlessbum/twitchpro/releases/latest) page.
 
 On a TV, the easiest way is the **Downloader** app (or any file manager): download the APK and install it (allow the installation of unknown apps for that app). From a computer: `adb install TwitchPro.apk`.
 
-TwitchPro has its own package name, so it installs next to the original Xtra.
+TwitchPro has its own package name, so it installs next to the original Xtra / Xtra TV as a separate app: settings and login are not carried over automatically (use the TV backup / restore feature to migrate them).
 
 ## Features
 
