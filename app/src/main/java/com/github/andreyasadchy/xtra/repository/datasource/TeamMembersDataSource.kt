@@ -125,7 +125,10 @@ class TeamMembersDataSource(
                     } else null
                 )
             }
+        } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+            throw e
         } catch (e: Exception) {
+            DataSourceLog.log(e)
             LoadResult.Error(e)
         }
     }

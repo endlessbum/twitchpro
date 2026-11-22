@@ -32,22 +32,34 @@ class GameStreamsDataSource(
         return if (!offset.isNullOrBlank()) {
             try {
                 loadFromApi(params)
+            } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                throw e
             } catch (e: Exception) {
+                DataSourceLog.log(e)
                 LoadResult.Error(e)
             }
         } else {
             try {
                 api = C.GQL
                 loadFromApi(params)
+            } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                throw e
             } catch (e: Exception) {
+                DataSourceLog.log(e)
                 try {
                     api = C.GQL_PERSISTED_QUERY
                     loadFromApi(params)
+                } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                    throw e
                 } catch (e: Exception) {
+                    DataSourceLog.log(e)
                     try {
                         api = C.HELIX
                         loadFromApi(params)
+                    } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                        throw e
                     } catch (e: Exception) {
+                        DataSourceLog.log(e)
                         LoadResult.Error(e)
                     }
                 }
@@ -80,8 +92,10 @@ class GameStreamsDataSource(
         if (enableIntegrity) {
             response.errors?.find { it.message == C.FAILED_INTEGRITY_CHECK }?.let { return LoadResult.Error(Exception(it.message)) }
         }
-        val data = response.data!!.game!!.streams!!
-        val items = data.edges!!
+        // a removed game or an error body leaves data null: an empty page instead of an NPE
+        // that the blanket catch would turn into LoadResult.Error
+        val data = response.data?.game?.streams ?: return LoadResult.Page(emptyList(), null, null)
+        val items = data.edges ?: return LoadResult.Page(emptyList(), null, null)
         val list = items.mapNotNull { item ->
             item?.node?.let {
                 Stream(

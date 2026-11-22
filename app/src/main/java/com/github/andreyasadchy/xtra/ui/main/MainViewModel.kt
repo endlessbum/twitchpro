@@ -48,7 +48,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -110,7 +109,8 @@ class MainViewModel(
     var updateVersion: String? = null
     var updateNotes: String? = null
     var updateJob: Job? = null
-    val updateProgress = MutableSharedFlow<Int>()
+    // buffered: the progress callback runs on a network thread and must never block on a collector
+    val updateProgress = MutableSharedFlow<Int>(extraBufferCapacity = 16)
     val closeUpdateDialog = MutableSharedFlow<Boolean>()
     val updateInstallBlocked = MutableSharedFlow<String>(extraBufferCapacity = 1)
     /** The downloaded update to open with the installer of Android (the second way of installing). */
@@ -1103,9 +1103,7 @@ class MainViewModel(
         updateJob = viewModelScope.launch(Dispatchers.IO) {
             try {
                 val progressListener = NetworkUtils.ProgressListener { bytesRead ->
-                    runBlocking {
-                        updateProgress.emit(bytesRead)
-                    }
+                    updateProgress.tryEmit(bytesRead)
                 }
                 val response = when {
                     networkLibrary == C.HTTP_ENGINE && httpEngine.value != null -> @SuppressLint("NewApi") {

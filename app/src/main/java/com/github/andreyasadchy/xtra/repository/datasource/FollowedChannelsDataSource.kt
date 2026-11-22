@@ -37,7 +37,10 @@ class FollowedChannelsDataSource(
             val list = mutableListOf<User>()
             val result = try {
                 loadFromApi(params)
+            } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                throw e
             } catch (e: Exception) {
+                DataSourceLog.log(e)
                 null
             }?.let {
                 if (it is LoadResult.Error && it.throwable.message == C.FAILED_INTEGRITY_CHECK) {
@@ -82,15 +85,24 @@ class FollowedChannelsDataSource(
                 try {
                     api = C.GQL
                     loadFromApi(params)
+                } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                    throw e
                 } catch (e: Exception) {
+                    DataSourceLog.log(e)
                     try {
                         api = C.GQL_PERSISTED_QUERY
                         loadFromApi(params)
+                    } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                        throw e
                     } catch (e: Exception) {
+                        DataSourceLog.log(e)
                         try {
                             api = C.HELIX
                             loadFromApi(params)
+                        } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                            throw e
                         } catch (e: Exception) {
+                            DataSourceLog.log(e)
                             null
                         }
                     }
@@ -233,7 +245,10 @@ class FollowedChannelsDataSource(
                             )
                         }
                     }.orEmpty()
+            } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                throw e
             } catch (e: Exception) {
+                DataSourceLog.log(e)
                 emptyList()
             }
         } else emptyList()

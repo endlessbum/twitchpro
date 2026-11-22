@@ -30,22 +30,34 @@ class SearchChannelsDataSource(
             if (!offset.isNullOrBlank()) {
                 try {
                     loadFromApi(params)
+                } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                    throw e
                 } catch (e: Exception) {
+                    DataSourceLog.log(e)
                     LoadResult.Error(e)
                 }
             } else {
                 try {
                     api = C.GQL
                     loadFromApi(params)
+                } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                    throw e
                 } catch (e: Exception) {
+                    DataSourceLog.log(e)
                     try {
                         api = C.GQL_PERSISTED_QUERY
                         loadFromApi(params)
+                    } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                        throw e
                     } catch (e: Exception) {
+                        DataSourceLog.log(e)
                         try {
                             api = C.HELIX
                             loadFromApi(params)
+                        } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                            throw e
                         } catch (e: Exception) {
+                            DataSourceLog.log(e)
                             LoadResult.Error(e)
                         }
                     }
@@ -68,8 +80,9 @@ class SearchChannelsDataSource(
         if (enableIntegrity) {
             response.errors?.find { it.message == C.FAILED_INTEGRITY_CHECK }?.let { return LoadResult.Error(Exception(it.message)) }
         }
-        val data = response.data!!.searchUsers!!
-        val list = data.edges!!.mapNotNull { item ->
+        // no results or an error body leaves data null: an empty page instead of an NPE
+        val data = response.data?.searchUsers ?: return LoadResult.Page(emptyList(), null, null)
+        val list = data.edges.orEmpty().mapNotNull { item ->
             item.node?.let {
                 User(
                     id = it.id,
@@ -81,7 +94,7 @@ class SearchChannelsDataSource(
                 )
             }
         }
-        offset = data.edges.lastOrNull()?.cursor?.toString()
+        offset = data.edges.orEmpty().lastOrNull()?.cursor?.toString()
         val nextPage = data.pageInfo?.hasNextPage != false
         return LoadResult.Page(
             data = list,

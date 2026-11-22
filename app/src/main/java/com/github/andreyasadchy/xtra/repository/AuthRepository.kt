@@ -27,6 +27,17 @@ class AuthRepository(
     private val json: Json,
 ) {
 
+    /** An auth endpoint answered with an HTTP error status (429 rate limit, 400 bad code...). */
+    class HttpException(val status: Int) : Exception("HTTP $status")
+
+    /** Decodes only when the HTTP status says success: an error body decodes into an "empty" success otherwise. */
+    private inline fun <reified T> decodeChecked(body: String, status: Int): T {
+        if (status !in 200..299) {
+            throw HttpException(status)
+        }
+        return json.decodeFromString<T>(body)
+    }
+
     suspend fun validate(networkLibrary: String?, token: String): ValidationResponse = withContext(Dispatchers.IO) {
         val url = "https://id.twitch.tv/oauth2/validate"
         when {
@@ -48,7 +59,7 @@ class AuthRepository(
                     }
                 }
                 if (response.info.httpStatusCode != 401) {
-                    json.decodeFromString<ValidationResponse>(response.body.decodeToString())
+                    decodeChecked<ValidationResponse>(response.body.decodeToString(), response.info.httpStatusCode)
                 } else {
                     throw IllegalStateException("401")
                 }
@@ -71,7 +82,7 @@ class AuthRepository(
                     }
                 }
                 if (response.info.httpStatusCode != 401) {
-                    json.decodeFromString<ValidationResponse>(response.body.decodeToString())
+                    decodeChecked<ValidationResponse>(response.body.decodeToString(), response.info.httpStatusCode)
                 } else {
                     throw IllegalStateException("401")
                 }
@@ -82,7 +93,7 @@ class AuthRepository(
                     header("Authorization", token)
                 }.build()).executeAsync().use { response ->
                     if (response.code != 401) {
-                        json.decodeFromString<ValidationResponse>(response.body.string())
+                        decodeChecked<ValidationResponse>(response.body.string(), response.code)
                     } else {
                         throw IllegalStateException("401")
                     }
@@ -163,7 +174,7 @@ class AuthRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<DeviceCodeResponse>(response.body.decodeToString())
+                decodeChecked<DeviceCodeResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -183,7 +194,7 @@ class AuthRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<DeviceCodeResponse>(response.body.decodeToString())
+                decodeChecked<DeviceCodeResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
@@ -191,7 +202,7 @@ class AuthRepository(
                     header("Content-Type", "application/x-www-form-urlencoded")
                     post(body.toRequestBody())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<DeviceCodeResponse>(response.body.string())
+                    decodeChecked<DeviceCodeResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -218,7 +229,7 @@ class AuthRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<TokenResponse>(response.body.decodeToString())
+                decodeChecked<TokenResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -238,7 +249,7 @@ class AuthRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<TokenResponse>(response.body.decodeToString())
+                decodeChecked<TokenResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
@@ -246,7 +257,7 @@ class AuthRepository(
                     header("Content-Type", "application/x-www-form-urlencoded")
                     post(body.toRequestBody())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<TokenResponse>(response.body.string())
+                    decodeChecked<TokenResponse>(response.body.string(), response.code)
                 }
             }
         }

@@ -47,6 +47,17 @@ class HelixRepository(
     private val json: Json,
 ) {
 
+    /** A Helix endpoint answered with an HTTP error status (401 expired token, 403, 429 rate limit, 5xx...). */
+    class HttpException(val status: Int) : Exception("HTTP $status")
+
+    /** Decodes only when the HTTP status says success: an error body decodes into an "empty" success otherwise. */
+    private inline fun <reified T> decodeChecked(body: String, status: Int): T {
+        if (status !in 200..299) {
+            throw HttpException(status)
+        }
+        return json.decodeFromString<T>(body)
+    }
+
     suspend fun getGames(networkLibrary: String?, headers: Map<String, String>, ids: List<String>? = null, names: List<String>? = null): GamesResponse = withContext(Dispatchers.IO) {
         val url = "https://api.twitch.tv/helix/games".toUri().buildUpon().apply {
             ids?.forEach { appendQueryParameter("id", it) }
@@ -70,7 +81,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<GamesResponse>(response.body.decodeToString())
+                decodeChecked<GamesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -89,14 +100,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<GamesResponse>(response.body.decodeToString())
+                decodeChecked<GamesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<GamesResponse>(response.body.string())
+                    decodeChecked<GamesResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -125,7 +136,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<GamesResponse>(response.body.decodeToString())
+                decodeChecked<GamesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -144,14 +155,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<GamesResponse>(response.body.decodeToString())
+                decodeChecked<GamesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<GamesResponse>(response.body.string())
+                    decodeChecked<GamesResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -184,7 +195,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<StreamsResponse>(response.body.decodeToString())
+                decodeChecked<StreamsResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -203,14 +214,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<StreamsResponse>(response.body.decodeToString())
+                decodeChecked<StreamsResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<StreamsResponse>(response.body.string())
+                    decodeChecked<StreamsResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -240,7 +251,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<StreamsResponse>(response.body.decodeToString())
+                decodeChecked<StreamsResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -259,14 +270,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<StreamsResponse>(response.body.decodeToString())
+                decodeChecked<StreamsResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<StreamsResponse>(response.body.string())
+                    decodeChecked<StreamsResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -300,7 +311,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<ClipsResponse>(response.body.decodeToString())
+                decodeChecked<ClipsResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -319,14 +330,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<ClipsResponse>(response.body.decodeToString())
+                decodeChecked<ClipsResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<ClipsResponse>(response.body.string())
+                    decodeChecked<ClipsResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -362,7 +373,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<VideosResponse>(response.body.decodeToString())
+                decodeChecked<VideosResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -381,14 +392,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<VideosResponse>(response.body.decodeToString())
+                decodeChecked<VideosResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<VideosResponse>(response.body.string())
+                    decodeChecked<VideosResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -417,7 +428,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<UsersResponse>(response.body.decodeToString())
+                decodeChecked<UsersResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -436,14 +447,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<UsersResponse>(response.body.decodeToString())
+                decodeChecked<UsersResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<UsersResponse>(response.body.string())
+                    decodeChecked<UsersResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -473,7 +484,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<GamesResponse>(response.body.decodeToString())
+                decodeChecked<GamesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -492,14 +503,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<GamesResponse>(response.body.decodeToString())
+                decodeChecked<GamesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<GamesResponse>(response.body.string())
+                    decodeChecked<GamesResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -530,7 +541,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<ChannelSearchResponse>(response.body.decodeToString())
+                decodeChecked<ChannelSearchResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -549,14 +560,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<ChannelSearchResponse>(response.body.decodeToString())
+                decodeChecked<ChannelSearchResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<ChannelSearchResponse>(response.body.string())
+                    decodeChecked<ChannelSearchResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -587,7 +598,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<FollowsResponse>(response.body.decodeToString())
+                decodeChecked<FollowsResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -606,14 +617,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<FollowsResponse>(response.body.decodeToString())
+                decodeChecked<FollowsResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<FollowsResponse>(response.body.string())
+                    decodeChecked<FollowsResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -644,7 +655,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<FollowersResponse>(response.body.decodeToString())
+                decodeChecked<FollowersResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -663,14 +674,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<FollowersResponse>(response.body.decodeToString())
+                decodeChecked<FollowersResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<FollowersResponse>(response.body.string())
+                    decodeChecked<FollowersResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -700,7 +711,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<UserEmotesResponse>(response.body.decodeToString())
+                decodeChecked<UserEmotesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -719,14 +730,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<UserEmotesResponse>(response.body.decodeToString())
+                decodeChecked<UserEmotesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<UserEmotesResponse>(response.body.string())
+                    decodeChecked<UserEmotesResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -754,7 +765,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<EmoteSetsResponse>(response.body.decodeToString())
+                decodeChecked<EmoteSetsResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -773,14 +784,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<EmoteSetsResponse>(response.body.decodeToString())
+                decodeChecked<EmoteSetsResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<EmoteSetsResponse>(response.body.string())
+                    decodeChecked<EmoteSetsResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -806,7 +817,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<BadgesResponse>(response.body.decodeToString())
+                decodeChecked<BadgesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -825,14 +836,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<BadgesResponse>(response.body.decodeToString())
+                decodeChecked<BadgesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<BadgesResponse>(response.body.string())
+                    decodeChecked<BadgesResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -860,7 +871,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<BadgesResponse>(response.body.decodeToString())
+                decodeChecked<BadgesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -879,14 +890,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<BadgesResponse>(response.body.decodeToString())
+                decodeChecked<BadgesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<BadgesResponse>(response.body.string())
+                    decodeChecked<BadgesResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -914,7 +925,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<CheerEmotesResponse>(response.body.decodeToString())
+                decodeChecked<CheerEmotesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -933,14 +944,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<CheerEmotesResponse>(response.body.decodeToString())
+                decodeChecked<CheerEmotesResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<CheerEmotesResponse>(response.body.string())
+                    decodeChecked<CheerEmotesResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -971,7 +982,7 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<ChatUsersResponse>(response.body.decodeToString())
+                decodeChecked<ChatUsersResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             networkLibrary == C.CRONET && cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
@@ -990,14 +1001,14 @@ class HelixRepository(
                         timeout.stop()
                     }
                 }
-                json.decodeFromString<ChatUsersResponse>(response.body.decodeToString())
+                decodeChecked<ChatUsersResponse>(response.body.decodeToString(), response.info.httpStatusCode)
             }
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
-                    json.decodeFromString<ChatUsersResponse>(response.body.string())
+                    decodeChecked<ChatUsersResponse>(response.body.string(), response.code)
                 }
             }
         }
@@ -1487,7 +1498,7 @@ class HelixRepository(
                     }
                 }
                 if (response.info.httpStatusCode in 200..299) {
-                    json.decodeFromString<JsonElement>(response.body.decodeToString()).jsonObject["data"]?.jsonArray?.firstOrNull()?.jsonObject?.get("color")?.jsonPrimitive?.contentOrNull
+                    decodeChecked<JsonElement>(response.body.decodeToString(), response.info.httpStatusCode).jsonObject["data"]?.jsonArray?.firstOrNull()?.jsonObject?.get("color")?.jsonPrimitive?.contentOrNull
                 } else {
                     response.body.decodeToString()
                 }
@@ -1510,7 +1521,7 @@ class HelixRepository(
                     }
                 }
                 if (response.info.httpStatusCode in 200..299) {
-                    json.decodeFromString<JsonElement>(response.body.decodeToString()).jsonObject["data"]?.jsonArray?.firstOrNull()?.jsonObject?.get("color")?.jsonPrimitive?.contentOrNull
+                    decodeChecked<JsonElement>(response.body.decodeToString(), response.info.httpStatusCode).jsonObject["data"]?.jsonArray?.firstOrNull()?.jsonObject?.get("color")?.jsonPrimitive?.contentOrNull
                 } else {
                     response.body.decodeToString()
                 }
@@ -1521,7 +1532,7 @@ class HelixRepository(
                     headers(headers.toHeaders())
                 }.build()).executeAsync().use { response ->
                     if (response.isSuccessful) {
-                        json.decodeFromString<JsonElement>(response.body.string()).jsonObject["data"]?.jsonArray?.firstOrNull()?.jsonObject?.get("color")?.jsonPrimitive?.contentOrNull
+                        decodeChecked<JsonElement>(response.body.string(), response.code).jsonObject["data"]?.jsonArray?.firstOrNull()?.jsonObject?.get("color")?.jsonPrimitive?.contentOrNull
                     } else {
                         response.body.string()
                     }
@@ -1665,7 +1676,7 @@ class HelixRepository(
                     post(body.toRequestBody())
                 }.build()).executeAsync().use { response ->
                     if (response.isSuccessful) {
-                        json.decodeFromString<JsonElement>(response.body.string()).jsonObject["data"]?.jsonArray?.firstOrNull()?.jsonObject?.get("message")?.jsonPrimitive?.contentOrNull
+                        decodeChecked<JsonElement>(response.body.string(), response.code).jsonObject["data"]?.jsonArray?.firstOrNull()?.jsonObject?.get("message")?.jsonPrimitive?.contentOrNull
                     } else {
                         response.body.string()
                     }

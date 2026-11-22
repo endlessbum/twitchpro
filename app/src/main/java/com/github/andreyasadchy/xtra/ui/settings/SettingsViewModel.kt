@@ -40,7 +40,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -80,7 +79,8 @@ class SettingsViewModel(
     var updateVersion: String? = null
     var updateNotes: String? = null
     var updateJob: Job? = null
-    val updateProgress = MutableSharedFlow<Int>()
+    // buffered: the progress callback runs on a network thread and must never block on a collector
+    val updateProgress = MutableSharedFlow<Int>(extraBufferCapacity = 16)
     val closeUpdateDialog = MutableSharedFlow<Boolean>()
     val updateInstallBlocked = MutableSharedFlow<String>(extraBufferCapacity = 1)
     /** The downloaded update to open with the installer of Android (the second way of installing). */
@@ -277,11 +277,14 @@ class SettingsViewModel(
             updateUrl.emit(
                 try {
                     val requestUrl = com.github.andreyasadchy.xtra.ui.main.MainViewModel.resolveUpdateRequestUrl(url)
+                    // captured once: the engine can be torn down between the check and the use
+                    val httpEngineRef = if (networkLibrary == C.HTTP_ENGINE) httpEngine.value else null
+                    val cronetEngineRef = if (networkLibrary == C.CRONET) cronetEngine.value else null
                     val rawBody = when {
-                        networkLibrary == C.HTTP_ENGINE && httpEngine.value != null -> @SuppressLint("NewApi") {
+                        httpEngineRef != null -> @SuppressLint("NewApi") {
                             val response = suspendCancellableCoroutine { continuation ->
                                 val timeout = NetworkUtils.HttpEngineTimeout()
-                                val request = httpEngine.value!!.newUrlRequestBuilder(
+                                val request = httpEngineRef.newUrlRequestBuilder(
                                     requestUrl,
                                     cronetExecutor.value,
                                     NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
@@ -295,10 +298,10 @@ class SettingsViewModel(
                             }
                             response.body.decodeToString()
                         }
-                        networkLibrary == C.CRONET && cronetEngine.value != null -> {
+                        cronetEngineRef != null -> {
                             val response = suspendCancellableCoroutine { continuation ->
                                 val timeout = NetworkUtils.CronetTimeout()
-                                val request = cronetEngine.value!!.newUrlRequestBuilder(
+                                val request = cronetEngineRef.newUrlRequestBuilder(
                                     requestUrl,
                                     NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                                     cronetExecutor.value
@@ -336,15 +339,16 @@ class SettingsViewModel(
         updateJob = viewModelScope.launch(Dispatchers.IO) {
             try {
                 val progressListener = NetworkUtils.ProgressListener { bytesRead ->
-                    runBlocking {
-                        updateProgress.emit(bytesRead)
-                    }
+                    updateProgress.tryEmit(bytesRead)
                 }
+                // captured once: the engine can be torn down between the check and the use
+                val httpEngineRef = if (networkLibrary == C.HTTP_ENGINE) httpEngine.value else null
+                val cronetEngineRef = if (networkLibrary == C.CRONET) cronetEngine.value else null
                 val response = when {
-                    networkLibrary == C.HTTP_ENGINE && httpEngine.value != null -> @SuppressLint("NewApi") {
+                    httpEngineRef != null -> @SuppressLint("NewApi") {
                         val response = suspendCancellableCoroutine { continuation ->
                             val timeout = NetworkUtils.HttpEngineTimeout()
-                            val request = httpEngine.value!!.newUrlRequestBuilder(
+                            val request = httpEngineRef.newUrlRequestBuilder(
                                 url,
                                 cronetExecutor.value,
                                 NetworkUtils.ByteArrayUrlCallback(continuation, timeout, progressListener)
@@ -360,10 +364,10 @@ class SettingsViewModel(
                             response.body
                         } else null
                     }
-                    networkLibrary == C.CRONET && cronetEngine.value != null -> {
+                    cronetEngineRef != null -> {
                         val response = suspendCancellableCoroutine { continuation ->
                             val timeout = NetworkUtils.CronetTimeout()
-                            val request = cronetEngine.value!!.newUrlRequestBuilder(
+                            val request = cronetEngineRef.newUrlRequestBuilder(
                                 url,
                                 NetworkUtils.ByteArrayCronetCallback(continuation, timeout, progressListener),
                                 cronetExecutor.value

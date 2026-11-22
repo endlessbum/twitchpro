@@ -82,7 +82,12 @@ class XtraModule(application: Application) {
     }
 
     val okHttpClient = lazy {
+        // explicit timeouts: the defaults (10s, no call timeout) do not match the Cronet/HttpEngine
+        // paths (no callTimeout here: this client also streams large downloads)
         OkHttpClient.Builder().apply {
+            connectTimeout(java.time.Duration.ofSeconds(10))
+            readTimeout(java.time.Duration.ofSeconds(20))
+            writeTimeout(java.time.Duration.ofSeconds(20))
             if (BuildConfig.DEBUG) {
                 addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
             }

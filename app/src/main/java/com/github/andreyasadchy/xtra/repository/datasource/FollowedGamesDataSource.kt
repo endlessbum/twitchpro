@@ -34,14 +34,20 @@ class FollowedGamesDataSource(
                 } else {
                     throw Exception()
                 }
+            } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                throw e
             } catch (e: Exception) {
+                DataSourceLog.log(e)
                 try {
                     if (!gqlHeaders[C.HEADER_TOKEN].isNullOrBlank()) {
                         gqlLoad()
                     } else {
                         throw Exception()
                     }
+                } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                    throw e
                 } catch (e: Exception) {
+                    DataSourceLog.log(e)
                     null
                 }
             }?.let {

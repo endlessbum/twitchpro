@@ -19,10 +19,16 @@ class TagsDataSource(
         return if (query.isNotBlank()) {
             try {
                 gqlQueryLoad()
+            } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                throw e
             } catch (e: Exception) {
+                DataSourceLog.log(e)
                 try {
                     gqlLoad()
+                } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                    throw e
                 } catch (e: Exception) {
+                    DataSourceLog.log(e)
                     LoadResult.Error(e)
                 }
             }

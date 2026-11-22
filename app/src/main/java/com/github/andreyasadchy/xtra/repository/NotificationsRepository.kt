@@ -66,8 +66,9 @@ class NotificationsRepository(
         var offset: String? = null
         do {
             val response = graphQLRepository.loadQueryUserFollowedStreams(networkLibrary, gqlHeaders, 100, offset)
-            val data = response.data!!.user!!.followedLiveUsers!!
-            val items = data.edges!!
+            // an error body leaves data null: stop with what was collected instead of an NPE
+            val data = response.data?.user?.followedLiveUsers ?: break
+            val items = data.edges.orEmpty()
             items.mapNotNull { item ->
                 item?.node?.let {
                     if (it.self?.follower?.notificationSettings?.isEnabled == true) {
@@ -97,7 +98,7 @@ class NotificationsRepository(
     private suspend fun gqlQueryLocal(networkLibrary: String?, gqlHeaders: Map<String, String>, ids: List<String>): List<Stream> {
         val items = ids.chunked(100).map { list ->
             graphQLRepository.loadQueryUsersStream(networkLibrary, gqlHeaders, list)
-        }.flatMap { it.data!!.users!! }
+        }.flatMap { it.data?.users.orEmpty() }
         val list = items.mapNotNull { item ->
             item?.let {
                 if (it.stream?.viewersCount != null) {

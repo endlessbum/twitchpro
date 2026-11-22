@@ -30,18 +30,27 @@ class SearchStreamsDataSource(
             if (!offset.isNullOrBlank()) {
                 try {
                     loadFromApi(params)
+                } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                    throw e
                 } catch (e: Exception) {
+                    DataSourceLog.log(e)
                     LoadResult.Error(e)
                 }
             } else {
                 try {
                     api = C.GQL
                     loadFromApi(params)
+                } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                    throw e
                 } catch (e: Exception) {
+                    DataSourceLog.log(e)
                     try {
                         api = C.HELIX
                         loadFromApi(params)
+                    } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                        throw e
                     } catch (e: Exception) {
+                        DataSourceLog.log(e)
                         LoadResult.Error(e)
                     }
                 }

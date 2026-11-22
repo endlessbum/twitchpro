@@ -8,7 +8,9 @@ import android.view.KeyEvent
 import com.github.andreyasadchy.xtra.XtraApp
 import com.github.andreyasadchy.xtra.ui.player.ExoPlayerService
 import com.github.andreyasadchy.xtra.ui.player.MediaPlayerService
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MediaButtonReceiver: BroadcastReceiver() {
 
@@ -21,45 +23,44 @@ class MediaButtonReceiver: BroadcastReceiver() {
                 intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT)
             }
             if (keyEvent != null && keyEvent.action == KeyEvent.ACTION_DOWN && keyEvent.repeatCount == 0) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (keyEvent.keyCode == KeyEvent.KEYCODE_MEDIA_PLAY
-                        || keyEvent.keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
-                        || keyEvent.keyCode == KeyEvent.KEYCODE_HEADSETHOOK) {
-                        val savedStates = runBlocking {
-                            (context.applicationContext as XtraApp).xtraModule.playerRepository.getPlaybackStates()
-                        }
+                // the Room query goes to the IO thread under goAsync: runBlocking here ANRs the receiver
+                val pendingResult = goAsync()
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val savedStates = (context.applicationContext as XtraApp).xtraModule.playerRepository.getPlaybackStates()
                         if (savedStates.isNotEmpty()) {
-                            when (context.prefs().getString(C.PLAYER, C.EXOPLAYER)) {
-                                C.MEDIA_PLAYER -> {
-                                    context.startForegroundService(Intent(context, MediaPlayerService::class.java).apply {
-                                        fillIn(intent, 0)
-                                    })
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                when (context.prefs().getString(C.PLAYER, C.EXOPLAYER)) {
+                                    C.MEDIA_PLAYER -> {
+                                        context.startForegroundService(Intent(context, MediaPlayerService::class.java).apply {
+                                            fillIn(intent, 0)
+                                        })
+                                    }
+                                    else -> {
+                                        context.startForegroundService(Intent(context, ExoPlayerService::class.java).apply {
+                                            fillIn(intent, 0)
+                                        })
+                                    }
                                 }
-                                else -> {
-                                    context.startForegroundService(Intent(context, ExoPlayerService::class.java).apply {
-                                        fillIn(intent, 0)
-                                    })
+                            } else {
+                                when (context.prefs().getString(C.PLAYER, C.EXOPLAYER)) {
+                                    C.MEDIA_PLAYER -> {
+                                        context.startService(Intent(context, MediaPlayerService::class.java).apply {
+                                            fillIn(intent, 0)
+                                        })
+                                    }
+                                    else -> {
+                                        context.startService(Intent(context, ExoPlayerService::class.java).apply {
+                                            fillIn(intent, 0)
+                                        })
+                                    }
                                 }
                             }
                         }
-                    }
-                } else {
-                    val savedStates = runBlocking {
-                        (context.applicationContext as XtraApp).xtraModule.playerRepository.getPlaybackStates()
-                    }
-                    if (savedStates.isNotEmpty()) {
-                        when (context.prefs().getString(C.PLAYER, C.EXOPLAYER)) {
-                            C.MEDIA_PLAYER -> {
-                                context.startService(Intent(context, MediaPlayerService::class.java).apply {
-                                    fillIn(intent, 0)
-                                })
-                            }
-                            else -> {
-                                context.startService(Intent(context, ExoPlayerService::class.java).apply {
-                                    fillIn(intent, 0)
-                                })
-                            }
-                        }
+                    } catch (e: Exception) {
+                        // best effort: a failed media button press is silently dropped
+                    } finally {
+                        pendingResult.finish()
                     }
                 }
             }

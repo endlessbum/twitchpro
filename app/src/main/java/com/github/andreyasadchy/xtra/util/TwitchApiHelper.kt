@@ -27,7 +27,9 @@ object TwitchApiHelper {
     private val imageSizeRegex = Regex("-\\d+x\\d+.")
     var checkedValidation = false
     var checkedUpdates = false
-    val defaultQualityList = listOf("chunked", "1080p60", "1080p30", "720p60", "720p30", "480p30", "360p30", "160p30", "144p30", "high", "medium", "low", "mobile", "audio_only")
+    // 1440p transcodes (enhanced broadcasting) are part of the ladder: the fallback paths
+    // that build CDN playlist URLs from this list must know them
+    val defaultQualityList = listOf("chunked", "1440p60", "1440p30", "1080p60", "1080p30", "720p60", "720p30", "480p30", "360p30", "160p30", "144p30", "high", "medium", "low", "mobile", "audio_only")
     val vodDomains = listOf(
         "https://vod-secure.twitch.tv",
         "https://vod-metro.twitch.tv",
@@ -181,7 +183,8 @@ object TwitchApiHelper {
     fun formatDate(context: Context, time: Long): String {
         val format = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val currentYear = Year.now().value
-            val year = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneOffset.UTC).year
+            // the local zone: the year shown comes from DateUtils, which renders in the device zone
+            val year = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), java.time.ZoneId.systemDefault()).year
             if (year == currentYear) {
                 DateUtils.FORMAT_NO_YEAR
             } else {

@@ -26,7 +26,10 @@ class FollowedStreamsDataSource(
         return if (!offset.isNullOrBlank()) {
             try {
                 loadFromApi(params)
+            } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                throw e
             } catch (e: Exception) {
+                DataSourceLog.log(e)
                 LoadResult.Error(e)
             }
         } else {
@@ -34,10 +37,16 @@ class FollowedStreamsDataSource(
             localChannelFollowsRepository.getAll().mapNotNull { it.userId }.takeIf { it.isNotEmpty() }?.let {
                 try {
                     gqlQueryLocal(it)
+                } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                    throw e
                 } catch (e: Exception) {
+                    DataSourceLog.log(e)
                     try {
                         if (!helixHeaders[C.HEADER_TOKEN].isNullOrBlank()) helixLocal(it) else throw Exception()
+                    } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                        throw e
                     } catch (e: Exception) {
+                        DataSourceLog.log(e)
                         null
                     }
                 }
@@ -51,15 +60,24 @@ class FollowedStreamsDataSource(
                 try {
                     api = C.GQL
                     loadFromApi(params)
+                } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                    throw e
                 } catch (e: Exception) {
+                    DataSourceLog.log(e)
                     try {
                         api = C.GQL_PERSISTED_QUERY
                         loadFromApi(params)
+                    } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                        throw e
                     } catch (e: Exception) {
+                        DataSourceLog.log(e)
                         try {
                             api = C.HELIX
                             loadFromApi(params)
+                        } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                            throw e
                         } catch (e: Exception) {
+                            DataSourceLog.log(e)
                             null
                         }
                     }
