@@ -29,6 +29,19 @@ android {
         )
     }
 
+    // Aggregate tasks (assemble, build, bundle) can pull in the release variant without "Release"
+    // in the requested task name — guard the actual release tasks themselves as well (NEW-009).
+    if (!keystorePropsFile.exists()) {
+        tasks.matching { it.name.contains("Release", ignoreCase = true) }.configureEach {
+            doFirst {
+                throw GradleException(
+                    "Release signing is not configured: create keystore.properties in the project root " +
+                        "(storeFile, storePassword, keyAlias, keyPassword) pointing at a non-committed keystore."
+                )
+            }
+        }
+    }
+
     signingConfigs {
         getByName("debug") {
             // the project debug keystore is not committed; when it is absent (fresh clone)
@@ -98,7 +111,6 @@ android {
         "lib/armeabi-v7a/liblanguage_id_l2c_jni.so",
     ))
 }
-
 dependencies {
     compileOnly("com.google.j2objc:j2objc-annotations:3.0.0") // OkHttpDataSource SettableFuture
     implementation("com.google.mlkit:language-id:17.0.6")
