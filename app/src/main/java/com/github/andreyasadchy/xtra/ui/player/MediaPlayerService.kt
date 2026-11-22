@@ -51,11 +51,12 @@ import com.github.andreyasadchy.xtra.util.NetworkUtils
 import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
 import com.github.andreyasadchy.xtra.util.TwitchApiHelper
 import com.github.andreyasadchy.xtra.util.prefs
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.Credentials
@@ -87,6 +88,9 @@ class MediaPlayerService : BasePlaybackService() {
     private var dynamicsProcessing: DynamicsProcessing? = null
     private var sleepTimer: Timer? = null
     private var sleepTimerEndTime = 0L
+    // the Room writes of the position and the playback state go to the IO thread on their own:
+    // the caller only reads the player state, and the writes complete even when the service stops
+    private val savePositionScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var lastSavedPosition: Long? = null
     private var savePositionTimer: Timer? = null
     private var stopServiceTimer: Timer? = null
@@ -1866,7 +1870,9 @@ class MediaPlayerService : BasePlaybackService() {
 
     fun setStopServiceTimer(start: Boolean) {
         if (start) {
-            if (stopServiceTimer == null && player?.isPlaying == false) {
+            // armed even if the player reads as not playing yet (the flag may not have propagated):
+            // updatePlayingState cancels it when the playback resumes
+            if (stopServiceTimer == null) {
                 stopServiceTimer = Timer().apply {
                     schedule(600000) {
                         Handler(Looper.getMainLooper()).post {
@@ -1924,25 +1930,26 @@ class MediaPlayerService : BasePlaybackService() {
     private fun savePosition() {
         player?.let { player ->
             if (player.duration != -1) {
-                if (prefs().getBoolean(C.PLAYER_USE_VIDEO_POSITIONS, true)) {
-                    when (type) {
-                        VIDEO -> {
-                            videoId?.toLongOrNull()?.let {
-                                runBlocking {
-                                    xtraModule.playerRepository.saveVideoPosition(VideoPosition(it, player.currentPosition.toLong()))
+                val type = this.type
+                val videoId = this.videoId
+                val offlineVideoId = this.offlineVideoId
+                val useVideoPositions = prefs().getBoolean(C.PLAYER_USE_VIDEO_POSITIONS, true)
+                val position = player.currentPosition.toLong()
+                savePositionScope.launch {
+                    if (useVideoPositions) {
+                        when (type) {
+                            VIDEO -> {
+                                videoId?.toLongOrNull()?.let {
+                                    xtraModule.playerRepository.saveVideoPosition(VideoPosition(it, position))
                                 }
                             }
-                        }
-                        OFFLINE_VIDEO -> {
-                            offlineVideoId?.let {
-                                runBlocking {
-                                    xtraModule.offlineVideosRepository.updatePosition(it, player.currentPosition.toLong())
+                            OFFLINE_VIDEO -> {
+                                offlineVideoId?.let {
+                                    xtraModule.offlineVideosRepository.updatePosition(it, position)
                                 }
                             }
                         }
                     }
-                }
-                runBlocking {
                     xtraModule.playerRepository.deletePlaybackStates()
                 }
             }
@@ -1989,26 +1996,27 @@ class MediaPlayerService : BasePlaybackService() {
                 val savedPosition = lastSavedPosition
                 if (savedPosition == null || currentPosition - savedPosition !in 0..2000) {
                     lastSavedPosition = currentPosition
-                    if (prefs().getBoolean(C.PLAYER_USE_VIDEO_POSITIONS, true)) {
-                        when (type) {
-                            VIDEO -> {
-                                videoId?.toLongOrNull()?.let {
-                                    runBlocking {
+                    val type = this.type
+                    val videoId = this.videoId
+                    val offlineVideoId = this.offlineVideoId
+                    val useVideoPositions = prefs().getBoolean(C.PLAYER_USE_VIDEO_POSITIONS, true)
+                    val playing = player.isPlaying
+                    savePositionScope.launch {
+                        if (useVideoPositions) {
+                            when (type) {
+                                VIDEO -> {
+                                    videoId?.toLongOrNull()?.let {
                                         xtraModule.playerRepository.saveVideoPosition(VideoPosition(it, currentPosition))
                                     }
                                 }
-                            }
-                            OFFLINE_VIDEO -> {
-                                offlineVideoId?.let {
-                                    runBlocking {
+                                OFFLINE_VIDEO -> {
+                                    offlineVideoId?.let {
                                         xtraModule.offlineVideosRepository.updatePosition(it, currentPosition)
                                     }
                                 }
                             }
                         }
-                    }
-                    runBlocking {
-                        savePlaybackState(currentPosition, !player.isPlaying)
+                        savePlaybackState(currentPosition, playing)
                     }
                 }
             }
@@ -2078,6 +2086,15 @@ class MediaPlayerService : BasePlaybackService() {
 
     override fun onDestroy() {
         super.onDestroy()
+        // everything armed for the session dies with it, not with the process
+        sleepTimer?.cancel()
+        sleepTimer = null
+        savePositionTimer?.cancel()
+        savePositionTimer = null
+        stopServiceTimer?.cancel()
+        stopServiceTimer = null
+        runCatching { dynamicsProcessing?.release() }
+        dynamicsProcessing = null
         wifiLock?.release()
         player?.release()
         session?.release()

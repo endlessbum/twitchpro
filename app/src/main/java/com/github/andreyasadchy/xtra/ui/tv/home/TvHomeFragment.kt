@@ -48,6 +48,8 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
     private var refreshClickedAt = 0L
     private val homeSweep = androidx.compose.runtime.mutableIntStateOf(0)
     private val resumeItems = mutableStateOf<List<com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item>>(emptyList())
+    // the badges are computed on the IO thread (the statistics JSON), the composition only reads this
+    private val statsBadgesState = mutableStateOf<List<Pair<Int, String>>>(emptyList())
     private val videoPositions = mutableStateOf<Map<String, Long>>(emptyMap())
     private val statsState = mutableStateOf<TvHomeStats?>(null)
     private val showHeroState = mutableStateOf(true)
@@ -177,7 +179,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
             thumbnailStamp = { homeStamp.longValue },
             refreshing = { homeRefreshing.value },
             sweepCount = { homeSweep.intValue },
-            statsBadges = { statsBadges() },
+            statsBadges = { statsBadgesState.value },
             openStats = {
                 val act = activity as? MainActivity
                 if (act != null && !context.prefs().getBoolean(C.TV_HIDE_MENU_STATS, false)) {
@@ -273,7 +275,10 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         viewLifecycleOwner.lifecycleScope.launch {
             // a video watched in the mini player over the home comes in "Continue watching" right away
             com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.changes.collect {
-                context?.let { resumeItems.value = com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.list(it) }
+                val ctx = context ?: return@collect
+                resumeItems.value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                    runCatching { com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.list(ctx) }.getOrDefault(emptyList())
+                }
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
@@ -686,13 +691,22 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
     /** "Continue watching" and the statistics, read on this device. */
     private fun loadLocalRows() {
         val context = context ?: return
-        resumeItems.value = com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.list(context)
-        com.github.andreyasadchy.xtra.ui.tv.TvLauncherChannels.syncWatchNext(context)
-        loadStats()
+        viewLifecycleOwner.lifecycleScope.launch {
+            // the JSON work of the lists and the statistics goes to the IO thread
+            val (items, badges) = kotlinx.coroutines.coroutineScope {
+                val itemsDeferred = kotlinx.coroutines.async { runCatching { com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.list(context) }.getOrDefault(emptyList()) }
+                val badgesDeferred = kotlinx.coroutines.async { runCatching { statsBadges() }.getOrDefault(emptyList()) }
+                itemsDeferred.await() to badgesDeferred.await()
+            }
+            resumeItems.value = items
+            statsBadgesState.value = badges
+            com.github.andreyasadchy.xtra.ui.tv.TvLauncherChannels.syncWatchNext(context)
+            loadStats()
+        }
     }
 
     /** The statistics of the badge of the top of the home, the ones that have something to say. */
-    private fun statsBadges(): List<Pair<Int, String>> {
+    private suspend fun statsBadges(): List<Pair<Int, String>> {
         val context = context ?: return emptyList()
         val today = com.github.andreyasadchy.xtra.ui.tv.TvStats.detail(context, 1)
         val week = com.github.andreyasadchy.xtra.ui.tv.TvStats.detail(context, 7)
@@ -719,32 +733,34 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
 
     private fun loadStats() {
         val context = context ?: return
-        val stats = com.github.andreyasadchy.xtra.ui.tv.TvStats.read(context)
-        val hours = stats.watchMs / 3_600_000L
-        val minutes = (stats.watchMs / 60_000L) % 60
-        val formatTime = { ms: Long -> getString(R.string.tv_stats_hours, ms / 3_600_000L, (ms / 60_000L) % 60) }
-        statsState.value = TvHomeStats(
-            title = getString(R.string.tv_stats),
-            subtitle = stats.since.takeIf { it > 0 }?.let {
-                getString(R.string.tv_stats_since, java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM).format(java.util.Date(it)))
-            },
-            items = listOf(
-                TvHomeStat(R.drawable.tv_ic_schedule, getString(R.string.tv_stats_hours, hours, minutes), getString(R.string.tv_stats_watched)),
-                TvHomeStat(
-                    R.drawable.tv_ic_star,
-                    stats.topStreamer ?: "—",
-                    if (stats.topStreamer != null) getString(R.string.tv_stats_top_streamer_time, formatTime(stats.topStreamerMs)) else getString(R.string.tv_stats_top_streamer)
-                ),
-                TvHomeStat(R.drawable.tv_ic_shield, stats.ads.toString(), getString(R.string.tv_stats_ads)),
-                TvHomeStat(
-                    R.drawable.tv_ic_globe,
-                    stats.topProxy ?: "—",
-                    if (stats.topProxy != null) getString(R.string.tv_stats_proxy_uses, stats.topProxyUses) else getString(R.string.tv_stats_proxy)
-                ),
-                TvHomeStat(R.drawable.tv_ic_forum, stats.messages.toString(), getString(R.string.tv_stats_messages)),
-                TvHomeStat(R.drawable.tv_ic_live, stats.streams.toString(), getString(R.string.tv_stats_streams)),
+        viewLifecycleOwner.lifecycleScope.launch {
+            val stats = runCatching { com.github.andreyasadchy.xtra.ui.tv.TvStats.read(context) }.getOrNull() ?: return@launch
+            val hours = stats.watchMs / 3_600_000L
+            val minutes = (stats.watchMs / 60_000L) % 60
+            val formatTime = { ms: Long -> getString(R.string.tv_stats_hours, ms / 3_600_000L, (ms / 60_000L) % 60) }
+            statsState.value = TvHomeStats(
+                title = getString(R.string.tv_stats),
+                subtitle = stats.since.takeIf { it > 0 }?.let {
+                    getString(R.string.tv_stats_since, java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM).format(java.util.Date(it)))
+                },
+                items = listOf(
+                    TvHomeStat(R.drawable.tv_ic_schedule, getString(R.string.tv_stats_hours, hours, minutes), getString(R.string.tv_stats_watched)),
+                    TvHomeStat(
+                        R.drawable.tv_ic_star,
+                        stats.topStreamer ?: "—",
+                        if (stats.topStreamer != null) getString(R.string.tv_stats_top_streamer_time, formatTime(stats.topStreamerMs)) else getString(R.string.tv_stats_top_streamer)
+                    ),
+                    TvHomeStat(R.drawable.tv_ic_shield, stats.ads.toString(), getString(R.string.tv_stats_ads)),
+                    TvHomeStat(
+                        R.drawable.tv_ic_globe,
+                        stats.topProxy ?: "—",
+                        if (stats.topProxy != null) getString(R.string.tv_stats_proxy_uses, stats.topProxyUses) else getString(R.string.tv_stats_proxy)
+                    ),
+                    TvHomeStat(R.drawable.tv_ic_forum, stats.messages.toString(), getString(R.string.tv_stats_messages)),
+                    TvHomeStat(R.drawable.tv_ic_live, stats.streams.toString(), getString(R.string.tv_stats_streams)),
+                )
             )
-        )
+        }
     }
 
     private fun com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item.toVideo() = com.github.andreyasadchy.xtra.model.ui.Video(

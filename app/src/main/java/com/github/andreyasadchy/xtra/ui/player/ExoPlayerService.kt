@@ -88,11 +88,12 @@ import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
 import com.github.andreyasadchy.xtra.util.TwitchApiHelper
 import com.github.andreyasadchy.xtra.util.TwitchClock
 import com.github.andreyasadchy.xtra.util.prefs
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.Credentials
@@ -166,10 +167,14 @@ class ExoPlayerService : BasePlaybackService() {
     private var livePausedPictureEpochMs: Long? = null
     private var liveBehindAtPauseMs = 0L
     @Volatile
+    @Volatile
     private var liveTimeShiftedBehindMs = 0L
     @Volatile
     private var liveCatchUpSpeed = 1.0f
     private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    // the Room writes of the position and the playback state go to the IO thread on their own:
+    // the caller only reads the player state, and the writes complete even when the service stops
+    private val savePositionScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var liveBufferExpiredWhilePaused = false
     private var activeDvrResume: PendingDvrResume? = null
     private var dvrInitialSeekPending = false
@@ -717,7 +722,7 @@ class ExoPlayerService : BasePlaybackService() {
                                     adRollType = rollTypeOf(playlist) ?: if (firstPlaylistAd) "preroll" else "midroll"
                                     firstPlaylistAd = false
                                     // statistics of the home: an ad break handled by the ad blocker (or a proxy)
-                                    com.github.andreyasadchy.xtra.ui.tv.TvStats.addAdBlocked(this@ExoPlayerService)
+                                    lifecycleScope.launch { com.github.andreyasadchy.xtra.ui.tv.TvStats.addAdBlocked(this@ExoPlayerService) }
                                     when {
                                         useProxy -> {
                                             if (!proxyMediaPlaylist) {
@@ -1039,7 +1044,7 @@ class ExoPlayerService : BasePlaybackService() {
                     if (isPlaying) {
                         pendingProxyStat?.let {
                             pendingProxyStat = null
-                            com.github.andreyasadchy.xtra.ui.tv.TvStats.addProxy(this@ExoPlayerService, it)
+                            lifecycleScope.launch { com.github.andreyasadchy.xtra.ui.tv.TvStats.addProxy(this@ExoPlayerService, it) }
                         }
                         if (savePositionTimer == null && type != STREAM) {
                             savePositionTimer = Timer().apply {
@@ -2741,7 +2746,7 @@ class ExoPlayerService : BasePlaybackService() {
                     if (isPlaying) {
                         pendingSecondaryProxyStat?.let {
                             pendingSecondaryProxyStat = null
-                            com.github.andreyasadchy.xtra.ui.tv.TvStats.addProxy(this@ExoPlayerService, it)
+                            lifecycleScope.launch { com.github.andreyasadchy.xtra.ui.tv.TvStats.addProxy(this@ExoPlayerService, it) }
                         }
                     }
                     // the backup player plays: the system sees the playback going on
@@ -5146,7 +5151,9 @@ class ExoPlayerService : BasePlaybackService() {
 
     fun setStopServiceTimer(start: Boolean) {
         if (start) {
-            if (stopServiceTimer == null && player?.isPlaying == false) {
+            // armed even if the player reads as not playing yet (the flag may not have propagated):
+            // the playing listener cancels it when the playback resumes
+            if (stopServiceTimer == null) {
                 stopServiceTimer = Timer().apply {
                     schedule(600000) {
                         Handler(Looper.getMainLooper()).post {
@@ -5224,26 +5231,27 @@ class ExoPlayerService : BasePlaybackService() {
     private fun savePosition() {
         player?.let { player ->
             if (!player.currentTracks.isEmpty) {
-                if (prefs().getBoolean(C.PLAYER_USE_VIDEO_POSITIONS, true)) {
-                    when (type) {
-                        VIDEO -> {
-                            videoId?.toLongOrNull()?.let {
-                                runBlocking {
-                                    xtraModule.playerRepository.saveVideoPosition(VideoPosition(it, player.currentPosition))
+                val type = this.type
+                val videoId = this.videoId
+                val offlineVideoId = this.offlineVideoId
+                val useVideoPositions = prefs().getBoolean(C.PLAYER_USE_VIDEO_POSITIONS, true)
+                val position = player.currentPosition
+                savePositionScope.launch {
+                    if (useVideoPositions) {
+                        when (type) {
+                            VIDEO -> {
+                                videoId?.toLongOrNull()?.let {
+                                    xtraModule.playerRepository.saveVideoPosition(VideoPosition(it, position))
+                                    saveTvResume(it, position)
                                 }
-                                saveTvResume(it, player.currentPosition)
                             }
-                        }
-                        OFFLINE_VIDEO -> {
-                            offlineVideoId?.let {
-                                runBlocking {
-                                    xtraModule.offlineVideosRepository.updatePosition(it, player.currentPosition)
+                            OFFLINE_VIDEO -> {
+                                offlineVideoId?.let {
+                                    xtraModule.offlineVideosRepository.updatePosition(it, position)
                                 }
                             }
                         }
                     }
-                }
-                runBlocking {
                     xtraModule.playerRepository.deletePlaybackStates()
                 }
             }
@@ -5279,27 +5287,28 @@ class ExoPlayerService : BasePlaybackService() {
                 val savedPosition = lastSavedPosition
                 if (savedPosition == null || currentPosition - savedPosition !in 0..2000) {
                     lastSavedPosition = currentPosition
-                    if (prefs().getBoolean(C.PLAYER_USE_VIDEO_POSITIONS, true)) {
-                        when (type) {
-                            VIDEO -> {
-                                videoId?.toLongOrNull()?.let {
-                                    runBlocking {
+                    val type = this.type
+                    val videoId = this.videoId
+                    val offlineVideoId = this.offlineVideoId
+                    val useVideoPositions = prefs().getBoolean(C.PLAYER_USE_VIDEO_POSITIONS, true)
+                    val playing = !player.playWhenReady
+                    savePositionScope.launch {
+                        if (useVideoPositions) {
+                            when (type) {
+                                VIDEO -> {
+                                    videoId?.toLongOrNull()?.let {
                                         xtraModule.playerRepository.saveVideoPosition(VideoPosition(it, currentPosition))
+                                        saveTvResume(it, currentPosition)
                                     }
-                                    saveTvResume(it, currentPosition)
                                 }
-                            }
-                            OFFLINE_VIDEO -> {
-                                offlineVideoId?.let {
-                                    runBlocking {
+                                OFFLINE_VIDEO -> {
+                                    offlineVideoId?.let {
                                         xtraModule.offlineVideosRepository.updatePosition(it, currentPosition)
                                     }
                                 }
                             }
                         }
-                    }
-                    runBlocking {
-                        savePlaybackState(currentPosition, !player.playWhenReady)
+                        savePlaybackState(currentPosition, playing)
                     }
                 }
             }
@@ -5373,6 +5382,10 @@ class ExoPlayerService : BasePlaybackService() {
         bitmapLoadJob = null
         savePositionTimer?.cancel()
         savePositionTimer = null
+        // the sleep timer must not outlive the playback it was armed for: it would stop the next session
+        sleepTimer?.cancel()
+        sleepTimer = null
+        sleepTimerEndTime = 0L
         stopServiceTimer?.cancel()
         stopServiceTimer = null
         com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.release(this, this)

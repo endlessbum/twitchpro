@@ -1301,7 +1301,9 @@ class MultiStreamFragment : Fragment() {
         val helixHeaders = com.github.andreyasadchy.xtra.util.TwitchApiHelper.getHelixHeaders(appCtx)
         val accountId = appCtx.tokenPrefs().getString(C.USER_ID, null)
         if (!trimmed.startsWith("/")) {
-            com.github.andreyasadchy.xtra.ui.tv.TvStats.addMessage(appCtx)
+            kotlinx.coroutines.MainScope().launch {
+                runCatching { com.github.andreyasadchy.xtra.ui.tv.TvStats.addMessage(appCtx) }
+            }
         }
         kotlinx.coroutines.MainScope().launch {
             try {

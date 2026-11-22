@@ -3405,7 +3405,9 @@ class MainActivity : AppCompatActivity() {
         com.github.andreyasadchy.xtra.ui.player.TvLoadTimer.start()
         com.github.andreyasadchy.xtra.ui.player.TvStreamPrefetch.start(this, stream.channelLogin)
         if (playerFragment == null || currentStreamLogin != stream.channelLogin) {
-            com.github.andreyasadchy.xtra.ui.tv.TvStats.addStream(this)
+            lifecycleScope.launch {
+                runCatching { com.github.andreyasadchy.xtra.ui.tv.TvStats.addStream(this@MainActivity) }
+            }
         }
         if (isTv && prefs.getString(C.PLAYER, C.EXOPLAYER) != C.MEDIA_PLAYER) {
             // the picture of the stream instead of a black screen while it loads: the newest one there is

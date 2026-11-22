@@ -2,6 +2,10 @@ package com.github.andreyasadchy.xtra.ui.tv
 
 import android.content.Context
 import androidx.core.content.edit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -34,6 +38,10 @@ object TvStats {
     private const val LONGEST_LOGIN = "longest_login"
     private const val LONGEST_AT = "longest_at"
     private const val KEEP_DAYS = 400
+
+    // the writes parse and rewrite potentially large JSON blobs: always off the main thread,
+    // serialized with a Mutex instead of @Synchronized so the callers never block
+    private val writeMutex = Mutex()
 
     /** The session going on: the same channel watched without a stop of more than 2 minutes. */
     private var sessionLogin: String? = null
@@ -73,8 +81,7 @@ object TvStats {
         }
     }
 
-    @Synchronized
-    fun addWatchTime(
+    suspend fun addWatchTime(
         context: Context,
         channelLogin: String?,
         channelName: String?,
@@ -82,72 +89,71 @@ object TvStats {
         gameId: String? = null,
         gameName: String? = null,
         channelImage: String? = null,
-    ) {
-        ensureSince(context)
-        val prefs = prefs(context)
-        val now = System.currentTimeMillis()
-        val day = dayKey(now)
-        prefs.edit {
-            putLong(WATCH_MS, prefs.getLong(WATCH_MS, 0) + ms)
-            // by day
-            putString(DAYS, addTo(JSONObject(prefs.getString(DAYS, null) ?: "{}"), day, ms).let { prune(it) }.toString())
-            // by hour of the week (monday 0h = 0)
-            val hours = JSONArray(prefs.getString(HOURS, null) ?: "[]")
-            val calendar = java.util.Calendar.getInstance().apply { timeInMillis = now }
-            val weekday = (calendar.get(java.util.Calendar.DAY_OF_WEEK) + 5) % 7
-            val index = weekday * 24 + calendar.get(java.util.Calendar.HOUR_OF_DAY)
-            val filled = JSONArray().apply { for (i in 0 until 168) put(if (i < hours.length()) hours.optLong(i, 0) else 0L) }
-            filled.put(index, filled.optLong(index, 0) + ms)
-            putString(HOURS, filled.toString())
-            if (!channelLogin.isNullOrBlank()) {
-                val streamers = JSONObject(prefs.getString(STREAMERS, null) ?: "{}")
-                streamers.put(channelLogin, streamers.optLong(channelLogin, 0) + ms)
-                putString(STREAMERS, streamers.toString())
-                putString(STREAMER_DAYS, addToDay(JSONObject(prefs.getString(STREAMER_DAYS, null) ?: "{}"), day, channelLogin, ms).toString())
-                if (!channelName.isNullOrBlank()) {
-                    val names = JSONObject(prefs.getString(NAMES, null) ?: "{}")
-                    names.put(channelLogin, channelName)
-                    putString(NAMES, names.toString())
+    ) = withContext(Dispatchers.IO) {
+        writeMutex.withLock {
+            ensureSince(context)
+            val prefs = prefs(context)
+            val now = System.currentTimeMillis()
+            val day = dayKey(now)
+            prefs.edit {
+                putLong(WATCH_MS, prefs.getLong(WATCH_MS, 0) + ms)
+                // by day
+                putString(DAYS, addTo(JSONObject(prefs.getString(DAYS, null) ?: "{}"), day, ms).let { prune(it) }.toString())
+                // by hour of the week (monday 0h = 0)
+                val hours = JSONArray(prefs.getString(HOURS, null) ?: "[]")
+                val calendar = java.util.Calendar.getInstance().apply { timeInMillis = now }
+                val weekday = (calendar.get(java.util.Calendar.DAY_OF_WEEK) + 5) % 7
+                val index = weekday * 24 + calendar.get(java.util.Calendar.HOUR_OF_DAY)
+                val filled = JSONArray().apply { for (i in 0 until 168) put(if (i < hours.length()) hours.optLong(i, 0) else 0L) }
+                filled.put(index, filled.optLong(index, 0) + ms)
+                putString(HOURS, filled.toString())
+                if (!channelLogin.isNullOrBlank()) {
+                    val streamers = JSONObject(prefs.getString(STREAMERS, null) ?: "{}")
+                    streamers.put(channelLogin, streamers.optLong(channelLogin, 0) + ms)
+                    putString(STREAMERS, streamers.toString())
+                    putString(STREAMER_DAYS, addToDay(JSONObject(prefs.getString(STREAMER_DAYS, null) ?: "{}"), day, channelLogin, ms).toString())
+                    if (!channelName.isNullOrBlank()) {
+                        val names = JSONObject(prefs.getString(NAMES, null) ?: "{}")
+                        names.put(channelLogin, channelName)
+                        putString(NAMES, names.toString())
+                    }
+                    if (!channelImage.isNullOrBlank()) {
+                        val avatars = JSONObject(prefs.getString(AVATARS, null) ?: "{}")
+                        avatars.put(channelLogin, channelImage)
+                        putString(AVATARS, avatars.toString())
+                    }
+                    // the longest session: the same channel watched without a stop
+                    if (channelLogin == sessionLogin && now - sessionLastAt < 120_000L) {
+                        sessionMs += ms
+                    } else {
+                        sessionLogin = channelLogin
+                        sessionMs = ms
+                    }
+                    sessionLastAt = now
+                    if (sessionMs > prefs.getLong(LONGEST_MS, 0)) {
+                        putLong(LONGEST_MS, sessionMs)
+                        putString(LONGEST_LOGIN, channelLogin)
+                        putLong(LONGEST_AT, now)
+                    }
                 }
-                if (!channelImage.isNullOrBlank()) {
-                    val avatars = JSONObject(prefs.getString(AVATARS, null) ?: "{}")
-                    avatars.put(channelLogin, channelImage)
-                    putString(AVATARS, avatars.toString())
-                }
-                // the longest session: the same channel watched without a stop
-                if (channelLogin == sessionLogin && now - sessionLastAt < 120_000L) {
-                    sessionMs += ms
-                } else {
-                    sessionLogin = channelLogin
-                    sessionMs = ms
-                }
-                sessionLastAt = now
-                if (sessionMs > prefs.getLong(LONGEST_MS, 0)) {
-                    putLong(LONGEST_MS, sessionMs)
-                    putString(LONGEST_LOGIN, channelLogin)
-                    putLong(LONGEST_AT, now)
+                if (!gameName.isNullOrBlank()) {
+                    putString(GAME_DAYS, addToDay(JSONObject(prefs.getString(GAME_DAYS, null) ?: "{}"), day, gameName, ms).toString())
+                    if (!gameId.isNullOrBlank()) {
+                        val ids = JSONObject(prefs.getString(GAME_IDS, null) ?: "{}")
+                        ids.put(gameName, gameId)
+                        putString(GAME_IDS, ids.toString())
+                    }
                 }
             }
-            if (!gameName.isNullOrBlank()) {
-                putString(GAME_DAYS, addToDay(JSONObject(prefs.getString(GAME_DAYS, null) ?: "{}"), day, gameName, ms).toString())
-                if (!gameId.isNullOrBlank()) {
-                    val ids = JSONObject(prefs.getString(GAME_IDS, null) ?: "{}")
-                    ids.put(gameName, gameId)
-                    putString(GAME_IDS, ids.toString())
-                }
-            }
+            changes.value = System.nanoTime()
         }
-        changes.value = System.nanoTime()
     }
 
-    @Synchronized
-    fun addAdBlocked(context: Context) = increment(context, ADS, ADS_DAYS)
+    suspend fun addAdBlocked(context: Context) = increment(context, ADS, ADS_DAYS)
 
-    @Synchronized
-    fun addMessage(context: Context) = increment(context, MESSAGES, MESSAGES_DAYS)
+    suspend fun addMessage(context: Context) = increment(context, MESSAGES, MESSAGES_DAYS)
 
-    @Synchronized
-    fun addStream(context: Context) = increment(context, STREAMS, STREAMS_DAYS)
+    suspend fun addStream(context: Context) = increment(context, STREAMS, STREAMS_DAYS)
 
     /** "2026-11-03", the day of the TV. */
     private fun dayKey(time: Long): String = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date(time))
@@ -169,39 +175,43 @@ object TvStats {
     }
 
     /** Everything counted forgotten (the button of the page of the statistics), counted again from now. */
-    @Synchronized
-    fun reset(context: Context) {
-        prefs(context).edit { clear() }
-        sessionLogin = null
-        sessionMs = 0L
-        ensureSince(context)
-        changes.value = System.nanoTime()
+    suspend fun reset(context: Context) = withContext(Dispatchers.IO) {
+        writeMutex.withLock {
+            prefs(context).edit { clear() }
+            sessionLogin = null
+            sessionMs = 0L
+            ensureSince(context)
+            changes.value = System.nanoTime()
+        }
     }
 
     /** A proxy (its host) or a backup player type of the ad blocker used for a stream. */
-    @Synchronized
-    fun addProxy(context: Context, name: String?) {
+    suspend fun addProxy(context: Context, name: String?) = withContext(Dispatchers.IO) {
         if (name.isNullOrBlank()) {
-            return
+            return@withContext
         }
-        ensureSince(context)
-        val prefs = prefs(context)
-        val proxies = JSONObject(prefs.getString(PROXIES, null) ?: "{}")
-        proxies.put(name, proxies.optInt(name, 0) + 1)
-        prefs.edit { putString(PROXIES, proxies.toString()) }
-        changes.value = System.nanoTime()
+        writeMutex.withLock {
+            ensureSince(context)
+            val prefs = prefs(context)
+            val proxies = JSONObject(prefs.getString(PROXIES, null) ?: "{}")
+            proxies.put(name, proxies.optInt(name, 0) + 1)
+            prefs.edit { putString(PROXIES, proxies.toString()) }
+            changes.value = System.nanoTime()
+        }
     }
 
-    private fun increment(context: Context, key: String, daysKey: String? = null) {
-        ensureSince(context)
-        val prefs = prefs(context)
-        prefs.edit {
-            putInt(key, prefs.getInt(key, 0) + 1)
-            if (daysKey != null) {
-                putString(daysKey, prune(addTo(JSONObject(prefs.getString(daysKey, null) ?: "{}"), dayKey(System.currentTimeMillis()), 1)).toString())
+    private suspend fun increment(context: Context, key: String, daysKey: String? = null) = withContext(Dispatchers.IO) {
+        writeMutex.withLock {
+            ensureSince(context)
+            val prefs = prefs(context)
+            prefs.edit {
+                putInt(key, prefs.getInt(key, 0) + 1)
+                if (daysKey != null) {
+                    putString(daysKey, prune(addTo(JSONObject(prefs.getString(daysKey, null) ?: "{}"), dayKey(System.currentTimeMillis()), 1)).toString())
+                }
             }
+            changes.value = System.nanoTime()
         }
-        changes.value = System.nanoTime()
     }
 
     class Ranked(val key: String, val name: String, val ms: Long, val image: String?)
@@ -233,7 +243,7 @@ object TvStats {
         val since: Long,
     )
 
-    fun detail(context: Context, days: Int?): Detail {
+    suspend fun detail(context: Context, days: Int?): Detail = withContext(Dispatchers.IO) {
         val prefs = prefs(context)
         val now = System.currentTimeMillis()
         val dayMs = 86_400_000L
@@ -284,7 +294,7 @@ object TvStats {
         val proxies = JSONObject(prefs.getString(PROXIES, null) ?: "{}")
         val proxyList = proxies.keys().asSequence().map { it to proxies.optInt(it, 0) }.sortedByDescending { it.second }.toList()
         val hours = JSONArray(prefs.getString(HOURS, null) ?: "[]")
-        return Detail(
+        Detail(
             watchMs = if (days == null) prefs.getLong(WATCH_MS, 0) else sumDays(DAYS),
             streams = if (days == null) prefs.getInt(STREAMS, 0) else sumDays(STREAMS_DAYS).toInt(),
             ads = if (days == null) prefs.getInt(ADS, 0) else sumDays(ADS_DAYS).toInt(),
@@ -312,14 +322,14 @@ object TvStats {
         )
     }
 
-    fun read(context: Context): Snapshot {
+    suspend fun read(context: Context): Snapshot = withContext(Dispatchers.IO) {
         val prefs = prefs(context)
         val streamers = JSONObject(prefs.getString(STREAMERS, null) ?: "{}")
         val names = JSONObject(prefs.getString(NAMES, null) ?: "{}")
         val top = streamers.keys().asSequence().maxByOrNull { streamers.optLong(it, 0) }
         val proxies = JSONObject(prefs.getString(PROXIES, null) ?: "{}")
         val topProxy = proxies.keys().asSequence().maxByOrNull { proxies.optInt(it, 0) }
-        return Snapshot(
+        Snapshot(
             watchMs = prefs.getLong(WATCH_MS, 0),
             topStreamer = top?.let { names.optString(it).takeIf { name -> name.isNotBlank() } ?: it },
             topStreamerMs = top?.let { streamers.optLong(it, 0) } ?: 0,

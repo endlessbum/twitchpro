@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -88,8 +89,14 @@ object TvStatsPage {
         val context = LocalContext.current
         var period by remember { mutableIntStateOf(1) }
         var version by remember { mutableIntStateOf(0) }
-        val detail = remember(period, version, refreshStamp) {
-            TvStats.detail(context, when (period) { 0 -> 7; 1 -> 30; else -> null })
+        // the JSON work of the statistics goes to the IO thread: a blank frame while it loads
+        val loaded = produceState<TvStats.Detail?>(null, period, version, refreshStamp) {
+            value = runCatching { TvStats.detail(context, when (period) { 0 -> 7; 1 -> 30; else -> null }) }.getOrNull()
+        }
+        val detail = loaded.value
+        if (detail == null) {
+            Box(Modifier.fillMaxSize())
+            return
         }
         val first = remember { FocusRequester() }
         val scroll = rememberScrollState()
@@ -156,9 +163,11 @@ object TvStatsPage {
                                 .setTitle(context.getString(R.string.tv_stats_reset))
                                 .setMessage(context.getString(R.string.tv_stats_reset_message))
                                 .setPositiveButton(context.getString(R.string.tv_stats_reset)) { _, _ ->
-                                    TvStats.reset(context)
-                                    version++
-                                    onReset()
+                                    scope.launch {
+                                        runCatching { TvStats.reset(context) }
+                                        version++
+                                        onReset()
+                                    }
                                 }
                                 .setNegativeButton(context.getString(android.R.string.cancel), null)
                                 .show()
