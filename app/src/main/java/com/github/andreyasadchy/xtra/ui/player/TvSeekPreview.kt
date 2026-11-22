@@ -455,7 +455,7 @@ class TvSeekPreview(
                 }
                 loading.remove(url)
                 if (bitmap != null) {
-                    sprites[url] = bitmap
+                    sprites.put(url, bitmap)
                     if (frame.isShown || seekInfoBox.isShown) {
                         show(lastPosition, lastDuration, lastDeltaMs, lastTargetLabel)
                     }

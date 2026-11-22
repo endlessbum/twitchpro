@@ -32,6 +32,7 @@ import com.github.andreyasadchy.xtra.util.tokenPrefs
 import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 /** TV home written with Compose: rows of cards like the YouTube app, the focus is handled by Compose. */
@@ -694,8 +695,8 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         viewLifecycleOwner.lifecycleScope.launch {
             // the JSON work of the lists and the statistics goes to the IO thread
             val (items, badges) = kotlinx.coroutines.coroutineScope {
-                val itemsDeferred = kotlinx.coroutines.async { runCatching { com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.list(context) }.getOrDefault(emptyList()) }
-                val badgesDeferred = kotlinx.coroutines.async { runCatching { statsBadges() }.getOrDefault(emptyList()) }
+                val itemsDeferred = async { runCatching { com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.list(context) }.getOrDefault(emptyList()) }
+                val badgesDeferred = async { runCatching { statsBadges() }.getOrDefault(emptyList()) }
                 itemsDeferred.await() to badgesDeferred.await()
             }
             resumeItems.value = items

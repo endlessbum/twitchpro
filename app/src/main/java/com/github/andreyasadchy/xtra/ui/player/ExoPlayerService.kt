@@ -167,7 +167,6 @@ class ExoPlayerService : BasePlaybackService() {
     private var livePausedPictureEpochMs: Long? = null
     private var liveBehindAtPauseMs = 0L
     @Volatile
-    @Volatile
     private var liveTimeShiftedBehindMs = 0L
     @Volatile
     private var liveCatchUpSpeed = 1.0f
