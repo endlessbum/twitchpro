@@ -2,7 +2,7 @@
 
 First TwitchPro release, based on Xtra TV 1.4.6.4 (Xtra by [crackededed](https://github.com/crackededed/Xtra), Xtra TV by razeN).
 
-**TwitchPro** is a Twitch player and browser made for **Android TV**: built-in ad blocker (Proxy & VAFT), streams up to **1440p60 / 4K** (Enhanced Broadcasting), multi-stream (up to 4 channels), live DVR timeline, TV chat and voice search.
+**TwitchPro** is a Twitch player and browser made for **Android TV**: built-in ad blocker (Proxy & VAFT), streams up to **1440p60 / 4K** (Enhanced Broadcasting), multi-stream (up to 6 channels), live DVR timeline, TV chat and voice search.
 
 ### New in TwitchPro (vs Xtra TV 1.4.6.4)
 - **New app identity**: package `com.endlessbum.twitchpro`, app name **TwitchPro** (launcher card stays "Twitch" with the original Twitch banner).
@@ -15,4 +15,4 @@ First TwitchPro release, based on Xtra TV 1.4.6.4 (Xtra by [crackededed](https:/
 ### Install
 **Updating TwitchPro → TwitchPro:** install over any previous TwitchPro version — your settings and account are kept.
 
-**Switching from Xtra TV:** TwitchPro installs **next to** Xtra TV as a separate app; settings and login are **not** carried over automatically. In Xtra TV make a backup (TV settings → Backup), then in TwitchPro restore that zip — the restore file picker accepts the old `XtraTV-backup.zip` name. Deleting Xtra TV afterwards does not affect TwitchPro.
+**Switching from Xtra TV:** TwitchPro installs **next to** Xtra TV as a separate app; settings and login are **not** carried over automatically. To move your settings: in Xtra TV make a backup (TV settings → Backup), then in TwitchPro restore that zip — the restore file picker accepts the old `XtraTV-backup.zip` name. **The Twitch login is not part of the backup**: after restoring, sign in again (TV settings → Accounts). Deleting Xtra TV afterwards does not affect TwitchPro.

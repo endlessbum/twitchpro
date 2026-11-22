@@ -3124,7 +3124,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** TV multi-stream: replaces the player with up to 4 streams shown together. */
+    /** TV multi-stream: replaces the player with up to 6 streams shown together. */
     fun startMultiStream(streams: List<Stream>, origin: Stream? = null) {
         // from here the focus belongs to the streams: nothing behind them (home, lists, side menu) may take it
         tvMultiStreamShown = true
