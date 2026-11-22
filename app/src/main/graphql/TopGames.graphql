@@ -1,0 +1,22 @@
+query TopGames($sort: GameSort, $tags: [String!], $first: Int, $after: Cursor) {
+    games(first: $first, after: $after, options: { sort: $sort, tags: $tags }) {
+        edges {
+            cursor
+            node {
+                boxArtURL
+                broadcastersCount
+                displayName
+                id
+                slug
+                tags(tagType: CONTENT) {
+                    id
+                    localizedName
+                }
+                viewersCount
+            }
+        }
+        pageInfo {
+            hasNextPage
+        }
+    }
+}

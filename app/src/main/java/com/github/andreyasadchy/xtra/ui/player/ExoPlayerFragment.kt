@@ -1,0 +1,991 @@
+package com.github.andreyasadchy.xtra.ui.player
+
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.graphics.Color
+import android.os.Build
+import android.os.Bundle
+import android.os.IBinder
+import android.text.format.DateUtils
+import android.util.Base64
+import android.view.View
+import android.widget.HorizontalScrollView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.OptIn
+import androidx.core.content.ContextCompat
+import androidx.core.content.edit
+import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
+import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.Player
+import androidx.media3.common.Timeline
+import androidx.media3.common.TrackSelectionParameters
+import androidx.media3.common.Tracks
+import androidx.media3.common.VideoSize
+import androidx.media3.common.text.CueGroup
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
+import androidx.media3.exoplayer.hls.HlsManifest
+import androidx.media3.exoplayer.hls.playlist.HlsMediaPlaylist
+import androidx.navigation.fragment.findNavController
+import com.github.andreyasadchy.xtra.R
+import com.github.andreyasadchy.xtra.model.VideoQuality
+import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
+import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
+import com.github.andreyasadchy.xtra.ui.main.MainActivity
+import com.github.andreyasadchy.xtra.util.C
+import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
+import com.github.andreyasadchy.xtra.util.prefs
+import org.json.JSONArray
+import org.json.JSONException
+import kotlin.time.Instant
+
+@OptIn(UnstableApi::class)
+class ExoPlayerFragment : PlayerFragment() {
+
+    override var playbackService: ExoPlayerService? = null
+    private var serviceConnection: ServiceConnection? = null
+    private var playerListener: Player.Listener? = null
+    private val updateProgressAction = Runnable { if (view != null) updateProgress() }
+    private var lastMutedScanPlaylist: HlsMediaPlaylist? = null
+
+    /** TV: the settings or the login were opened over the app, the stream went on and the service stayed bound. */
+    private var keptAcrossStop = false
+
+    /** TV minimized player: renders into a TextureView while minimized so View alpha (20% ghost mode) applies cleanly. */
+    private var tvMiniTextureView: android.view.TextureView? = null
+
+    private fun ensureTvMiniTextureView(): android.view.TextureView {
+        tvMiniTextureView?.let { return it }
+        val tex = android.view.TextureView(requireContext())
+        val idx = binding.aspectRatioFrameLayout.indexOfChild(binding.adHideOverlay).takeIf { it >= 0 }
+            ?: binding.aspectRatioFrameLayout.childCount
+        binding.aspectRatioFrameLayout.addView(
+            tex,
+            idx,
+            android.widget.FrameLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+        )
+        tvMiniTextureView = tex
+        return tex
+    }
+
+    private fun applyCurrentVideoOutput(secondaryOverride: Boolean? = null) {
+        if (view == null || !isAdded) return
+        val service = playbackService
+        val secondaryPlayer = secondaryOverride ?: (service?.isSwapping == true)
+        val hideMain = service?.shouldHidePlayerSurface() == true
+        val useMiniTexture = isTv && !isMaximized
+
+        if (useMiniTexture) {
+            service?.player?.clearVideoSurfaceView(binding.playerSurface)
+            service?.secondaryPlayer?.clearVideoSurfaceView(binding.secondaryPlayerSurface)
+            binding.playerSurface.visibility = View.GONE
+            binding.secondaryPlayerSurface.visibility = View.GONE
+            val tex = ensureTvMiniTextureView()
+            if (hideMain) {
+                service?.player?.clearVideoTextureView(tex)
+                service?.secondaryPlayer?.clearVideoTextureView(tex)
+                tex.visibility = View.GONE
+                binding.adHideOverlay.isVisible = service?.isHidingAds == true
+            } else if (secondaryPlayer) {
+                binding.adHideOverlay.visibility = View.GONE
+                service?.player?.clearVideoTextureView(tex)
+                tex.visibility = View.VISIBLE
+                service?.secondaryPlayer?.setVideoTextureView(tex)
+            } else {
+                service?.secondaryPlayer?.clearVideoTextureView(tex)
+                tex.visibility = View.VISIBLE
+                service?.player?.setVideoTextureView(tex)
+                binding.adHideOverlay.isVisible = service?.isHidingAds == true
+            }
+        } else {
+            tvMiniTextureView?.let { tex ->
+                service?.player?.clearVideoTextureView(tex)
+                service?.secondaryPlayer?.clearVideoTextureView(tex)
+                tex.visibility = View.GONE
+            }
+            binding.playerSurface.visibility = if (hideMain) View.GONE else View.VISIBLE
+            if (!hideMain) {
+                service?.player?.setVideoSurfaceView(binding.playerSurface)
+            }
+            if (secondaryPlayer && !hideMain) {
+                binding.adHideOverlay.visibility = View.GONE
+                binding.secondaryPlayerSurface.visibility = View.VISIBLE
+                service?.secondaryPlayer?.setVideoSurfaceView(binding.secondaryPlayerSurface)
+            } else {
+                service?.secondaryPlayer?.clearVideoSurfaceView(binding.secondaryPlayerSurface)
+                binding.secondaryPlayerSurface.visibility = View.GONE
+                binding.adHideOverlay.isVisible = service?.isHidingAds == true
+            }
+        }
+
+        playerListener?.let { listener ->
+            if (secondaryPlayer && !hideMain) {
+                service?.player?.removeListener(listener)
+                service?.secondaryPlayer?.addListener(listener)
+            } else {
+                service?.secondaryPlayer?.removeListener(listener)
+                service?.player?.addListener(listener)
+            }
+        }
+        if (!requireContext().prefs().getBoolean(C.PLAYER_KEEP_SCREEN_ON_WHEN_PAUSED, false) && canEnterPictureInPicture()) {
+            requireView().keepScreenOn = service?.visiblePlayer?.isPlaying == true
+        }
+    }
+
+    override fun onTvMinimizedChanged(minimized: Boolean) {
+        applyCurrentVideoOutput()
+    }
+
+    private fun syncVodMutedSegmentsFromManifest() {
+        val service = playbackService
+        if (service?.type != BasePlaybackService.VIDEO) {
+            if (lastMutedScanPlaylist != null) {
+                lastMutedScanPlaylist = null
+                updateHlsMutedSegments(emptyList())
+            }
+            return
+        }
+        val playlist = (service.player?.currentManifest as? HlsManifest)?.mediaPlaylist ?: return
+        if (playlist === lastMutedScanPlaylist) return
+        lastMutedScanPlaylist = playlist
+        val segments = playlist.segments
+        if (segments.isEmpty()) {
+            updateHlsMutedSegments(emptyList())
+            return
+        }
+        val merged = ArrayList<Pair<Long, Long>>()
+        for (seg in segments) {
+            if (!seg.url.contains("-muted", ignoreCase = true)) continue
+            val startMs = (seg.relativeStartTimeUs / 1_000L).coerceAtLeast(0L)
+            val endMs = ((seg.relativeStartTimeUs + seg.durationUs) / 1_000L).coerceAtLeast(startMs)
+            if (endMs <= startMs) continue
+            val last = merged.lastOrNull()
+            if (last != null && startMs <= last.second + 1_000L) {
+                merged[merged.lastIndex] = last.first to maxOf(last.second, endMs)
+            } else {
+                merged.add(startMs to endMs)
+            }
+        }
+        updateHlsMutedSegments(merged)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.secondaryPlayerSurface.setZOrderMediaOverlay(true)
+    }
+
+    override fun syncPlayPauseButtonVisibility() {
+        if (view == null) return
+        val player = playbackService?.visiblePlayer ?: playbackService?.player ?: return
+        if (Util.shouldShowPlayButton(player)) {
+            binding.playerControls.playPause.setImageResource(R.drawable.baseline_play_arrow_black_48)
+            binding.playerControls.playPause.visibility = View.VISIBLE
+        } else {
+            binding.playerControls.playPause.setImageResource(R.drawable.baseline_pause_black_48)
+            if (shouldHideLivePlayPauseWhenPlaying()) {
+                val hadFocus = binding.playerControls.playPause.hasFocus()
+                binding.playerControls.playPause.visibility = View.GONE
+                if (hadFocus) {
+                    // the play button goes away once the stream plays: the focus goes to the timeline, never lost
+                    focusAfterHiddenControl()
+                }
+            } else {
+                binding.playerControls.playPause.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (keptAcrossStop && playbackService != null && serviceConnection != null) {
+            keptAcrossStop = false
+            applyCurrentVideoOutput()
+            syncPlayPauseButtonVisibility()
+            updateProgress()
+            return
+        }
+        keptAcrossStop = false
+        val listener = object : Player.Listener {
+            override fun onRenderedFirstFrame() {
+                // a live stream: the service says when the picture is the stream itself and not an ad
+                if (playbackService?.type != BasePlaybackService.STREAM) {
+                    hideLoadingPicture()
+                }
+            }
+
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_ENDED && playbackService?.type == BasePlaybackService.STREAM) {
+                    onTvStreamEnded()
+                } else if (
+                    playbackState == Player.STATE_ENDED &&
+                    playbackService?.type == BasePlaybackService.CLIP &&
+                    com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(requireContext()) &&
+                    requireContext().prefs().getBoolean(C.TV_CLIPS_AUTOPLAY, true)
+                ) {
+                    if ((activity as? com.github.andreyasadchy.xtra.ui.main.MainActivity)?.playNextClip(1) == true) {
+                        return
+                    }
+                }
+                binding.bufferingIndicator.isVisible = playbackState == Player.STATE_BUFFERING
+                val showPlayButton = Util.shouldShowPlayButton(playbackService?.visiblePlayer ?: playbackService?.player)
+                syncPlayPauseButtonVisibility()
+                setPipActions(!showPlayButton)
+                updateProgress()
+                controllerAutoHide = !showPlayButton
+                if (useController) {
+                    showController(show = playbackService?.type != BasePlaybackService.STREAM && playbackState == Player.STATE_ENDED)
+                }
+            }
+
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                binding.bufferingIndicator.isVisible = playbackService?.player?.playbackState == Player.STATE_BUFFERING
+                val showPlayButton = Util.shouldShowPlayButton(playbackService?.visiblePlayer ?: playbackService?.player)
+                syncPlayPauseButtonVisibility()
+                setPipActions(!showPlayButton)
+                updateProgress()
+                controllerAutoHide = !showPlayButton
+                if (useController) {
+                    showController(show = playbackService?.type != BasePlaybackService.STREAM && playbackService?.player?.playbackState == Player.STATE_ENDED)
+                }
+            }
+
+            override fun onAvailableCommandsChanged(availableCommands: Player.Commands) {
+                syncPlayPauseButtonVisibility()
+                if (!isTvLiveTimeline()) {
+                    playbackService?.player?.duration?.takeIf { it != androidx.media3.common.C.TIME_UNSET && it > 0 }?.let { duration ->
+                        binding.playerControls.progressBar.setDuration(duration)
+                        binding.playerControls.duration.text = DateUtils.formatElapsedTime(duration / 1000)
+                    }
+                }
+                updateProgress()
+            }
+
+            override fun onVideoSizeChanged(videoSize: VideoSize) {
+                val activePlayer = playbackService?.visiblePlayer
+                if (videoSize != VideoSize.UNKNOWN && activePlayer?.let { it.playbackState != Player.STATE_IDLE } == true) {
+                    val aspectRatio = (videoSize.width * videoSize.pixelWidthHeightRatio) / videoSize.height
+                    binding.aspectRatioFrameLayout.setAspectRatio(aspectRatio)
+                }
+            }
+
+            override fun onCues(cueGroup: CueGroup) {
+                binding.subtitleView.setCues(cueGroup.cues)
+            }
+
+            override fun onPositionDiscontinuity(oldPosition: Player.PositionInfo, newPosition: Player.PositionInfo, reason: Int) {
+                if (!isTvLiveTimeline()) {
+                    playbackService?.player?.duration?.takeIf { it != androidx.media3.common.C.TIME_UNSET && it > 0 }?.let { duration ->
+                        binding.playerControls.progressBar.setDuration(duration)
+                        binding.playerControls.duration.text = DateUtils.formatElapsedTime(duration / 1000)
+                    }
+                }
+                syncPlayPauseButtonVisibility()
+                updateProgress()
+                if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+                    if (chatFragment?.context != null) { // TODO
+                        chatFragment?.updatePosition(newPosition.positionMs)
+                    }
+                }
+            }
+
+            override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
+                if (chatFragment?.context != null) { // TODO
+                    chatFragment?.updateSpeed(playbackParameters.speed)
+                }
+            }
+
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                updateProgress()
+                if (!requireContext().prefs().getBoolean(C.PLAYER_KEEP_SCREEN_ON_WHEN_PAUSED, false) && canEnterPictureInPicture()) {
+                    requireView().keepScreenOn = isPlaying
+                }
+            }
+
+            override fun onTracksChanged(tracks: Tracks) {
+                setSubtitlesButton()
+                if (!tracks.isEmpty) {
+                    chatFragment?.startReplayChatLoad()
+                }
+            }
+
+            override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+                if (!isTvLiveTimeline()) {
+                    playbackService?.player?.duration?.takeIf { it != androidx.media3.common.C.TIME_UNSET && it > 0 }?.let { duration ->
+                        binding.playerControls.progressBar.setDuration(duration)
+                        binding.playerControls.duration.text = DateUtils.formatElapsedTime(duration / 1000)
+                    }
+                }
+                syncVodMutedSegmentsFromManifest()
+                updateProgress()
+            }
+
+            override fun onTrackSelectionParametersChanged(parameters: TrackSelectionParameters) {
+                val service = playbackService
+                val hideMainSurface = if (service != null) {
+                    service.shouldHidePlayerSurface()
+                } else {
+                    parameters.disabledTrackTypes.contains(androidx.media3.common.C.TRACK_TYPE_VIDEO)
+                }
+                if (isTv && !isMaximized) {
+                    binding.playerSurface.visibility = View.GONE
+                    tvMiniTextureView?.visibility = if (hideMainSurface) View.GONE else View.VISIBLE
+                } else {
+                    binding.playerSurface.visibility = if (hideMainSurface) View.GONE else View.VISIBLE
+                }
+                binding.adHideOverlay.isVisible = service?.isHidingAds == true
+            }
+        }
+        val serviceListener = object : ExoPlayerService.Listener {
+            override fun started() {
+                if (view != null) {
+                    if (!started) {
+                        if (isInitialized || !enableNetworkCheck) {
+                            started = true
+                            start()
+                        }
+                    } else {
+                        chatFragment?.startReplayChatLoad()
+                        if (playbackService?.restoreQuality == true) {
+                            playbackService?.restoreQuality = false
+                            changeQuality(playbackService?.previousQuality)
+                        }
+                    }
+                }
+            }
+
+            override fun loaded() {
+                if (view != null) {
+                    syncVodMutedSegmentsFromManifest()
+                    with(binding.playerControls) {
+                        quality.isEnabled = true
+                        quality.setColorFilter(Color.WHITE)
+                        download.isEnabled = true
+                        download.setColorFilter(Color.WHITE)
+                        audioOnly.isEnabled = true
+                        audioOnly.setColorFilter(Color.WHITE)
+                        setQualityText()
+                    }
+                }
+            }
+
+            override fun changePlayerMode() {
+                if (view != null) {
+                    this@ExoPlayerFragment.changePlayerMode()
+                }
+            }
+
+            override fun toast(resId: Int, duration: Int) {
+                if (view != null) {
+                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), resId, duration).show()
+                    if (resId == R.string.stream_ended) {
+                        onTvStreamEnded()
+                    }
+                }
+            }
+
+            override fun toast(text: CharSequence, duration: Int) {
+                if (view != null) {
+                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), text, duration).show()
+                }
+            }
+
+            override fun updateVideoInfo() {
+                if (view != null) {
+                    playbackService?.let { svc ->
+                        if (svc.type == BasePlaybackService.STREAM) {
+                            chatFragment?.updateStreamMetadata(svc.streamId, svc.gameId, svc.gameName)
+                        }
+                    }
+                    with(binding.playerControls) {
+                        val titleText = playbackService?.title
+                        if (!titleText.isNullOrBlank() && requireContext().prefs().getBoolean(C.PLAYER_TITLE, true)) {
+                            title.visibility = View.VISIBLE
+                            title.text = titleText
+                        }
+                        val gameName = playbackService?.gameName
+                        if (!gameName.isNullOrBlank() && requireContext().prefs().getBoolean(C.PLAYER_CATEGORY, true)) {
+                            category.visibility = View.VISIBLE
+                            category.text = gameName
+                            category.setOnClickListener {
+                                findNavController().navigate(
+                                    if (requireContext().prefs().getBoolean(C.UI_GAME_PAGER, true)) {
+                                        GamePagerFragmentDirections.actionGlobalGamePagerFragment(
+                                            gameId = playbackService?.gameId,
+                                            gameSlug = playbackService?.gameSlug,
+                                            gameName = gameName
+                                        )
+                                    } else {
+                                        GameMediaFragmentDirections.actionGlobalGameMediaFragment(
+                                            gameId = playbackService?.gameId,
+                                            gameSlug = playbackService?.gameSlug,
+                                            gameName = gameName
+                                        )
+                                    }
+                                )
+                                minimize()
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun streamPictureShown() {
+                if (view != null && isAdded) {
+                    hideLoadingPicture()
+                }
+            }
+
+            override fun onLivePauseResumeToDvr(targetOffsetMs: Long): Boolean {
+                if (view != null && isAdded) {
+                    return startTvDvrFromPause(targetOffsetMs)
+                }
+                return false
+            }
+
+            override fun setPlayerSurface(secondaryPlayer: Boolean) {
+                // the screen of the player is not there (made again, closing): nothing to move
+                if (view == null || !isAdded) {
+                    return
+                }
+                applyCurrentVideoOutput(secondaryOverride = secondaryPlayer)
+            }
+        }
+        val connection = object : ServiceConnection {
+            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                if (view != null) {
+                    val binder = service as ExoPlayerService.ServiceBinder
+                    playbackService = binder.getService()
+                    playbackService?.serviceListener = serviceListener
+                    playerListener = listener
+                    serviceListener.setPlayerSurface(playbackService?.isSwapping == true)
+                    // the video already plays (it started before this screen was ready): no picture over it; for a live
+                    // stream only once a picture of the stream itself was shown (not an ad at its start, not before
+                    // its first playlist was checked)
+                    val shown = if (playbackService?.type == BasePlaybackService.STREAM) {
+                        playbackService?.streamPictureShown == true
+                    } else {
+                        (playbackService?.secondaryPlayer ?: playbackService?.player)?.playbackState == Player.STATE_READY
+                    }
+                    if (shown) {
+                        hideLoadingPicture()
+                    }
+                    val endTime = playbackService?.setSleepTimer(-1)
+                    if (endTime != null && endTime > 0L) {
+                        val duration = endTime - System.currentTimeMillis()
+                        if (duration > 0L) {
+                            (activity as? MainActivity)?.setSleepTimer(duration)
+                        } else {
+                            minimize()
+                            close()
+                            (activity as? MainActivity)?.closePlayer()
+                        }
+                    }
+                    playbackService?.setStopServiceTimer(false)
+                    (playbackService?.secondaryPlayer ?: playbackService?.player)?.let { player ->
+                        if (!requireContext().prefs().getBoolean(C.PLAYER_KEEP_SCREEN_ON_WHEN_PAUSED, false) && canEnterPictureInPicture()) {
+                            requireView().keepScreenOn = player.isPlaying
+                        }
+                        updateProgress()
+                        syncPlayPauseButtonVisibility()
+                    }
+                    if (playbackService?.started == true) {
+                        if (!started) {
+                            if (isInitialized || !enableNetworkCheck) {
+                                started = true
+                                start()
+                            }
+                        } else {
+                            chatFragment?.startReplayChatLoad()
+                            if (playbackService?.restoreQuality == true) {
+                                playbackService?.restoreQuality = false
+                                changeQuality(playbackService?.previousQuality)
+                            }
+                        }
+                    }
+                    playbackService?.player?.let { player ->
+                        setPipActions(player.playbackState != Player.STATE_ENDED && player.playbackState != Player.STATE_IDLE && player.playWhenReady)
+                    }
+                }
+            }
+
+            override fun onServiceDisconnected(name: ComponentName?) {
+                playbackService = null
+            }
+        }
+        val intent = Intent(requireContext(), ExoPlayerService::class.java).apply {
+            action = ExoPlayerService.INTENT_START
+        }
+        requireContext().startService(intent)
+        requireContext().bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        serviceConnection = connection
+    }
+
+    override fun getCurrentQualityLabel(): String? {
+        // the backup player of the ad blocker can play another quality than the main one
+        val format = playbackService?.visiblePlayer?.videoFormat
+        val base = super.getCurrentQualityLabel()
+        if (format == null || format.height <= 0) {
+            return base
+        }
+        val frameRate = format.frameRate.takeIf { it > 0f }?.let { kotlin.math.round(it).toInt() }
+        val label = "${format.height}p${frameRate?.takeIf { it > 30 } ?: ""}"
+        return if (playbackService?.quality?.name == VideoQuality.AUTO_QUALITY) "${getString(R.string.auto)} · $label" else label
+    }
+
+    override fun getAdblockInfo() = playbackService?.getAdblockInfo()
+
+    // the main stream only: the backup player of the ad blocker is only there for a moment
+    override fun getVideoFrameRate() = playbackService?.player?.videoFormat?.let { format ->
+        format.frameRate.takeIf { format.height > 0 && it > 0f }
+    }
+
+    override fun isPlayingNow(): Boolean = playbackService?.visiblePlayer?.isPlaying == true
+
+    override fun isPlayingOrLoading() = playbackService?.visiblePlayer?.playWhenReady == true
+
+    override fun isAdblockSwapping() = playbackService?.isSwapping == true
+
+    override fun setVideoHidden(hidden: Boolean) {
+        playbackService?.setVideoHidden(hidden)
+    }
+
+    override fun setDucked(ducked: Boolean) {
+        playbackService?.setDucked(ducked)
+    }
+
+    override fun resumePlayback() {
+        playbackService?.resumeAfterDisplayChange()
+    }
+
+    override fun getStatsForNerds(): String {
+        val player = playbackService?.visiblePlayer ?: return ""
+        val video = player.videoFormat
+        val audio = player.audioFormat
+        val lines = mutableListOf<String>()
+        if (video != null) {
+            val frameRate = video.frameRate.takeIf { it > 0f }?.let { " @ ${"%.0f".format(it)} fps" } ?: ""
+            lines.add("Video      ${video.width}x${video.height}$frameRate")
+            lines.add("Codec      ${video.codecs ?: video.sampleMimeType ?: "-"}")
+            (video.bitrate.takeIf { it > 0 } ?: video.peakBitrate.takeIf { it > 0 })?.let { lines.add("Bitrate    ${"%.2f".format(it / 1_000_000f)} Mbps") }
+        }
+        if (audio != null) {
+            lines.add("Audio      ${audio.codecs ?: audio.sampleMimeType ?: "-"} ${audio.sampleRate.takeIf { it > 0 }?.let { "${it / 1000} kHz" } ?: ""}")
+        }
+        lines.add("Quality    ${super.getCurrentQualityLabel() ?: "-"}")
+        val buffer = (player.bufferedPosition - player.currentPosition).coerceAtLeast(0)
+        lines.add("Buffer     ${"%.1f".format(buffer / 1000f)} s")
+        val latencyMs = playbackService?.getLiveLatencyMs()
+        if (latencyMs != null) {
+            lines.add("Latency    ${"%.1f".format(latencyMs / 1000f)} s")
+        } else if (player.isCurrentMediaItemLive) {
+            player.currentLiveOffset
+                .takeIf { it != androidx.media3.common.C.TIME_UNSET }
+                ?.let { lines.add("Latency    ${"%.1f".format(it.coerceAtLeast(0L) / 1000f)} s") }
+        }
+        player.videoDecoderCounters?.let { counters ->
+            lines.add("Dropped    ${counters.droppedBufferCount} / ${counters.renderedOutputBufferCount} frames")
+        }
+        lines.add("Speed      ${player.playbackParameters.speed}x")
+        lines.add("Volume     ${(player.volume * 100).toInt()}%")
+        return lines.joinToString("\n")
+    }
+
+    override fun getCurrentPosition() = playbackService?.getDisplayPositionMs()
+
+    override fun getLivePictureTime(): Long? {
+        val service = playbackService ?: return null
+        if (service.type != BasePlaybackService.STREAM) return null
+        return service.getStreamPictureEpochMs()
+    }
+
+    override fun getCurrentSpeed() = playbackService?.player?.playbackParameters?.speed
+
+    override fun getCurrentVolume(): Float? {
+        return playbackService?.getCurrentVolume()
+    }
+
+    override fun refreshVolume() {
+        playbackService?.refreshVolume()
+    }
+
+    override fun getTotalDuration(): Long? {
+        val manifestDuration = (playbackService?.player?.currentManifest as? HlsManifest)?.mediaPlaylist?.durationUs?.div(1000)?.takeIf { it > 0 }
+        if (manifestDuration != null) return manifestDuration
+        val service = playbackService ?: return null
+        if (service.type == BasePlaybackService.VIDEO) {
+            return service.durationSeconds?.takeIf { it > 0 }?.let { it * 1000L }
+                ?: service.createdAt?.let { Instant.parseOrNull(it)?.toEpochMilliseconds() }
+                    ?.takeIf { service.videoId == null }
+                    ?.let { com.github.andreyasadchy.xtra.util.TwitchClock.nowMs() - it }
+                    ?.takeIf { it > 0 }
+        }
+        return null
+    }
+
+    override fun playPause() {
+        playbackService?.togglePause()
+        if (isTvLiveTimeline()) updateProgress()
+    }
+
+    override fun rewind() {
+        playbackService?.seekBack()
+        if (isTvLiveTimeline()) updateTvLiveTimeline()
+    }
+
+    override fun fastForward() {
+        playbackService?.seekForward()
+        if (isTvLiveTimeline()) updateTvLiveTimeline()
+    }
+
+    override fun seek(position: Long) {
+        playbackService?.seekTo(position)
+        if (isTvLiveTimeline()) updateTvLiveTimeline()
+    }
+
+    override fun seekToLivePosition() {
+        playbackService?.seekToDefaultPosition()
+        if (isTvLiveTimeline()) updateTvLiveTimeline()
+    }
+
+    override fun setPlaybackSpeed(speed: Float) {
+        playbackService?.updateStreamPlaybackSpeed(speed)
+    }
+
+    override fun changeVolume(volume: Float) {
+        playbackService?.changeVolume(volume)
+    }
+
+    override fun updateProgress() {
+        if (isTvLiveTimeline()) {
+            updateTvLiveTimeline()
+            with(binding.playerControls) {
+                root.removeCallbacks(updateProgressAction)
+                if (root.isVisible) {
+                    root.postDelayed(updateProgressAction, 1000L)
+                }
+            }
+            return
+        }
+        with(binding.playerControls) {
+            if (!progressBar.isPressed) {
+                val service = playbackService
+                val isVideo = service?.type == BasePlaybackService.VIDEO
+                if (isVideo) {
+                    syncVodMutedSegmentsFromManifest()
+                }
+                val currentPosition = service?.getDisplayPositionMs() ?: 0L
+                val totalDuration = getTotalDuration()?.takeIf { it > 0 }
+                totalDuration?.let { maxOf(it, currentPosition) }?.let {
+                    progressBar.setDuration(it)
+                    duration.text = DateUtils.formatElapsedTime(it / 1000)
+                }
+                position.text = DateUtils.formatElapsedTime(currentPosition / 1000)
+                progressBar.setPosition(currentPosition)
+                val rawBuffered = playbackService?.player?.bufferedPosition ?: 0L
+                progressBar.setBufferedPosition(
+                    if (service?.pendingSeekPosition != null) maxOf(currentPosition, rawBuffered) else rawBuffered
+                )
+                root.removeCallbacks(updateProgressAction)
+                if (root.isVisible) {
+                    val player = playbackService?.player
+                    val delay = if (player != null && player.isPlaying) {
+                        val speed = player.playbackParameters.speed
+                        if (speed > 0f) (progressBar.preferredUpdateDelay / speed).toLong().coerceIn(200L..1000L) else 1000L
+                    } else {
+                        // paused or still loading (a VOD opened at an offset is not ready yet): keep the timeline up to date anyway
+                        500L
+                    }
+                    root.postDelayed(updateProgressAction, delay)
+                }
+            }
+        }
+    }
+
+    override fun restartPlayer() {
+        playbackService?.restartPlayer()
+    }
+
+    override fun toggleAudioCompressor() {
+        val enabled = playbackService?.toggleDynamicsProcessing()
+        if (enabled == true) {
+            binding.playerControls.audioCompressor.setImageResource(R.drawable.baseline_audio_compressor_on_24dp)
+        } else {
+            binding.playerControls.audioCompressor.setImageResource(R.drawable.baseline_audio_compressor_off_24dp)
+        }
+    }
+
+    override fun setSubtitlesButton() {
+        with(binding.playerControls) {
+            val textTracks = playbackService?.player?.currentTracks?.groups?.find { it.type == androidx.media3.common.C.TRACK_TYPE_TEXT }
+            if (textTracks != null && requireContext().prefs().getBoolean(C.PLAYER_SUBTITLES, false)) {
+                subtitles.visibility = View.VISIBLE
+                if (textTracks.isSelected) {
+                    subtitles.setImageResource(androidx.media3.ui.R.drawable.exo_ic_subtitle_on)
+                    subtitles.setOnClickListener {
+                        showController(force = true)
+                        toggleSubtitles(false)
+                        requireContext().prefs().edit { putBoolean(C.PLAYER_SUBTITLES_ENABLED, false) }
+                    }
+                } else {
+                    subtitles.setImageResource(androidx.media3.ui.R.drawable.exo_ic_subtitle_off)
+                    subtitles.setOnClickListener {
+                        showController(force = true)
+                        toggleSubtitles(true)
+                        requireContext().prefs().edit { putBoolean(C.PLAYER_SUBTITLES_ENABLED, true) }
+                    }
+                }
+            } else {
+                subtitles.visibility = View.GONE
+            }
+            (childFragmentManager.findFragmentByTag("closeOnPip") as? PlayerSettingsDialog?)?.setSubtitles(textTracks)
+        }
+    }
+
+    override fun toggleSubtitles(enabled: Boolean) {
+        playbackService?.toggleSubtitles(enabled)
+    }
+
+    override fun getUnavailableQualities(): List<VideoQuality> {
+        val stableVariantIds = mutableListOf<VideoQuality>()
+        (playbackService?.player?.currentManifest as? HlsManifest)?.multivariantPlaylist?.tags?.let { playlist ->
+            playlist.filter { it.startsWith("#EXT-X-SESSION-DATA") }.forEach { line ->
+                val id = Regex("DATA-ID=\"(.+?)\"").find(line)?.groups?.get(1)?.value
+                if (id == "com.amazon.ivs.unavailable-media") {
+                    val value = Regex("VALUE=\"(.+?)\"").find(line)?.groups?.get(1)?.value
+                    if (value != null) {
+                        val bytes = try {
+                            Base64.decode(value, Base64.DEFAULT)
+                        } catch (e: IllegalArgumentException) {
+                            null
+                        }
+                        if (bytes != null) {
+                            val string = String(bytes)
+                            val array = try {
+                                JSONArray(string)
+                            } catch (e: JSONException) {
+                                null
+                            }
+                            if (array != null) {
+                                for (i in 0 until array.length()) {
+                                    val obj = array.optJSONObject(i)
+                                    if (obj != null) {
+                                        var skip = false
+                                        val filterReasons = obj.optJSONArray("FILTER_REASONS")
+                                        if (filterReasons != null) {
+                                            for (filterIndex in 0 until filterReasons.length()) {
+                                                val filter = filterReasons.optString(filterIndex)
+                                                if (filter == "FR_CODEC_NOT_REQUESTED"
+                                                    || filter == "FR_DUALFORMAT_INCOMPATIBLE" // portrait
+                                                ) {
+                                                    skip = true
+                                                    break
+                                                }
+                                            }
+                                        }
+                                        if (!skip) {
+                                            val newVariantId = obj.optString("STABLE-VARIANT-ID")
+                                            val resolution = obj.optString("RESOLUTION")
+                                            val frameRate = obj.optString("FRAME-RATE").toFloatOrNull()
+                                            val bitrate = obj.optInt("BANDWIDTH")
+                                            val codec = obj.optString("CODECS")
+                                            if (!newVariantId.isNullOrBlank()) {
+                                                stableVariantIds.add(VideoQuality(
+                                                    name = newVariantId,
+                                                    resolution = resolution.takeIf { !it.isNullOrBlank() }?.substringAfter('x')?.toIntOrNull(),
+                                                    frameRate = frameRate.takeIf { it != null && it > 0 },
+                                                    bitrate = bitrate.takeIf { it > 0 },
+                                                    codecs = codec.takeIf { !it.isNullOrBlank() },
+                                                ))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return stableVariantIds
+    }
+
+    override fun showPlaylistTags(mediaPlaylist: Boolean) {
+        val tags = playbackService?.getPlaylistTags(mediaPlaylist)
+        if (!tags.isNullOrBlank()) {
+            requireContext().getAlertDialogBuilder().apply {
+                setView(NestedScrollView(context).apply {
+                    addView(HorizontalScrollView(context).apply {
+                        addView(TextView(context).apply {
+                            text = tags
+                            textSize = 12F
+                            setTextIsSelectable(true)
+                        })
+                    })
+                })
+                setNegativeButton(R.string.copy_clip) { _, _ ->
+                    val clipboard = ContextCompat.getSystemService(requireContext(), ClipboardManager::class.java)
+                    clipboard?.setPrimaryClip(ClipData.newPlainText("label", tags))
+                }
+                setPositiveButton(android.R.string.ok, null)
+            }.show()
+        }
+    }
+
+    override fun changeQuality(selectedQuality: VideoQuality?) {
+        playbackService?.changeQuality(selectedQuality)
+    }
+
+    override fun startAudioOnly() {
+        if (playbackService != null) {
+            playbackService?.startAudioOnly()
+            playbackService?.setSleepTimer((activity as? MainActivity)?.getSleepTimerTimeLeft() ?: 0)
+            playbackService?.setStopServiceTimer(true)
+        }
+        playerListener?.let { (playbackService?.secondaryPlayer ?: playbackService?.player)?.removeListener(it) }
+        playerListener = null
+        playbackService?.serviceListener = null
+        serviceConnection?.let { requireContext().unbindService(it) }
+        serviceConnection = null
+        playbackService = null
+    }
+
+    /**
+     * TV: the next stream plays in the same service (left / right, another stream from the player), this screen lets it
+     * go without stopping it. Null when it can't be kept (proxy, sound only...): the player is closed as before.
+     */
+    fun handOverForStreamSwitch(): ExoPlayerService? {
+        val service = playbackService ?: return null
+        if (!isTv || !isMaximizedPlayer() || !service.canKeepForStreamSwitch()) {
+            return null
+        }
+        // this screen lets go of both players first: what the stream that ends does while it stops (the backup player
+        // of the ad blocker going away) no longer reaches this screen, and the old SurfaceView is detached before it is destroyed
+        playerListener?.let {
+            service.player?.removeListener(it)
+            service.secondaryPlayer?.removeListener(it)
+        }
+        playerListener = null
+        service.serviceListener = null
+        service.player?.clearVideoSurfaceView(binding.playerSurface)
+        service.secondaryPlayer?.clearVideoSurfaceView(binding.secondaryPlayerSurface)
+        tvMiniTextureView?.let { tex ->
+            service.player?.clearVideoTextureView(tex)
+            service.secondaryPlayer?.clearVideoTextureView(tex)
+            tex.visibility = View.GONE
+        }
+        binding.secondaryPlayerSurface.visibility = View.GONE
+        binding.adHideOverlay.visibility = View.GONE
+        service.prepareStreamSwitch()
+        serviceConnection?.let { requireContext().unbindService(it) }
+        serviceConnection = null
+        playbackService = null
+        return service
+    }
+
+    override fun close(deleteStates: Boolean) {
+        playbackService?.pause()
+        playbackService?.stop()
+        if (deleteStates) {
+            viewModel.deletePlaybackStates()
+        }
+        playerListener?.let { (playbackService?.secondaryPlayer ?: playbackService?.player)?.removeListener(it) }
+        playerListener = null
+        playbackService?.serviceListener = null
+        if (view != null) {
+            playbackService?.player?.clearVideoSurfaceView(binding.playerSurface)
+            playbackService?.secondaryPlayer?.clearVideoSurfaceView(binding.secondaryPlayerSurface)
+            tvMiniTextureView?.let { tex ->
+                playbackService?.player?.clearVideoTextureView(tex)
+                playbackService?.secondaryPlayer?.clearVideoTextureView(tex)
+                tex.visibility = View.GONE
+            }
+            binding.secondaryPlayerSurface.visibility = View.GONE
+            binding.adHideOverlay.visibility = View.GONE
+        }
+        serviceConnection?.let { requireContext().unbindService(it) }
+        serviceConnection = null
+        playbackService?.releaseNow()
+        playbackService?.stopSelf()
+        playbackService = null
+    }
+
+    override fun retry(item: String) {
+        playbackService?.retry(item)
+    }
+
+    override fun onDestroyView() {
+        lastMutedScanPlaylist = null
+        binding.playerControls.root.removeCallbacks(updateProgressAction)
+        tvMiniTextureView?.let { tex ->
+            playbackService?.player?.clearVideoTextureView(tex)
+            playbackService?.secondaryPlayer?.clearVideoTextureView(tex)
+        }
+        tvMiniTextureView = null
+        if (keptAcrossStop) {
+            // the screen is made again (a setting changed): the service is let go here, the new player binds it again
+            keptAcrossStop = false
+            playerListener?.let { (playbackService?.secondaryPlayer ?: playbackService?.player)?.removeListener(it) }
+            playerListener = null
+            playbackService?.serviceListener = null
+            serviceConnection?.let { requireContext().unbindService(it) }
+            serviceConnection = null
+            playbackService = null
+        }
+        super.onDestroyView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isTv && ((activity as? MainActivity)?.isOpeningOwnScreen == true || (activity as? MainActivity)?.isKeepingPlayerInBackground == true) && playbackService != null) {
+            // TV: a screen of the app opens over the player (settings), the mini player or the sound goes on
+            keptAcrossStop = true
+            binding.playerControls.root.removeCallbacks(updateProgressAction)
+            return
+        }
+        if (playbackService != null) {
+            val isInPIPMode = when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> requireActivity().isInPictureInPictureMode
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> !useController && isMaximized
+                else -> false
+            }
+            playbackService?.stop(isInPIPMode)
+            playbackService?.setSleepTimer((activity as? MainActivity)?.getSleepTimerTimeLeft() ?: 0)
+            playbackService?.setStopServiceTimer(true)
+        }
+        binding.playerControls.root.removeCallbacks(updateProgressAction)
+        playerListener?.let { (playbackService?.secondaryPlayer ?: playbackService?.player)?.removeListener(it) }
+        playerListener = null
+        playbackService?.serviceListener = null
+        serviceConnection?.let { requireContext().unbindService(it) }
+        serviceConnection = null
+    }
+
+    override fun onNetworkRestored() {
+        if (isResumed) {
+            val service = playbackService ?: return
+            if (service.isIntentionallyPausedOrStopped || service.visiblePlayer?.isPlaying == true) {
+                return
+            }
+            if (service.type == BasePlaybackService.STREAM) {
+                restartPlayer()
+            } else if (service.player?.playbackState == Player.STATE_IDLE) {
+                service.player?.prepare()
+            }
+        }
+    }
+
+    override fun onNetworkLost() {
+        if (playbackService?.type != BasePlaybackService.STREAM && isResumed) {
+            playbackService?.stop()
+        }
+    }
+}
