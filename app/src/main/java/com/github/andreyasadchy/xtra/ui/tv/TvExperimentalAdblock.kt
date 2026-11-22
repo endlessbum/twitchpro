@@ -48,7 +48,6 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.SequenceInputStream
 import java.security.MessageDigest
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToLong
 import kotlin.time.Instant
 
@@ -126,7 +125,10 @@ object TvExperimentalAdblock {
         TranscodeSpec("audio_only", "Audio Only", 160_000, null, null),
     )
 
-    private val cachedVods = ConcurrentHashMap<String, CachedVod>()
+    // LRU over the resolved live-as-VOD streams: the oldest entry leaves when the cap is exceeded
+    private val cachedVods = java.util.Collections.synchronizedMap(object : LinkedHashMap<String, CachedVod>(16, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, CachedVod>): Boolean = size > 32
+    })
 
     fun isAnyProxyEnabled(context: Context): Boolean {
         val prefs = context.prefs()
@@ -576,9 +578,6 @@ object TvExperimentalAdblock {
         val durationMs = parseVodDurationMs(chunkedSnippet)
         val variants = probeAvailableVariants(xtraModule, networkLibrary, baseDir)
         cachedVods[cacheKey] = CachedVod(baseDir, variants, resolvedCreatedAtIso, resolvedCreatedAtMs)
-        if (cachedVods.size > 32) {
-            cachedVods.keys.firstOrNull { it != cacheKey }?.let { cachedVods.remove(it) }
-        }
 
         val filteredVariants = selectVariants(variants, fallbackH264)
             ?: return@withContext LiveVodOutcome(null, resolvedStreamId, resolvedCreatedAtIso, resolvedCreatedAtMs, uptimeMs, true)
@@ -739,10 +738,12 @@ object TvExperimentalAdblock {
         val available = deferreds.awaitAll().filterNotNull()
         val has1440 = available.any { it.folder.startsWith("1440p") }
         val has1080 = available.any { it.folder.startsWith("1080p") }
+        // the source never exceeds the ladder Twitch actually has: 1440p source -> 2560x1440,
+        // 1080p source -> 1920x1080, anything lower -> the best probed variant
         val sourceRes = when {
-            has1440 -> "3840x2160"
-            has1080 -> "2560x1440"
-            else -> "1920x1080"
+            has1440 -> "2560x1440"
+            has1080 -> "1920x1080"
+            else -> available.maxByOrNull { it.bandwidth }?.resolution ?: "1280x720"
         }
         val sourceSpec = TranscodeSpec("chunked", "Source", 9_500_000, sourceRes, "60.000")
         listOf(sourceSpec) + available
@@ -790,7 +791,19 @@ object TvExperimentalAdblock {
                 append(mediaUrl).append('\n')
             }
         }
-        file.writeText(content, Charsets.UTF_8)
+        // written through a temp file and renamed: several players can resolve the same channel
+        // at once, and a reader must never see a half-written playlist
+        val tmp = File(dir, "${file.name}.tmp")
+        try {
+            tmp.writeText(content, Charsets.UTF_8)
+            if (!tmp.renameTo(file)) {
+                file.writeText(content, Charsets.UTF_8)
+                tmp.delete()
+            }
+        } catch (e: Exception) {
+            tmp.delete()
+            throw e
+        }
         return Uri.fromFile(file)
     }
 
@@ -801,12 +814,16 @@ object TvExperimentalAdblock {
         headerOnly: Boolean = false,
     ): String? = withTimeoutOrNull(4_000L) {
         val rangeHeader = "bytes=0-${PROBE_RANGE_BYTES - 1}"
+        // captured once: the engine can be torn down between the check and the use, and a null
+        // engine simply falls through to the next network library
+        val httpEngine = if (networkLibrary == C.HTTP_ENGINE) xtraModule.httpEngine.value else null
+        val cronetEngine = if (networkLibrary == C.CRONET) xtraModule.cronetEngine.value else null
         try {
             when {
-                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                httpEngine != null -> @SuppressLint("NewApi") {
                     val response = suspendCancellableCoroutine { continuation ->
                         val timeout = NetworkUtils.HttpEngineTimeout()
-                        val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                        val request = httpEngine.newUrlRequestBuilder(
                             url,
                             xtraModule.cronetExecutor.value,
                             NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
@@ -828,10 +845,10 @@ object TvExperimentalAdblock {
                         String(bytes, 0, len, Charsets.UTF_8).takeIf { it.contains("#EXTM3U") }
                     } else null
                 }
-                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                cronetEngine != null -> {
                     val response = suspendCancellableCoroutine { continuation ->
                         val timeout = NetworkUtils.CronetTimeout()
-                        val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                        val request = cronetEngine.newUrlRequestBuilder(
                             url,
                             NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                             xtraModule.cronetExecutor.value
