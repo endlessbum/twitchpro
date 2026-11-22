@@ -1,7 +1,7 @@
 package com.endlessbum.twitchpro.ui.player
 
 import android.app.Dialog
-import android.app.admin.DeviceAdminReceiver
+import com.endlessbum.twitchpro.util.TwitchProDeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
@@ -73,7 +73,7 @@ class SleepTimerDialog : DialogFragment() {
                 builder.setNeutralButton(android.R.string.cancel) { _, _ -> dismiss() }
             }
             val devicePolicyManager = requireContext().getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-            val admin = ComponentName(requireContext(), DeviceAdminReceiver::class.java)
+            val admin = ComponentName(requireContext(), TwitchProDeviceAdminReceiver::class.java)
             if (devicePolicyManager.isAdminActive(admin)) {
                 lockCheckbox.apply {
                     isChecked = requireContext().prefs().getBoolean(C.SLEEP_TIMER_LOCK, false)

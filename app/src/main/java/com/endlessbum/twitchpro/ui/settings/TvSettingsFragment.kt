@@ -123,7 +123,7 @@ import com.endlessbum.twitchpro.model.ui.CustomProxy
 import com.endlessbum.twitchpro.model.ui.SettingsDragListItem
 import com.endlessbum.twitchpro.model.ui.StreamProxy
 import com.endlessbum.twitchpro.model.ui.VideoSwap
-import android.app.admin.DeviceAdminReceiver
+import com.endlessbum.twitchpro.util.TwitchProDeviceAdminReceiver
 import com.endlessbum.twitchpro.ui.common.IntegrityDialog
 import com.endlessbum.twitchpro.ui.main.MainActivity
 import com.endlessbum.twitchpro.ui.settings.CustomProxySettingsViewModel.Companion.CustomProxySettingsViewModelFactory
@@ -2340,7 +2340,7 @@ class TvSettingsFragment : Fragment() {
                         context.prefs().edit { putBoolean(key, next) }
                         if (next) {
                             val dpm = context.getSystemService(DEVICE_POLICY_SERVICE) as DevicePolicyManager
-                            val admin = ComponentName(context, DeviceAdminReceiver::class.java)
+                            val admin = ComponentName(context, TwitchProDeviceAdminReceiver::class.java)
                             if (!dpm.isAdminActive(admin)) {
                                 runCatching {
                                     startActivity(Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {

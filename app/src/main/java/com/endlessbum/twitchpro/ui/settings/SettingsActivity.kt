@@ -2,7 +2,7 @@ package com.endlessbum.twitchpro.ui.settings
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.admin.DeviceAdminReceiver
+import com.endlessbum.twitchpro.util.TwitchProDeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
@@ -1869,7 +1869,7 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<SwitchPreferenceCompat>("sleep_timer_lock")?.setOnPreferenceChangeListener { _, newValue ->
                 if (newValue == true) {
                     val devicePolicyManager = requireContext().getSystemService(DEVICE_POLICY_SERVICE) as DevicePolicyManager
-                    val admin = ComponentName(requireContext(), DeviceAdminReceiver::class.java)
+                    val admin = ComponentName(requireContext(), TwitchProDeviceAdminReceiver::class.java)
                     if (!devicePolicyManager.isAdminActive(admin)) {
                         startActivity(
                             Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
