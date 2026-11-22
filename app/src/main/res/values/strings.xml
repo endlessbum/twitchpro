@@ -631,7 +631,6 @@
     <string name="adblock">Ad blocker</string>
     <string name="adblock_summary">While an ad plays, switches to an ad-free stream of another player type (like the VAFT userscript), hides the ad if none is available. Also takes over when a proxy lets an ad through.</string>
     <string name="tv_multistream">Multi-stream</string>
-    <string name="tv_multistream_pick">Choose up to 4 streams</string>
     <string name="tv_multistream_max">%1$d streams at most</string>
     <string name="tv_multistream_min">Check %1$d streams at least</string>
     <string name="tv_multistream_remove">Remove this stream</string>
@@ -998,6 +997,8 @@
     <string name="tv_backup_qr_receive">Receive from a phone (QR code)</string>
     <string name="tv_backup_qr_send_help">Scan this QR code with your phone on the same Wi-Fi to download the backup file.</string>
     <string name="tv_backup_qr_receive_help">Scan this QR code with your phone on the same Wi-Fi and choose your backup file.</string>
+    <string name="tv_backup_qr_too_large">The backup is too large for QR transfer — restore it from a zip in Downloads instead.</string>
+    <string name="tv_backup_qr_invalid">The archive is invalid or unsupported.</string>
     <string name="tv_backup_saved">Backup saved: %s</string>
     <string name="tv_backup_restored">Settings restored</string>
     <string name="tv_backup_not_found">No backup file found on the TV</string>

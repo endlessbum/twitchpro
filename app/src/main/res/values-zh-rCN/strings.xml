@@ -608,7 +608,6 @@
     <string name="adblock">广告拦截</string>
     <string name="adblock_summary">播放广告时，切换到另一种播放器类型的无广告流（与 VAFT 用户脚本相同），如果没有可用的流则隐藏广告。当代理放过广告时也会接管。</string>
     <string name="tv_multistream">多路直播</string>
-    <string name="tv_multistream_pick">最多选择 4 个直播</string>
     <string name="tv_multistream_max">最多 %1$d 个直播</string>
     <string name="tv_multistream_min">请至少选择 %1$d 个直播</string>
     <string name="tv_multistream_remove">移除此直播</string>
@@ -975,6 +974,8 @@
     <string name="tv_backup_qr_receive">从手机接收（二维码）</string>
     <string name="tv_backup_qr_send_help">使用连接同一 Wi-Fi 的手机扫描此二维码以下载备份文件。</string>
     <string name="tv_backup_qr_receive_help">使用连接同一 Wi-Fi 的手机扫描此二维码并选择您的备份文件。</string>
+    <string name="tv_backup_qr_too_large">备份过大，无法通过 QR 传输 — 请改用 Downloads 中的 zip 恢复。</string>
+    <string name="tv_backup_qr_invalid">压缩包无效或不受支持。</string>
     <string name="tv_backup_saved">备份已保存：%s</string>
     <string name="tv_backup_restored">设置已恢复</string>
     <string name="tv_backup_not_found">电视上未找到备份文件</string>

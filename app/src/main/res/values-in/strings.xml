@@ -609,7 +609,6 @@
     <string name="adblock">Pemblokir iklan</string>
     <string name="adblock_summary">Saat iklan diputar, beralih ke stream tanpa iklan dari jenis pemutar lain (seperti userscript VAFT), menyembunyikan iklan jika tidak ada yang tersedia. Juga mengambil alih saat proxy meloloskan iklan.</string>
     <string name="tv_multistream">Multi-stream</string>
-    <string name="tv_multistream_pick">Pilih hingga 4 stream</string>
     <string name="tv_multistream_max">Paling banyak %1$d stream</string>
     <string name="tv_multistream_min">Pilih setidaknya %1$d stream</string>
     <string name="tv_multistream_remove">Hapus stream ini</string>
@@ -976,6 +975,8 @@
     <string name="tv_backup_qr_receive">Terima dari ponsel (kode QR)</string>
     <string name="tv_backup_qr_send_help">Pindai kode QR ini dengan ponsel Anda di Wi-Fi yang sama untuk mengunduh file cadangan.</string>
     <string name="tv_backup_qr_receive_help">Pindai kode QR ini dengan ponsel Anda di Wi-Fi yang sama dan pilih file cadangan Anda.</string>
+    <string name="tv_backup_qr_too_large">Backup terlalu besar untuk transfer QR — pulihkan dari file zip di Downloads.</string>
+    <string name="tv_backup_qr_invalid">Arsip tidak valid atau tidak didukung.</string>
     <string name="tv_backup_saved">Cadangan disimpan: %s</string>
     <string name="tv_backup_restored">Pengaturan dipulihkan</string>
     <string name="tv_backup_not_found">File cadangan tidak ditemukan di TV</string>

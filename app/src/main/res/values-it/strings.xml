@@ -608,7 +608,6 @@
     <string name="adblock">Blocco pubblicità</string>
     <string name="adblock_summary">Durante una pubblicità, passa a uno stream senza pubblicità di un altro tipo di player (come lo userscript VAFT) e nasconde la pubblicità se non ce n\'è nessuno. Interviene anche quando un proxy lascia passare una pubblicità.</string>
     <string name="tv_multistream">Multi-stream</string>
-    <string name="tv_multistream_pick">Scegli fino a 4 stream</string>
     <string name="tv_multistream_max">Al massimo %1$d stream</string>
     <string name="tv_multistream_min">Seleziona almeno %1$d stream</string>
     <string name="tv_multistream_remove">Rimuovi questo stream</string>
@@ -975,6 +974,8 @@
     <string name="tv_backup_qr_receive">Ricevi da un telefono (codice QR)</string>
     <string name="tv_backup_qr_send_help">Scansiona questo codice QR con il telefono sullo stesso Wi-Fi per scaricare il file di backup.</string>
     <string name="tv_backup_qr_receive_help">Scansiona questo codice QR con il telefono sullo stesso Wi-Fi e scegli il file di backup.</string>
+    <string name="tv_backup_qr_too_large">Il backup è troppo grande per il trasferimento QR: ripristinalo da uno zip in Download.</string>
+    <string name="tv_backup_qr_invalid">L\'archivio non è valido o non è supportato.</string>
     <string name="tv_backup_saved">Backup salvato: %s</string>
     <string name="tv_backup_restored">Impostazioni ripristinate</string>
     <string name="tv_backup_not_found">Nessun file di backup trovato sulla TV</string>

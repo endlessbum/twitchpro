@@ -608,7 +608,6 @@
     <string name="adblock">Werbeblocker</string>
     <string name="adblock_summary">Während einer Werbung wird auf einen werbefreien Stream eines anderen Player-Typs gewechselt (wie beim VAFT-Userscript), sonst wird die Werbung ausgeblendet. Springt auch ein, wenn ein Proxy eine Werbung durchlässt.</string>
     <string name="tv_multistream">Multi-Stream</string>
-    <string name="tv_multistream_pick">Bis zu 4 Streams auswählen</string>
     <string name="tv_multistream_max">Höchstens %1$d Streams</string>
     <string name="tv_multistream_min">Mindestens %1$d Streams auswählen</string>
     <string name="tv_multistream_remove">Diesen Stream entfernen</string>
@@ -975,6 +974,8 @@
     <string name="tv_backup_qr_receive">Von einem Telefon empfangen (QR-Code)</string>
     <string name="tv_backup_qr_send_help">Scannen Sie diesen QR-Code mit Ihrem Telefon im selben WLAN, um die Sicherungsdatei herunterzuladen.</string>
     <string name="tv_backup_qr_receive_help">Scannen Sie diesen QR-Code mit Ihrem Telefon im selben WLAN und wählen Sie Ihre Sicherungsdatei aus.</string>
+    <string name="tv_backup_qr_too_large">Das Backup ist zu groß für die QR-Übertragung — stelle es stattdessen aus einer ZIP-Datei in Downloads wieder her.</string>
+    <string name="tv_backup_qr_invalid">Das Archiv ist ungültig oder wird nicht unterstützt.</string>
     <string name="tv_backup_saved">Sicherung gespeichert: %s</string>
     <string name="tv_backup_restored">Einstellungen wiederhergestellt</string>
     <string name="tv_backup_not_found">Keine Sicherungsdatei auf dem Fernseher gefunden</string>

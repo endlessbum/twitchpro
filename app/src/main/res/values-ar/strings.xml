@@ -608,7 +608,6 @@
     <string name="adblock">مانع الإعلانات</string>
     <string name="adblock_summary">أثناء عرض إعلان، ينتقل إلى بث خالٍ من الإعلانات لنوع مشغل آخر (مثل سكربت VAFT)، ويخفي الإعلان إن لم يتوفر أي بث. ويتدخل أيضاً عندما يسمح الوكيل بمرور إعلان.</string>
     <string name="tv_multistream">بث متعدد</string>
-    <string name="tv_multistream_pick">اختر حتى 4 بثوث</string>
     <string name="tv_multistream_max">%1$d بثوث كحد أقصى</string>
     <string name="tv_multistream_min">اختر %1$d بثوث على الأقل</string>
     <string name="tv_multistream_remove">إزالة هذا البث</string>
@@ -975,6 +974,8 @@
     <string name="tv_backup_qr_receive">استلام من هاتف (رمز QR)</string>
     <string name="tv_backup_qr_send_help">امسح رمز QR هذا بهاتفك المتصل بنفس شبكة Wi-Fi لتنزيل ملف النسخ الاحتياطي.</string>
     <string name="tv_backup_qr_receive_help">امسح رمز QR هذا بهاتفك المتصل بنفس شبكة Wi-Fi واختر ملف النسخ الاحتياطي.</string>
+    <string name="tv_backup_qr_too_large">النسخة الاحتياطية كبيرة جدًا لنقل QR — استعيدها من ملف zip في التنزيلات بدلاً من ذلك.</string>
+    <string name="tv_backup_qr_invalid">الأرشيف غير صالح أو غير مدعوم.</string>
     <string name="tv_backup_saved">تم حفظ النسخة الاحتياطية: %s</string>
     <string name="tv_backup_restored">تمت استعادة الإعدادات</string>
     <string name="tv_backup_not_found">لم يتم العثور على ملف نسخ احتياطي على التلفاز</string>

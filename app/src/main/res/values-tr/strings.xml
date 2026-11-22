@@ -609,7 +609,6 @@
     <string name="adblock">Reklam engelleyici</string>
     <string name="adblock_summary">Reklam sırasında başka bir oynatıcı türünün reklamsız yayınına geçer (VAFT kullanıcı betiği gibi), yoksa reklamı gizler. Bir proxy reklamı geçirdiğinde de devreye girer.</string>
     <string name="tv_multistream">Çoklu yayın</string>
-    <string name="tv_multistream_pick">En fazla 4 yayın seçin</string>
     <string name="tv_multistream_max">En fazla %1$d yayın</string>
     <string name="tv_multistream_min">En az %1$d yayın seçin</string>
     <string name="tv_multistream_remove">Bu yayını kaldır</string>
@@ -976,6 +975,8 @@
     <string name="tv_backup_qr_receive">Telefondan al (QR kodu)</string>
     <string name="tv_backup_qr_send_help">Yedek dosyasını indirmek için aynı Wi-Fi ağındaki telefonunuzla bu QR kodunu tarayın.</string>
     <string name="tv_backup_qr_receive_help">Aynı Wi-Fi ağındaki telefonunuzla bu QR kodunu tarayın ve yedek dosyanızı seçin.</string>
+    <string name="tv_backup_qr_too_large">Yedek, QR aktarımı için çok büyük — bunun yerine Downloads içindeki zip dosyasından geri yükleyin.</string>
+    <string name="tv_backup_qr_invalid">Arşiv geçersiz veya desteklenmiyor.</string>
     <string name="tv_backup_saved">Yedek kaydedildi: %s</string>
     <string name="tv_backup_restored">Ayarlar geri yüklendi</string>
     <string name="tv_backup_not_found">TV\'de yedek dosyası bulunamadı</string>

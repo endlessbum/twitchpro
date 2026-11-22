@@ -613,7 +613,6 @@
     <string name="adblock">Bloqueador de anuncios</string>
     <string name="adblock_summary">Durante un anuncio, cambia a un stream sin anuncios de otro tipo de reproductor (como el userscript VAFT) y oculta el anuncio si no hay ninguno disponible. También actúa cuando un proxy deja pasar un anuncio.</string>
     <string name="tv_multistream">Multistream</string>
-    <string name="tv_multistream_pick">Elige hasta 4 streams</string>
     <string name="tv_multistream_max">%1$d streams como máximo</string>
     <string name="tv_multistream_min">Marca al menos %1$d streams</string>
     <string name="tv_multistream_remove">Quitar este stream</string>
@@ -980,6 +979,8 @@
     <string name="tv_backup_qr_receive">Recibir desde un teléfono (código QR)</string>
     <string name="tv_backup_qr_send_help">Escanea este código QR con tu teléfono en el mismo Wi-Fi para descargar el archivo de copia de seguridad.</string>
     <string name="tv_backup_qr_receive_help">Escanea este código QR con tu teléfono en el mismo Wi-Fi y elige tu archivo de copia de seguridad.</string>
+    <string name="tv_backup_qr_too_large">La copia de seguridad es demasiado grande para la transferencia por QR: restáurala desde un zip en Descargas.</string>
+    <string name="tv_backup_qr_invalid">El archivo no es válido o no es compatible.</string>
     <string name="tv_backup_saved">Copia de seguridad guardada: %s</string>
     <string name="tv_backup_restored">Ajustes restaurados</string>
     <string name="tv_backup_not_found">No se encontró ningún archivo de copia de seguridad en el televisor</string>

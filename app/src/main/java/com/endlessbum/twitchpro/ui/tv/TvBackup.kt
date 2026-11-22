@@ -87,6 +87,14 @@ object TvBackup {
 
     const val FILE_NAME = "TwitchPro-backup.zip"
     const val REQ_STORAGE_PERMISSION = 4901
+    private const val REQ_LOCAL_NETWORK_PERMISSION = 4902
+    /** QR transfer limit: export and import share the same cap so a served backup is always restorable. */
+    private const val MAX_QR_TRANSFER_BYTES = 20 * 1024 * 1024
+    /** Guard rails for untrusted zip archives: entry count, per-entry and total uncompressed size. */
+    private const val MAX_ZIP_ENTRIES = 128
+    private const val MAX_ZIP_ENTRY_BYTES = 64L * 1024 * 1024
+    private const val MAX_ZIP_TOTAL_BYTES = 96L * 1024 * 1024
+    private var localNetworkAction: (() -> Unit)? = null
     private const val PREFS_ENTRY = "preferences.xml"
     private const val TV_FAVORITES_ENTRY = "tv_favorites.xml"
     private const val TV_STATS_ENTRY = "tv_stats.xml"
@@ -138,8 +146,39 @@ object TvBackup {
         }
     }
 
+    /** True when the app may open LAN sockets: Android 17 (API 37) gates them behind a runtime permission. */
+    fun hasLocalNetworkAccess(context: Context): Boolean =
+        Build.VERSION.SDK_INT < 37 ||
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) == PackageManager.PERMISSION_GRANTED
+
+    /** Requests the Android 17 local network permission and resumes [action] when the user grants it. */
+    fun requestLocalNetworkAccess(activity: Activity, action: () -> Unit) {
+        if (localNetworkAction != null) return
+        localNetworkAction = action
+        runCatching {
+            androidx.core.app.ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.ACCESS_LOCAL_NETWORK),
+                REQ_LOCAL_NETWORK_PERMISSION,
+            )
+        }.onFailure {
+            localNetworkAction = null
+            TvToast.makeText(activity, R.string.tv_backup_no_network, Toast.LENGTH_LONG).show()
+        }
+    }
+
     /** Handles Android 7..10 runtime storage permission dialog result. */
     fun onRequestPermissionsResult(activity: Activity, requestCode: Int) {
+        if (requestCode == REQ_LOCAL_NETWORK_PERMISSION) {
+            val action = localNetworkAction
+            localNetworkAction = null
+            if (action != null && hasLocalNetworkAccess(activity)) {
+                action()
+            } else if (action != null) {
+                TvToast.makeText(activity, R.string.tv_backup_no_network, Toast.LENGTH_LONG).show()
+            }
+            return
+        }
         if (requestCode != REQ_STORAGE_PERMISSION) return
         val pending = pendingFileAction ?: return
         if (hasFullFileAccess(activity)) {
@@ -549,20 +588,62 @@ object TvBackup {
             var tvBlacklistXml: ByteArray? = null
             var dbBytes: ByteArray? = null
             var sawAnyEntry = false
+            var totalUncompressed = 0L
+            var entryCount = 0
             ZipInputStream(ByteArrayInputStream(bytes)).use { zip ->
                 var entry = zip.nextEntry
                 while (entry != null) {
+                    entryCount++
+                    if (entryCount > MAX_ZIP_ENTRIES) return null
                     sawAnyEntry = true
                     if (!entry.isDirectory) {
+                        // whitelist check happens before any data is read from the entry
                         val name = entry.name.substringAfterLast('/')
-                        val content = zip.readBytes()
+                        val accepted = name == TV_FAVORITES_ENTRY || name == TV_STATS_ENTRY || name == TV_BLACKLIST_ENTRY ||
+                            name == "prefs2.xml" || name == PREFS_ENTRY || name.endsWith("_preferences.xml") || name == DB_ENTRY
+                        if (!accepted) {
+                            zip.closeEntry()
+                            entry = zip.nextEntry
+                            continue
+                        }
+                        // bounded read: never trust compressed input to decompress within limits
+                        val content = run {
+                            val out = java.io.ByteArrayOutputStream()
+                            val buffer = ByteArray(64 * 1024)
+                            var read = 0L
+                            while (true) {
+                                val n = zip.read(buffer)
+                                if (n <= 0) break
+                                read += n
+                                if (read > MAX_ZIP_ENTRY_BYTES) return null
+                                out.write(buffer, 0, n)
+                            }
+                            out.toByteArray()
+                        }
+                        totalUncompressed += content.size
+                        if (totalUncompressed > MAX_ZIP_TOTAL_BYTES) return null
                         when {
-                            name == TV_FAVORITES_ENTRY -> tvFavoritesXml = content
-                            name == TV_STATS_ENTRY -> tvStatsXml = content
-                            name == TV_BLACKLIST_ENTRY -> tvBlacklistXml = content
+                            name == TV_FAVORITES_ENTRY -> {
+                                if (tvFavoritesXml != null) return null
+                                tvFavoritesXml = content
+                            }
+                            name == TV_STATS_ENTRY -> {
+                                if (tvStatsXml != null) return null
+                                tvStatsXml = content
+                            }
+                            name == TV_BLACKLIST_ENTRY -> {
+                                if (tvBlacklistXml != null) return null
+                                tvBlacklistXml = content
+                            }
                             name == "prefs2.xml" -> Unit
-                            name == PREFS_ENTRY || name.endsWith("_preferences.xml") -> mainPrefsXml = content
-                            name == DB_ENTRY -> dbBytes = content
+                            name == PREFS_ENTRY || name.endsWith("_preferences.xml") -> {
+                                if (mainPrefsXml != null) return null
+                                mainPrefsXml = content
+                            }
+                            name == DB_ENTRY -> {
+                                if (dbBytes != null) return null
+                                dbBytes = content
+                            }
                         }
                     }
                     zip.closeEntry()
@@ -1077,6 +1158,11 @@ object TvBackup {
 
     /** Shows a QR code that serves the backup file over local Wi-Fi to a phone. */
     fun showQrExport(context: Context, scope: CoroutineScope) {
+        if (!hasLocalNetworkAccess(context)) {
+            val activity = context as? Activity ?: return
+            requestLocalNetworkAccess(activity) { showQrExport(context, scope) }
+            return
+        }
         val appContext = context.applicationContext
         scope.launch {
             val ip = withContext(Dispatchers.IO) { findLocalIpAddress() }
@@ -1085,8 +1171,13 @@ object TvBackup {
                 return@launch
             }
             val zipBytes = withContext(Dispatchers.IO) { runCatching { buildBackupZip(appContext) }.getOrNull() } ?: return@launch
+            if (zipBytes.size > MAX_QR_TRANSFER_BYTES) {
+                TvToast.makeText(appContext, R.string.tv_backup_qr_too_large, Toast.LENGTH_LONG).show()
+                return@launch
+            }
             val server = withContext(Dispatchers.IO) { runCatching { ServerSocket(0) }.getOrNull() } ?: return@launch
-            val url = "http://$ip:${server.localPort}/"
+            val token = java.util.UUID.randomUUID().toString().replace("-", "").take(24)
+            val url = "http://$ip:${server.localPort}/?t=$token"
             val qrBitmap = withContext(Dispatchers.Default) { QrCode.encode(url, 520) }
             val dialog = TvDialogs.show(context) { dismiss ->
                 SidePanel(title = context.getString(R.string.tv_backup_qr_send)) {
@@ -1129,7 +1220,7 @@ object TvBackup {
             val serverJob = scope.launch(Dispatchers.IO) {
                 while (!server.isClosed) {
                     val client = runCatching { server.accept() }.getOrNull() ?: break
-                    launch(Dispatchers.IO) { handleExportClient(client, zipBytes, appContext) }
+                    launch(Dispatchers.IO) { handleExportClient(client, zipBytes, appContext, token) }
                 }
             }
             dialog.setOnDismissListener {
@@ -1141,6 +1232,11 @@ object TvBackup {
 
     /** Shows a QR code that lets a phone upload a backup file over local Wi-Fi to restore on the TV. */
     fun showQrImport(context: Context, scope: CoroutineScope) {
+        if (!hasLocalNetworkAccess(context)) {
+            val activity = context as? Activity ?: return
+            requestLocalNetworkAccess(activity) { showQrImport(context, scope) }
+            return
+        }
         val appContext = context.applicationContext
         scope.launch {
             val ip = withContext(Dispatchers.IO) { findLocalIpAddress() }
@@ -1149,7 +1245,8 @@ object TvBackup {
                 return@launch
             }
             val server = withContext(Dispatchers.IO) { runCatching { ServerSocket(0) }.getOrNull() } ?: return@launch
-            val url = "http://$ip:${server.localPort}/"
+            val token = java.util.UUID.randomUUID().toString().replace("-", "").take(24)
+            val url = "http://$ip:${server.localPort}/?t=$token"
             val qrBitmap = withContext(Dispatchers.Default) { QrCode.encode(url, 520) }
             var dialogRef: androidx.activity.ComponentDialog? = null
             val dialog = TvDialogs.show(context) { dismiss ->
@@ -1195,7 +1292,7 @@ object TvBackup {
                 while (!server.isClosed) {
                     val client = runCatching { server.accept() }.getOrNull() ?: break
                     launch(Dispatchers.IO) {
-                        val uploaded = handleImportClient(client, appContext)
+                        val uploaded = handleImportClient(client, appContext, token)
                         if (uploaded != null) {
                             withContext(Dispatchers.Main) {
                                 runCatching { dialogRef?.dismiss() }
@@ -1216,7 +1313,8 @@ object TvBackup {
         }
     }
 
-    private fun handleExportClient(socket: Socket, zipBytes: ByteArray, context: Context) {
+    /** Serves the backup once per session token; any request without the exact token is rejected. */
+    private fun handleExportClient(socket: Socket, zipBytes: ByteArray, context: Context, token: String) {
         socket.use { s ->
             s.soTimeout = 10_000
             val input = s.getInputStream()
@@ -1226,7 +1324,15 @@ object TvBackup {
                 if (line.isEmpty()) break
             }
             val out = s.getOutputStream()
-            if (requestLine.startsWith("GET /backup")) {
+            val path = requestLine.substringAfter(' ', "").substringBefore(' ')
+            val authorized = path.contains("t=$token")
+            if (!authorized) {
+                val denied = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+                out.write(denied.toByteArray(Charsets.UTF_8))
+                out.flush()
+                return
+            }
+            if (path.startsWith("/backup")) {
                 val header = "HTTP/1.1 200 OK\r\n" +
                         "Content-Type: application/zip\r\n" +
                         "Content-Disposition: attachment; filename=\"$FILE_NAME\"\r\n" +
@@ -1234,6 +1340,9 @@ object TvBackup {
                         "Connection: close\r\n\r\n"
                 out.write(header.toByteArray(Charsets.UTF_8))
                 out.write(zipBytes)
+                out.flush()
+                // one-shot: the token is invalidated after a single successful transfer
+                runCatching { s.close() }
             } else {
                 val title = context.getString(R.string.tv_backup_qr_send)
                 val body = """
@@ -1243,19 +1352,20 @@ object TvBackup {
                     <style>body{background:#121216;color:#fff;font-family:sans-serif;text-align:center;padding:40px 20px}
                     a.btn{display:inline-block;margin-top:24px;padding:14px 28px;background:#9147ff;color:#fff;text-decoration:none;border-radius:10px;font-weight:bold;font-size:17px}</style>
                     </head><body><h2>TwitchPro</h2><p>$title</p>
-                    <a class="btn" href="/backup">$FILE_NAME</a>
-                    <script>setTimeout(function(){location.href='/backup'},300);</script>
+                    <a class="btn" href="/backup?t=$token">$FILE_NAME</a>
+                    <script>setTimeout(function(){location.href='/backup?t=$token'},300);</script>
                     </body></html>
                 """.trimIndent().toByteArray(Charsets.UTF_8)
                 val header = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: ${body.size}\r\nConnection: close\r\n\r\n"
                 out.write(header.toByteArray(Charsets.UTF_8))
                 out.write(body)
+                out.flush()
             }
-            out.flush()
         }
     }
 
-    private fun handleImportClient(socket: Socket, context: Context): ByteArray? {
+    /** Receives an upload; responds 413/422/200 based on real checks — the phone must not show success before validation. */
+    private fun handleImportClient(socket: Socket, context: Context, token: String): ByteArray? {
         socket.use { s ->
             s.soTimeout = 30_000
             val input = s.getInputStream()
@@ -1269,7 +1379,26 @@ object TvBackup {
                 }
             }
             val out = s.getOutputStream()
-            if (requestLine.startsWith("POST /upload") && contentLength in 1..(20 * 1024 * 1024)) {
+            val path = requestLine.substringAfter(' ', "").substringBefore(' ')
+            val authorized = path.contains("t=$token")
+
+            fun respond(statusLine: String, bodyText: String, contentType: String = "text/plain; charset=utf-8") {
+                val body = bodyText.toByteArray(Charsets.UTF_8)
+                val header = "$statusLine\r\nContent-Type: $contentType\r\nContent-Length: ${body.size}\r\nConnection: close\r\n\r\n"
+                out.write(header.toByteArray(Charsets.UTF_8))
+                out.write(body)
+                out.flush()
+            }
+
+            if (!authorized) {
+                respond("HTTP/1.1 404 Not Found", "")
+                return null
+            }
+            if (requestLine.startsWith("POST /upload")) {
+                if (contentLength !in 1..MAX_QR_TRANSFER_BYTES) {
+                    respond("HTTP/1.1 413 Payload Too Large", context.getString(R.string.tv_backup_qr_too_large))
+                    return null
+                }
                 val body = ByteArray(contentLength)
                 var read = 0
                 while (read < contentLength) {
@@ -1277,15 +1406,27 @@ object TvBackup {
                     if (n <= 0) break
                     read += n
                 }
-                val doneText = context.getString(R.string.tv_backup_restored).toByteArray(Charsets.UTF_8)
-                val header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Length: ${doneText.size}\r\nConnection: close\r\n\r\n"
-                out.write(header.toByteArray(Charsets.UTF_8))
-                out.write(doneText)
-                out.flush()
-                return body.takeIf { read == contentLength }
+                if (read != contentLength) {
+                    respond("HTTP/1.1 400 Bad Request", "")
+                    return null
+                }
+                if (parseAndValidateZip(body) == null) {
+                    respond("HTTP/1.1 422 Unprocessable Entity", context.getString(R.string.tv_backup_qr_invalid))
+                    return null
+                }
+                respond("HTTP/1.1 200 OK", context.getString(R.string.tv_backup_restored))
+                return body
             } else {
                 val title = context.getString(R.string.tv_backup_qr_receive)
                 val doneMsg = context.getString(R.string.tv_backup_restored)
+                    .replace("\\", "\\\\")
+                    .replace("'", "\\'")
+                    .replace("\n", " ")
+                val tooLargeMsg = context.getString(R.string.tv_backup_qr_too_large)
+                    .replace("\\", "\\\\")
+                    .replace("'", "\\'")
+                    .replace("\n", " ")
+                val invalidMsg = context.getString(R.string.tv_backup_qr_invalid)
                     .replace("\\", "\\\\")
                     .replace("'", "\\'")
                     .replace("\n", " ")
@@ -1300,9 +1441,15 @@ object TvBackup {
                     <input type="file" id="f" accept=".zip,.xml,*/*">
                     <button onclick="send()">OK</button><p id="s"></p>
                     <script>
+                    var LIMIT = $MAX_QR_TRANSFER_BYTES;
                     function send(){
                       var f=document.getElementById('f').files[0];if(!f)return;
-                      fetch('/upload',{method:'POST',body:f}).then(function(){document.getElementById('s').innerText='$doneMsg';});
+                      if(f.size > LIMIT){document.getElementById('s').innerText='$tooLargeMsg';return;}
+                      fetch('/upload?t=$token',{method:'POST',body:f}).then(function(r){
+                        if(r.ok){document.getElementById('s').innerText='$doneMsg';}
+                        else if(r.status===413){document.getElementById('s').innerText='$tooLargeMsg';}
+                        else{document.getElementById('s').innerText='$invalidMsg';}
+                      }).catch(function(){document.getElementById('s').innerText='$invalidMsg';});
                     }
                     </script></body></html>
                 """.trimIndent().toByteArray(Charsets.UTF_8)

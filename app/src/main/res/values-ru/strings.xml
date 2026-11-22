@@ -608,7 +608,6 @@
     <string name="adblock">Блокировщик рекламы</string>
     <string name="adblock_summary">Во время рекламы переключается на поток без рекламы другого типа плеера (как userscript VAFT), скрывает рекламу, если такого нет. Также срабатывает, когда прокси пропускает рекламу.</string>
     <string name="tv_multistream">Мультистрим</string>
-    <string name="tv_multistream_pick">Выберите до 4 стримов</string>
     <string name="tv_multistream_max">Не более %1$d стримов</string>
     <string name="tv_multistream_min">Отметьте не менее %1$d трансляций</string>
     <string name="tv_multistream_remove">Убрать эту трансляцию</string>
@@ -975,6 +974,8 @@
     <string name="tv_backup_qr_receive">Получить с телефона (QR-код)</string>
     <string name="tv_backup_qr_send_help">Отсканируйте этот QR-код телефоном в той же сети Wi-Fi, чтобы скачать файл резервной копии.</string>
     <string name="tv_backup_qr_receive_help">Отсканируйте этот QR-код телефоном в той же сети Wi-Fi и выберите файл резервной копии.</string>
+    <string name="tv_backup_qr_too_large">Бэкап слишком большой для передачи по QR — восстановите его из zip-файла в Downloads.</string>
+    <string name="tv_backup_qr_invalid">Архив повреждён или не поддерживается.</string>
     <string name="tv_backup_saved">Резервная копия сохранена: %s</string>
     <string name="tv_backup_restored">Настройки восстановлены</string>
     <string name="tv_backup_not_found">Файл резервной копии на ТВ не найден</string>
