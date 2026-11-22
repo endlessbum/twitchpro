@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.andreyasadchy.xtra.util.coil
+package com.endlessbum.twitchpro.util.coil
 
 import coil3.annotation.ExperimentalCoilApi
 import coil3.network.CacheStrategy
@@ -22,8 +22,8 @@ import coil3.network.CacheStrategy.WriteResult
 import coil3.network.NetworkRequest
 import coil3.network.NetworkResponse
 import coil3.request.Options
-import com.github.andreyasadchy.xtra.util.coil.internal.CacheControl
-import com.github.andreyasadchy.xtra.util.coil.internal.toNonNegativeInt
+import com.endlessbum.twitchpro.util.coil.internal.CacheControl
+import com.endlessbum.twitchpro.util.coil.internal.toNonNegativeInt
 import okhttp3.internal.http.toHttpDateOrNull
 import java.util.Date
 

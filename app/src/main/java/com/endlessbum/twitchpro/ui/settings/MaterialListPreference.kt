@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.app.Dialog
 import android.content.DialogInterface

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentProxySettingsListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.CustomProxy
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentProxySettingsListItemBinding
+import com.endlessbum.twitchpro.model.ui.CustomProxy
 
 class CustomProxySettingsAdapter(
     private val fragment: Fragment,

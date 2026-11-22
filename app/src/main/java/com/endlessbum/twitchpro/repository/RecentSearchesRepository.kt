@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.repository
+package com.endlessbum.twitchpro.repository
 
-import com.github.andreyasadchy.xtra.db.RecentSearchesDao
-import com.github.andreyasadchy.xtra.model.ui.RecentSearch
+import com.endlessbum.twitchpro.db.RecentSearchesDao
+import com.endlessbum.twitchpro.model.ui.RecentSearch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

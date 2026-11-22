@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.repository.datasource
+package com.endlessbum.twitchpro.repository.datasource
 
 import android.util.Log
-import com.github.andreyasadchy.xtra.BuildConfig
+import com.endlessbum.twitchpro.BuildConfig
 
 /**
  * One tag for the exceptions swallowed by the fallback chains (GQL -> persisted query -> Helix):

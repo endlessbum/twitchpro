@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.search.videos
+package com.endlessbum.twitchpro.ui.search.videos
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,22 +11,22 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.Bookmark
-import com.github.andreyasadchy.xtra.model.ui.RecentSearch
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.model.ui.Video
-import com.github.andreyasadchy.xtra.repository.BookmarksRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.PlayerRepository
-import com.github.andreyasadchy.xtra.repository.RecentSearchesRepository
-import com.github.andreyasadchy.xtra.repository.datasource.SearchVideosDataSource
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.Bookmark
+import com.endlessbum.twitchpro.model.ui.RecentSearch
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.model.ui.Video
+import com.endlessbum.twitchpro.repository.BookmarksRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.PlayerRepository
+import com.endlessbum.twitchpro.repository.RecentSearchesRepository
+import com.endlessbum.twitchpro.repository.datasource.SearchVideosDataSource
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -309,9 +309,9 @@ class VideoSearchViewModel(
     companion object {
         val VideoSearchViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                VideoSearchViewModel(application.applicationContext, xtraModule.recentSearchesRepository, xtraModule.playerRepository, xtraModule.bookmarksRepository, xtraModule.graphQLRepository, xtraModule.helixRepository, xtraModule.httpEngine, xtraModule.cronetEngine, xtraModule.cronetExecutor, xtraModule.okHttpClient)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                VideoSearchViewModel(application.applicationContext, twitchProModule.recentSearchesRepository, twitchProModule.playerRepository, twitchProModule.bookmarksRepository, twitchProModule.graphQLRepository, twitchProModule.helixRepository, twitchProModule.httpEngine, twitchProModule.cronetEngine, twitchProModule.cronetExecutor, twitchProModule.okHttpClient)
             }
         }
     }

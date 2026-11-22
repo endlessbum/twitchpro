@@ -1,25 +1,25 @@
-package com.github.andreyasadchy.xtra.db
+package com.endlessbum.twitchpro.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.github.andreyasadchy.xtra.model.NotificationUser
-import com.github.andreyasadchy.xtra.model.PlaybackState
-import com.github.andreyasadchy.xtra.model.ShownNotification
-import com.github.andreyasadchy.xtra.model.VideoPosition
-import com.github.andreyasadchy.xtra.model.chat.RecentEmote
-import com.github.andreyasadchy.xtra.model.ui.Bookmark
-import com.github.andreyasadchy.xtra.model.ui.BookmarkIgnoredUser
-import com.github.andreyasadchy.xtra.model.ui.ChannelSort
-import com.github.andreyasadchy.xtra.model.ui.CustomProxy
-import com.github.andreyasadchy.xtra.model.ui.GameSort
-import com.github.andreyasadchy.xtra.model.ui.LocalChannelFollow
-import com.github.andreyasadchy.xtra.model.ui.LocalGameFollow
-import com.github.andreyasadchy.xtra.model.ui.OfflineVideo
-import com.github.andreyasadchy.xtra.model.ui.RecentSearch
-import com.github.andreyasadchy.xtra.model.ui.SavedFilter
-import com.github.andreyasadchy.xtra.model.ui.StreamProxy
-import com.github.andreyasadchy.xtra.model.ui.TranslatedChannel
-import com.github.andreyasadchy.xtra.model.ui.VideoSwap
+import com.endlessbum.twitchpro.model.NotificationUser
+import com.endlessbum.twitchpro.model.PlaybackState
+import com.endlessbum.twitchpro.model.ShownNotification
+import com.endlessbum.twitchpro.model.VideoPosition
+import com.endlessbum.twitchpro.model.chat.RecentEmote
+import com.endlessbum.twitchpro.model.ui.Bookmark
+import com.endlessbum.twitchpro.model.ui.BookmarkIgnoredUser
+import com.endlessbum.twitchpro.model.ui.ChannelSort
+import com.endlessbum.twitchpro.model.ui.CustomProxy
+import com.endlessbum.twitchpro.model.ui.GameSort
+import com.endlessbum.twitchpro.model.ui.LocalChannelFollow
+import com.endlessbum.twitchpro.model.ui.LocalGameFollow
+import com.endlessbum.twitchpro.model.ui.OfflineVideo
+import com.endlessbum.twitchpro.model.ui.RecentSearch
+import com.endlessbum.twitchpro.model.ui.SavedFilter
+import com.endlessbum.twitchpro.model.ui.StreamProxy
+import com.endlessbum.twitchpro.model.ui.TranslatedChannel
+import com.endlessbum.twitchpro.model.ui.VideoSwap
 
 @Database(
     entities = [

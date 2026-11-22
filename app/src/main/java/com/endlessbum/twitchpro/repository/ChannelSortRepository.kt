@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.repository
+package com.endlessbum.twitchpro.repository
 
-import com.github.andreyasadchy.xtra.db.ChannelSortDao
-import com.github.andreyasadchy.xtra.model.ui.ChannelSort
+import com.endlessbum.twitchpro.db.ChannelSortDao
+import com.endlessbum.twitchpro.model.ui.ChannelSort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

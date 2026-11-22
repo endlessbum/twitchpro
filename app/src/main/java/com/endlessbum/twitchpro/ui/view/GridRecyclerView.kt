@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.view
+package com.endlessbum.twitchpro.ui.view
 
 import android.content.Context
 import android.content.res.Configuration
@@ -9,18 +9,18 @@ import android.view.ViewConfiguration
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.ui.common.GamesAdapter
-import com.github.andreyasadchy.xtra.ui.common.StreamsAdapter
-import com.github.andreyasadchy.xtra.ui.common.StreamsCompactAdapter
-import com.github.andreyasadchy.xtra.ui.following.channels.FollowedChannelsAdapter
-import com.github.andreyasadchy.xtra.ui.following.games.FollowedGamesAdapter
-import com.github.andreyasadchy.xtra.ui.saved.filters.FiltersAdapter
-import com.github.andreyasadchy.xtra.ui.search.RecentSearchAdapter
-import com.github.andreyasadchy.xtra.ui.search.channels.ChannelSearchAdapter
-import com.github.andreyasadchy.xtra.ui.team.TeamMembersAdapter
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.ui.common.GamesAdapter
+import com.endlessbum.twitchpro.ui.common.StreamsAdapter
+import com.endlessbum.twitchpro.ui.common.StreamsCompactAdapter
+import com.endlessbum.twitchpro.ui.following.channels.FollowedChannelsAdapter
+import com.endlessbum.twitchpro.ui.following.games.FollowedGamesAdapter
+import com.endlessbum.twitchpro.ui.saved.filters.FiltersAdapter
+import com.endlessbum.twitchpro.ui.search.RecentSearchAdapter
+import com.endlessbum.twitchpro.ui.search.channels.ChannelSearchAdapter
+import com.endlessbum.twitchpro.ui.team.TeamMembersAdapter
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 
 class GridRecyclerView : RecyclerView {
 
@@ -78,7 +78,7 @@ class GridRecyclerView : RecyclerView {
 
     /**
      * TV lists of streams: the card whose preview plays grows and the others move to make room
-     * (turned off with the growth of the cards in the Xtra TV settings).
+     * (turned off with the growth of the cards in the TwitchPro settings).
      */
     private val featureLayoutManager: TvFeatureGridLayoutManager? = if (isTv && prefs.getBoolean(C.TV_CARD_ZOOM, false)) {
         TvFeatureGridLayoutManager { parent, child, immediate -> scrollToPivot(parent, child, immediate) }.apply {
@@ -141,15 +141,15 @@ class GridRecyclerView : RecyclerView {
             } ?: (adapter as? StreamsCompactAdapter)?.let { streams ->
                 getChildAdapterPosition(card).takeIf { it != NO_POSITION && it < streams.itemCount }?.let { streams.peek(it) }
             }
-            val activity = context as? com.github.andreyasadchy.xtra.ui.main.MainActivity
+            val activity = context as? com.endlessbum.twitchpro.ui.main.MainActivity
             if (stream != null && activity != null) {
                 val options = card.findViewById<View>(R.id.options)?.takeIf { it.visibility == View.VISIBLE && it.hasOnClickListeners() }
                 activity.showTvStreamActions(
                     stream,
-                    listOfNotNull(options?.let { com.github.andreyasadchy.xtra.ui.tv.TvStreamActions.Extra(context.getString(R.string.tv_more_options), R.drawable.baseline_more_vert_black_24) { it.performClick() } })
+                    listOfNotNull(options?.let { com.endlessbum.twitchpro.ui.tv.TvStreamActions.Extra(context.getString(R.string.tv_more_options), R.drawable.baseline_more_vert_black_24) { it.performClick() } })
                 )
-            } else if (adapter is com.github.andreyasadchy.xtra.ui.common.VideosAdapter || adapter is com.github.andreyasadchy.xtra.ui.common.ClipsAdapter ||
-                adapter is com.github.andreyasadchy.xtra.ui.saved.bookmarks.BookmarksAdapter || adapter is FollowedChannelsAdapter
+            } else if (adapter is com.endlessbum.twitchpro.ui.common.VideosAdapter || adapter is com.endlessbum.twitchpro.ui.common.ClipsAdapter ||
+                adapter is com.endlessbum.twitchpro.ui.saved.bookmarks.BookmarksAdapter || adapter is FollowedChannelsAdapter
             ) {
                 // videos, clips, bookmarks, followed channels: their own panel of actions (the same as on the home), not the small menu
                 if (!card.performLongClick()) {
@@ -317,10 +317,10 @@ class GridRecyclerView : RecyclerView {
      * when the card shows no category (the lists of a category). Called again when the dynamic ambiance changes color.
      */
     fun tintCards() {
-        if (!isTv || com.github.andreyasadchy.xtra.ui.tv.TvAccent.current == null) {
+        if (!isTv || com.endlessbum.twitchpro.ui.tv.TvAccent.current == null) {
             return
         }
-        val accent = com.github.andreyasadchy.xtra.ui.tv.TvAccent.onDark
+        val accent = com.endlessbum.twitchpro.ui.tv.TvAccent.onDark
         for (i in 0 until childCount) {
             val card = getChildAt(i)
             val game = card.findViewById<android.widget.TextView>(R.id.gameName)

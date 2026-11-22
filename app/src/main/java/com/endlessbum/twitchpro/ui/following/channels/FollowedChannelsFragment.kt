@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.following.channels
+package com.endlessbum.twitchpro.ui.following.channels
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,16 +16,16 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.CommonRecyclerViewLayoutBinding
-import com.github.andreyasadchy.xtra.databinding.SortBarBinding
-import com.github.andreyasadchy.xtra.model.ui.ChannelSort
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.ui.common.FragmentHost
-import com.github.andreyasadchy.xtra.ui.common.PagedListFragment
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.common.Sortable
-import com.github.andreyasadchy.xtra.ui.following.channels.FollowedChannelsViewModel.Companion.FollowedChannelsViewModelFactory
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.CommonRecyclerViewLayoutBinding
+import com.endlessbum.twitchpro.databinding.SortBarBinding
+import com.endlessbum.twitchpro.model.ui.ChannelSort
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.ui.common.FragmentHost
+import com.endlessbum.twitchpro.ui.common.PagedListFragment
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.common.Sortable
+import com.endlessbum.twitchpro.ui.following.channels.FollowedChannelsViewModel.Companion.FollowedChannelsViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -91,7 +91,7 @@ class FollowedChannelsFragment : PagedListFragment(), Scrollable, Sortable, Foll
         initializeAdapter(binding, pagingAdapter, enableScrollTopButton = false)
         viewLifecycleOwner.lifecycleScope.launch {
             var initial = true
-            com.github.andreyasadchy.xtra.ui.tv.TvFavorites.items.collect {
+            com.endlessbum.twitchpro.ui.tv.TvFavorites.items.collect {
                 if (initial) {
                     initial = false
                 } else {

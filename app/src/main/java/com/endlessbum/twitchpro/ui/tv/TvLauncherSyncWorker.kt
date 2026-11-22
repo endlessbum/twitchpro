@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.os.Build
@@ -9,12 +9,12 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.github.andreyasadchy.xtra.ui.view.TvUi
+import com.endlessbum.twitchpro.ui.view.TvUi
 import java.util.concurrent.TimeUnit
 
 /**
  * Periodic WorkManager job (every 15 min when network is connected) that keeps the Android TV / Google TV
- * "Followed Live" launcher channel and "Watch Next" row up-to-date even while Xtra TV is closed.
+ * "Followed Live" launcher channel and "Watch Next" row up-to-date even while TwitchPro is closed.
  */
 class TvLauncherSyncWorker(
     appContext: Context,

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -40,14 +40,14 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.DialogCustomProxyEditBinding
-import com.github.andreyasadchy.xtra.model.ui.CustomProxy
-import com.github.andreyasadchy.xtra.model.ui.StreamProxy
-import com.github.andreyasadchy.xtra.repository.PlayerRepository
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.DialogCustomProxyEditBinding
+import com.endlessbum.twitchpro.model.ui.CustomProxy
+import com.endlessbum.twitchpro.model.ui.StreamProxy
+import com.endlessbum.twitchpro.repository.PlayerRepository
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
 import androidx.core.content.edit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

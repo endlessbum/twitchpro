@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.content.Context
 import android.os.Bundle
@@ -11,15 +11,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentViewerListBinding
-import com.github.andreyasadchy.xtra.model.ui.ChannelViewerList
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.player.PlayerViewerListViewModel.Companion.PlayerViewerListViewModelFactory
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentViewerListBinding
+import com.endlessbum.twitchpro.model.ui.ChannelViewerList
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.player.PlayerViewerListViewModel.Companion.PlayerViewerListViewModelFactory
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.flow.collectLatest

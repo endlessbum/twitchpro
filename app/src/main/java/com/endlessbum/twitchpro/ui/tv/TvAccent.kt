@@ -1,11 +1,11 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 
 /**
- * TV: the color of accent of the app, the ambiance color chosen in the Xtra TV settings (violet at first): loading
+ * TV: the color of accent of the app, the ambiance color chosen in the TwitchPro settings (violet at first): loading
  * circles, timeline, focused buttons and rows, tabs, sliders, the multi-stream row. With "None (plain background)" the
  * colors of before (white, violet of Twitch). Read when the app starts (changing the ambiance color restarts it).
  *

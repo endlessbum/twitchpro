@@ -1,12 +1,12 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import androidx.lifecycle.lifecycleScope
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.VideoPosition
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.model.ui.Video
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.VideoPosition
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.model.ui.Video
+import com.endlessbum.twitchpro.ui.main.MainActivity
 import kotlinx.coroutines.launch
 
 /**
@@ -52,7 +52,7 @@ object TvVideoActions {
                     id.toLongOrNull()?.let { number ->
                         activity.lifecycleScope.launch {
                             try {
-                                (activity.application as XtraApp).xtraModule.playerRepository.saveVideoPosition(VideoPosition(number, 0))
+                                (activity.application as TwitchProApp).twitchProModule.playerRepository.saveVideoPosition(VideoPosition(number, 0))
                             } catch (e: Exception) {
 
                             }

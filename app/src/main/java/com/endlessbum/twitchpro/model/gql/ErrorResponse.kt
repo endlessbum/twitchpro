@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.model.gql
+package com.endlessbum.twitchpro.model.gql
 
 import kotlinx.serialization.Serializable
 

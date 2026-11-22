@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.following.channels
+package com.endlessbum.twitchpro.ui.following.channels
 
 import android.content.Context
 import android.os.Bundle
@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.DialogFollowedChannelsSortBinding
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.DialogFollowedChannelsSortBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

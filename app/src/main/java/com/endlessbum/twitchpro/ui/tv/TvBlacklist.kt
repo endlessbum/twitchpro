@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.widget.Toast
@@ -53,10 +53,10 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.util.TwitchApiHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONArray
 import org.json.JSONObject

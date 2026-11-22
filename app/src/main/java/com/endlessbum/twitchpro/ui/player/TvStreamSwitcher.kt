@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
@@ -17,16 +17,16 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentStreamsListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource
-import com.github.andreyasadchy.xtra.ui.view.TvStreamPreview
-import com.github.andreyasadchy.xtra.ui.view.TvCards
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentStreamsListItemBinding
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.tv.TvPreviewSource
+import com.endlessbum.twitchpro.ui.view.TvStreamPreview
+import com.endlessbum.twitchpro.ui.view.TvCards
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.launch
 
 /**
@@ -58,7 +58,7 @@ object TvStreamSwitcher {
 
     private class TabEntry(
         val title: String,
-        val row: com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.Row? = null,
+        val row: com.endlessbum.twitchpro.ui.tv.TvStreamSources.Row? = null,
         val isOrigin: Boolean = false,
         val isSearch: Boolean = false,
         val iconRes: Int? = null,
@@ -74,7 +74,7 @@ object TvStreamSwitcher {
         streams: List<Stream>,
         currentChannelLogin: String?,
         selection: Selection? = null,
-        rows: List<com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.Row> = emptyList(),
+        rows: List<com.endlessbum.twitchpro.ui.tv.TvStreamSources.Row> = emptyList(),
         onPip: ((Stream) -> Unit)? = null,
         /** Source of [streams], to load more of them at the end of the row. */
         source: (() -> androidx.paging.PagingSource<Int, Stream>)? = null,
@@ -90,7 +90,7 @@ object TvStreamSwitcher {
         // tab shown (Stream Together first when active, else the list of the stream), the lists already loaded, every stream shown
         val omitEmptyCurrentTab = selection == null && streams.isEmpty() && source == null && effectiveRows.isNotEmpty()
         val originRow = if (selection == null && !omitEmptyCurrentTab) {
-            com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.originRow(activity, source, effectiveRows)
+            com.endlessbum.twitchpro.ui.tv.TvStreamSources.originRow(activity, source, effectiveRows)
         } else {
             -1
         }
@@ -111,8 +111,8 @@ object TvStreamSwitcher {
                 }
             }
             else -> {
-                val coStreamRow = effectiveRows.firstOrNull { it.kind == com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.KIND_COSTREAM }
-                val restRows = effectiveRows.filter { it.kind != com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.KIND_COSTREAM }
+                val coStreamRow = effectiveRows.firstOrNull { it.kind == com.endlessbum.twitchpro.ui.tv.TvStreamSources.KIND_COSTREAM }
+                val restRows = effectiveRows.filter { it.kind != com.endlessbum.twitchpro.ui.tv.TvStreamSources.KIND_COSTREAM }
                 buildList {
                     if (coStreamRow != null) {
                         add(TabEntry(coStreamRow.title, row = coStreamRow, iconRes = coStreamRow.iconRes))
@@ -131,7 +131,7 @@ object TvStreamSwitcher {
         val searchTabIndex = tabEntries.indexOfFirst { it.isSearch }
         val originTab = tabEntries.indexOfFirst { it.isOrigin }
         // the row a tab shows, null for the list of the stream or Search
-        val rowOf: (Int) -> com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.Row? = { index ->
+        val rowOf: (Int) -> com.endlessbum.twitchpro.ui.tv.TvStreamSources.Row? = { index ->
             tabEntries.getOrNull(index)?.row
         }
         val loadedTabs = mutableMapOf<Int, List<Stream>>()
@@ -144,7 +144,7 @@ object TvStreamSwitcher {
             }
         }
         val coStreamTabIndex = if (selection == null) {
-            tabEntries.indexOfFirst { it.row?.kind == com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.KIND_COSTREAM }
+            tabEntries.indexOfFirst { it.row?.kind == com.endlessbum.twitchpro.ui.tv.TvStreamSources.KIND_COSTREAM }
         } else {
             -1
         }
@@ -176,7 +176,7 @@ object TvStreamSwitcher {
             text = selection?.title ?: activity.getString(R.string.tv_switch_stream)
             if (selection != null) {
                 val icon = activity.getDrawable(R.drawable.tv_ic_multistream)?.mutate()?.apply {
-                    setTint(com.github.andreyasadchy.xtra.ui.tv.TvAccent.color)
+                    setTint(com.endlessbum.twitchpro.ui.tv.TvAccent.color)
                     setBounds(0, 0, (26 * density).toInt(), (26 * density).toInt())
                 }
                 setCompoundDrawablesRelative(icon, null, null, null)
@@ -224,7 +224,7 @@ object TvStreamSwitcher {
                 gravity = Gravity.CENTER_VERTICAL
                 setPadding(horizontalPadding + (8 * density).toInt(), (4 * density).toInt(), horizontalPadding, (4 * density).toInt())
             }
-            val accentColor = com.github.andreyasadchy.xtra.ui.tv.TvAccent.onDark
+            val accentColor = com.endlessbum.twitchpro.ui.tv.TvAccent.onDark
             val hintBadge = TextView(activity).apply {
                 text = activity.getString(R.string.tv_switch_pip_hint)
                 setTextColor(0xFFFFFFFF.toInt())
@@ -406,7 +406,7 @@ object TvStreamSwitcher {
                         return@Adapter
                     }
                     checked.size >= selection.max -> {
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, activity.getString(R.string.tv_multistream_max, selection.max), android.widget.Toast.LENGTH_SHORT).show()
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, activity.getString(R.string.tv_multistream_max, selection.max), android.widget.Toast.LENGTH_SHORT).show()
                         return@Adapter
                     }
                     else -> checked.add(login)
@@ -419,7 +419,7 @@ object TvStreamSwitcher {
                 // the info of the stream reached for a moment, like left / right
                 PlayerFragment.peekHudOnStart = true
                 val row = rowOf(currentTab)
-                if (row != null && row.kind != com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.KIND_COSTREAM) {
+                if (row != null && row.kind != com.endlessbum.twitchpro.ui.tv.TvStreamSources.KIND_COSTREAM) {
                     // a stream of another list: that list becomes the one of left / right and of this row
                     activity.startStream(stream, adapter.streams, row.source)
                 } else {
@@ -433,7 +433,7 @@ object TvStreamSwitcher {
                     (stream.channelLogin.equals(currentChannelLogin, ignoreCase = true) || activity.isStreamInTvPip(stream.channelLogin))
                 ) {
                     // the stream watched is already on the screen: no small window of it
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, R.string.tv_pip_already_shown, android.widget.Toast.LENGTH_SHORT).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, R.string.tv_pip_already_shown, android.widget.Toast.LENGTH_SHORT).show()
                 } else {
                     dialog.dismiss()
                     onPip(stream)
@@ -442,9 +442,9 @@ object TvStreamSwitcher {
         }
         recyclerView.adapter = adapter
         // more of the list near its end (30 streams by page), for the list of the stream and the other tabs
-        val pages = mutableMapOf<Int, com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.Pages>()
+        val pages = mutableMapOf<Int, com.endlessbum.twitchpro.ui.tv.TvStreamSources.Pages>()
         if (source != null && originTab >= 0) {
-            pages[originTab] = com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.Pages(source)
+            pages[originTab] = com.endlessbum.twitchpro.ui.tv.TvStreamSources.Pages(source)
         }
         var moreJob: kotlinx.coroutines.Job? = null
         adapter.onFocused = { position ->
@@ -483,7 +483,7 @@ object TvStreamSwitcher {
         validate?.setOnClickListener {
             val logins = checked ?: return@setOnClickListener
             if (logins.size < minChecked) {
-                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, activity.getString(R.string.tv_multistream_min, minChecked), android.widget.Toast.LENGTH_SHORT).show()
+                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, activity.getString(R.string.tv_multistream_min, minChecked), android.widget.Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             dialog.dismiss()
@@ -515,8 +515,8 @@ object TvStreamSwitcher {
                 tabViews.forEachIndexed { i, tab -> tab.text = if (i == searchTabIndex && searchQuery.isNotEmpty()) label else tabTitles[i] }
                 tabJob = activity.lifecycleScope.launch {
                     view.text = activity.getString(R.string.tv_switch_loading, label)
-                    val searchPages = com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.Pages {
-                        com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.search(activity, trimmed)
+                    val searchPages = com.endlessbum.twitchpro.ui.tv.TvStreamSources.Pages {
+                        com.endlessbum.twitchpro.ui.tv.TvStreamSources.search(activity, trimmed)
                     }
                     pages[searchTabIndex] = searchPages
                     val list = searchPages.next()?.distinctBy { it.channelLogin }
@@ -527,7 +527,7 @@ object TvStreamSwitcher {
                         return@launch
                     }
                     if (list.isNullOrEmpty()) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, if (list == null) R.string.tv_switch_error else R.string.tv_switch_empty, android.widget.Toast.LENGTH_SHORT).show()
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, if (list == null) R.string.tv_switch_error else R.string.tv_switch_empty, android.widget.Toast.LENGTH_SHORT).show()
                     } else {
                         showTab(searchTabIndex, list)
                         recyclerView.post { recyclerView.layoutManager?.findViewByPosition(0)?.requestFocus() }
@@ -539,8 +539,8 @@ object TvStreamSwitcher {
             // OK on a tab shows its list (loaded once); on Search it always opens the search box
             view.setOnClickListener {
                 if (index == searchTabIndex) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvDialogs.show(activity) { dismiss ->
-                        com.github.andreyasadchy.xtra.ui.tv.ChatComposer(
+                    com.endlessbum.twitchpro.ui.tv.TvDialogs.show(activity) { dismiss ->
+                        com.endlessbum.twitchpro.ui.tv.ChatComposer(
                             title = activity.getString(R.string.search),
                             hint = activity.getString(R.string.search),
                             sendLabel = activity.getString(R.string.search),
@@ -563,7 +563,7 @@ object TvStreamSwitcher {
                         // loading: the tab says so until the list comes
                         view.text = activity.getString(R.string.tv_switch_loading, tabTitles[index])
                         rowOf(index)?.let { row ->
-                            val rowPages = com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.Pages(row.source)
+                            val rowPages = com.endlessbum.twitchpro.ui.tv.TvStreamSources.Pages(row.source)
                             pages[index] = rowPages
                             rowPages.next()?.distinctBy { it.channelLogin }
                         }?.filter { it.channelLogin !in (selection?.exclude ?: emptySet()) }?.also { loadedTabs[index] = it }
@@ -573,7 +573,7 @@ object TvStreamSwitcher {
                         return@launch
                     }
                     if (list.isNullOrEmpty()) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, if (list == null) R.string.tv_switch_error else R.string.tv_switch_empty, android.widget.Toast.LENGTH_SHORT).show()
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, if (list == null) R.string.tv_switch_error else R.string.tv_switch_empty, android.widget.Toast.LENGTH_SHORT).show()
                     } else {
                         showTab(index, list)
                         // the list is there: the focus goes to its first stream
@@ -629,7 +629,7 @@ object TvStreamSwitcher {
                         val row = tabEntries[candidate].row ?: continue
                         val tabView = tabViews.getOrNull(candidate)
                         tabView?.text = activity.getString(R.string.tv_switch_loading, tabTitles[candidate])
-                        val rowPages = com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.Pages(row.source)
+                        val rowPages = com.endlessbum.twitchpro.ui.tv.TvStreamSources.Pages(row.source)
                         pages[candidate] = rowPages
                         val fetched = rowPages.next()?.distinctBy { it.channelLogin }
                             ?.filter { it.channelLogin !in exclude }
@@ -724,14 +724,14 @@ object TvStreamSwitcher {
 
         override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
             super.onAttachedToRecyclerView(recyclerView)
-            com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.attachToRecyclerView(recyclerView) {
+            com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.attachToRecyclerView(recyclerView) {
                 if (itemCount > 0) {
-                    notifyItemRangeChanged(0, itemCount, com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM)
+                    notifyItemRangeChanged(0, itemCount, com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM)
                 }
             }
-            com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.attachToRecyclerView(recyclerView) {
+            com.endlessbum.twitchpro.ui.tv.TvPlaybackState.attachToRecyclerView(recyclerView) {
                 if (itemCount > 0) {
-                    notifyItemRangeChanged(0, itemCount, com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK)
+                    notifyItemRangeChanged(0, itemCount, com.endlessbum.twitchpro.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK)
                 }
             }
         }
@@ -744,12 +744,12 @@ object TvStreamSwitcher {
             // number of a selected stream (its place in the multi-stream), at the top right of the card, in the color of accent
             val badge = TextView(parent.context).apply {
                 gravity = Gravity.CENTER
-                setTextColor(com.github.andreyasadchy.xtra.ui.tv.TvAccent.onAccent)
+                setTextColor(com.endlessbum.twitchpro.ui.tv.TvAccent.onAccent)
                 textSize = 15f
                 setTypeface(typeface, android.graphics.Typeface.BOLD)
                 background = android.graphics.drawable.GradientDrawable().apply {
                     shape = android.graphics.drawable.GradientDrawable.OVAL
-                    setColor(com.github.andreyasadchy.xtra.ui.tv.TvAccent.color)
+                    setColor(com.endlessbum.twitchpro.ui.tv.TvAccent.color)
                     setStroke((2 * density).toInt(), android.graphics.Color.WHITE)
                 }
                 visibility = View.GONE
@@ -765,27 +765,27 @@ object TvStreamSwitcher {
         private fun bindUsername(holder: ViewHolder, stream: Stream) {
             val context = holder.itemView.context
             val rawName: CharSequence = stream.channelName ?: stream.channelLogin.orEmpty()
-            com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.enqueue(context, stream)
-            val coCount = com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.getCount(stream.channelId, stream.channelLogin)
+            com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.enqueue(context, stream)
+            val coCount = com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.getCount(stream.channelId, stream.channelLogin)
             holder.binding.username.visibility = View.VISIBLE
-            holder.binding.username.text = com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.formatUsernameWithBadge(context, rawName, coCount)
+            holder.binding.username.text = com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.formatUsernameWithBadge(context, rawName, coCount)
         }
 
         private fun bindPlaybackBadge(holder: ViewHolder, stream: Stream) {
-            com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.bindView(holder.binding.tvPlayingBadge, stream.channelLogin)
+            com.endlessbum.twitchpro.ui.tv.TvPlaybackState.bindView(holder.binding.tvPlayingBadge, stream.channelLogin)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
             val validPayloads = setOf(
-                com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM,
-                com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK,
+                com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM,
+                com.endlessbum.twitchpro.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK,
             )
             if (payloads.isNotEmpty() && payloads.all { it in validPayloads }) {
                 streams.getOrNull(position)?.let { stream ->
-                    if (com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM in payloads) {
+                    if (com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM in payloads) {
                         bindUsername(holder, stream)
                     }
-                    if (com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK in payloads) {
+                    if (com.endlessbum.twitchpro.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK in payloads) {
                         bindPlaybackBadge(holder, stream)
                     }
                 }
@@ -814,8 +814,8 @@ object TvStreamSwitcher {
                     root.isLongClickable = false
                 }
                 root.setOnFocusChangeListener { view, hasFocus ->
-                    com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(title, hasFocus)
-                    com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(gameName, hasFocus)
+                    com.endlessbum.twitchpro.ui.view.TvMarquee.update(title, hasFocus)
+                    com.endlessbum.twitchpro.ui.view.TvMarquee.update(gameName, hasFocus)
                     if (hasFocus) {
                         onFocused?.invoke(holder.bindingAdapterPosition)
                         preview?.schedule(view, stream.channelLogin)
@@ -826,7 +826,7 @@ object TvStreamSwitcher {
                 thumbnail.visibility = View.VISIBLE
                 context.imageLoader.enqueue(
                     ImageRequest.Builder(context).apply {
-                        data(com.github.andreyasadchy.xtra.ui.tv.TvThumbnails.picture(stream, stream.thumbnail))
+                        data(com.endlessbum.twitchpro.ui.tv.TvThumbnails.picture(stream, stream.thumbnail))
                         crossfade(true)
                         target(thumbnail)
                     }.build()

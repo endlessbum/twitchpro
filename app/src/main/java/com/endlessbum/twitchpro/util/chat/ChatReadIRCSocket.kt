@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.util.chat
+package com.endlessbum.twitchpro.util.chat
 
 import android.os.Build
 import kotlinx.coroutines.Dispatchers

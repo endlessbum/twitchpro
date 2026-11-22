@@ -35,14 +35,14 @@
             app:layout_constraintStart_toStartOf="@id/thumbnail"
             app:layout_constraintTop_toTopOf="@id/thumbnail" />
 
-        <com.github.andreyasadchy.xtra.ui.view.TextWithShadow
+        <com.endlessbum.twitchpro.ui.view.TextWithShadow
             android:id="@+id/type"
             style="@style/TvThumbnailBadge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="type" />
 
-        <com.github.andreyasadchy.xtra.ui.view.TextWithShadow
+        <com.endlessbum.twitchpro.ui.view.TextWithShadow
             android:id="@+id/views"
             style="@style/TvThumbnailBadge"
             app:layout_constraintBottom_toTopOf="@id/progressBar"
@@ -50,7 +50,7 @@
             app:layout_goneMarginBottom="6dp"
             tools:text="133769 views" />
 
-        <com.github.andreyasadchy.xtra.ui.view.TextWithShadow
+        <com.endlessbum.twitchpro.ui.view.TextWithShadow
             android:id="@+id/duration"
             style="@style/TvThumbnailBadge"
             app:layout_constraintBottom_toTopOf="@id/progressBar"
@@ -122,7 +122,7 @@
                 tools:text="@sample/videos.json/vods/game"
                 tools:visibility="visible" />
 
-            <com.github.andreyasadchy.xtra.ui.view.TextWithShadow
+            <com.endlessbum.twitchpro.ui.view.TextWithShadow
                 android:id="@+id/date"
                 style="@style/TvCardSubtitle"
                 android:shadowRadius="0"

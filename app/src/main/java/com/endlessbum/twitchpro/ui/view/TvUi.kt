@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.view
+package com.endlessbum.twitchpro.ui.view
 
 import android.content.Context
 import android.view.View
@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.util.prefs
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.MaterialColors
@@ -24,9 +24,9 @@ object TvUi {
      * focus highlight and, in the main screen, the toolbar actions moved to the navigation rail are hidden.
      */
     fun adapt(view: View, hideToolbarActions: Boolean) {
-        // loading circles in the color of accent (the ambiance color of the Xtra TV settings)
-        if (view is android.widget.ProgressBar && com.github.andreyasadchy.xtra.ui.tv.TvAccent.current != null) {
-            view.indeterminateTintList = com.github.andreyasadchy.xtra.ui.tv.TvAccent.colorList
+        // loading circles in the color of accent (the ambiance color of the TwitchPro settings)
+        if (view is android.widget.ProgressBar && com.endlessbum.twitchpro.ui.tv.TvAccent.current != null) {
+            view.indeterminateTintList = com.endlessbum.twitchpro.ui.tv.TvAccent.colorList
         }
         when (view) {
             is AppBarLayout -> {
@@ -137,8 +137,8 @@ object TvUi {
             if (tab.foreground == null) {
                 tab.foreground = tab.context.getDrawable(R.drawable.tv_row_focus)
             }
-            // option of the Xtra TV settings: a tab shows its page after a short stop on it, without OK
-            if (tab.context.prefs().getBoolean(com.github.andreyasadchy.xtra.util.C.TV_FOCUS_SWITCH, false)) {
+            // option of the TwitchPro settings: a tab shows its page after a short stop on it, without OK
+            if (tab.context.prefs().getBoolean(com.endlessbum.twitchpro.util.C.TV_FOCUS_SWITCH, false)) {
                 val select = Runnable { if (tab.hasFocus() && !tab.isSelected) tab.performClick() }
                 tab.setOnFocusChangeListener { _, hasFocus ->
                     tab.removeCallbacks(select)
@@ -160,7 +160,7 @@ object TvUi {
 
     /** Dialog content: every clickable row or button gets a clearly visible focus frame. */
     fun adaptDialog(view: View) {
-        if (view is android.widget.EditText && view.context.prefs().getBoolean(com.github.andreyasadchy.xtra.util.C.TV_DISABLE_SOFT_KEYBOARD, false)) {
+        if (view is android.widget.EditText && view.context.prefs().getBoolean(com.endlessbum.twitchpro.util.C.TV_DISABLE_SOFT_KEYBOARD, false)) {
             view.showSoftInputOnFocus = false
         }
         if (view.isClickable && view.isFocusable && view.foreground == null && view !is RecyclerView) {
@@ -206,9 +206,9 @@ object TvUi {
                 styleSheetViews(sheet)
                 // sort, filters and choices: drawn with Compose
                 val content = fragment.view
-                val isChoiceSheet = fragment.javaClass.simpleName.endsWith("SortDialog") || fragment is com.github.andreyasadchy.xtra.ui.common.RadioButtonDialogFragment
-                if (isChoiceSheet && content != null && sheet is ViewGroup && com.github.andreyasadchy.xtra.ui.tv.TvSheetCompose.canConvert(content)) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvSheetCompose.install(
+                val isChoiceSheet = fragment.javaClass.simpleName.endsWith("SortDialog") || fragment is com.endlessbum.twitchpro.ui.common.RadioButtonDialogFragment
+                if (isChoiceSheet && content != null && sheet is ViewGroup && com.endlessbum.twitchpro.ui.tv.TvSheetCompose.canConvert(content)) {
+                    com.endlessbum.twitchpro.ui.tv.TvSheetCompose.install(
                         sheet,
                         content,
                         if (fragment.javaClass.simpleName.endsWith("SortDialog")) context.getString(R.string.sort) else null
@@ -348,7 +348,7 @@ object TvUi {
                 refreshing.value = false
                 if (grid.isAttachedToWindow) {
                     grid.sweep()
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(grid.context, R.string.tv_refreshed, android.widget.Toast.LENGTH_SHORT).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(grid.context, R.string.tv_refreshed, android.widget.Toast.LENGTH_SHORT).show()
                 }
             }, wait)
         }

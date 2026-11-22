@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.view
+package com.endlessbum.twitchpro.ui.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -20,7 +20,7 @@ import kotlin.math.max
  */
 @Keep
 @OptIn(UnstableApi::class)
-class XtraTimeBar : DefaultTimeBar {
+class TwitchProTimeBar : DefaultTimeBar {
 
     private var barHeightPx: Int = 0
     private var barGravity: Int = 0

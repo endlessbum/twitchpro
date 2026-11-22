@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.top
+package com.endlessbum.twitchpro.ui.top
 
 import android.content.Intent
 import android.os.Bundle
@@ -22,31 +22,31 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentGamesBinding
-import com.github.andreyasadchy.xtra.model.ui.GameSort
-import com.github.andreyasadchy.xtra.model.ui.SavedFilter
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.common.PagedListFragment
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.common.StreamsAdapter
-import com.github.andreyasadchy.xtra.ui.common.StreamsCompactAdapter
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog.Companion.RECENT
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog.Companion.SORT_RELEVANCE
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog.Companion.SORT_VIEWERS
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog.Companion.SORT_VIEWERS_ASC
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentArgs
-import com.github.andreyasadchy.xtra.ui.login.LoginActivity
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.search.SearchPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.settings.SettingsActivity
-import com.github.andreyasadchy.xtra.ui.top.TopStreamsViewModel.Companion.TopStreamsViewModelFactory
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentGamesBinding
+import com.endlessbum.twitchpro.model.ui.GameSort
+import com.endlessbum.twitchpro.model.ui.SavedFilter
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.common.PagedListFragment
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.common.StreamsAdapter
+import com.endlessbum.twitchpro.ui.common.StreamsCompactAdapter
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog.Companion.RECENT
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog.Companion.SORT_RELEVANCE
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog.Companion.SORT_VIEWERS
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog.Companion.SORT_VIEWERS_ASC
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentArgs
+import com.endlessbum.twitchpro.ui.login.LoginActivity
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.search.SearchPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.settings.SettingsActivity
+import com.endlessbum.twitchpro.ui.top.TopStreamsViewModel.Companion.TopStreamsViewModelFactory
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -145,7 +145,7 @@ class TopStreamsFragment : PagedListFragment(), Scrollable, StreamsSortDialog.On
                 viewModel.setFilter(
                     sort = sortValues?.streamSort,
                     tags = args.tags ?: sortValues?.streamTags?.split(',')?.toTypedArray(),
-                    // the language of "Popular" chosen in the Xtra TV settings, the same as the row of the home
+                    // the language of "Popular" chosen in the TwitchPro settings, the same as the row of the home
                     languages = args.languages ?: popularLanguages() ?: sortValues?.streamLanguages?.split(',')?.toTypedArray(),
                 )
                 viewModel.sortText.value = getString(
@@ -262,7 +262,7 @@ class TopStreamsFragment : PagedListFragment(), Scrollable, StreamsSortDialog.On
         }
     }
 
-    /** TV: languages of "Popular" from the Xtra TV settings, null when none is chosen. */
+    /** TV: languages of "Popular" from the TwitchPro settings, null when none is chosen. */
     private fun popularLanguages(): Array<String>? {
         if (!resources.getBoolean(R.bool.isTv)) {
             return null

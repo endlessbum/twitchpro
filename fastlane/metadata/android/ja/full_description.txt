@@ -1,4 +1,4 @@
-<i>Xtra for Twitch</i> は、モバイルデバイスで最高の視聴とチャット体験を提供することに焦点を当てた <a href='https://ja.wikipedia.org/wiki/Twitch' target='_blank'>Twitch</a> クライアントです:
+<i>TwitchPro</i> は、モバイルデバイスで最高の視聴とチャット体験を提供することに焦点を当てた <a href='https://ja.wikipedia.org/wiki/Twitch' target='_blank'>Twitch</a> クライアントです:
 
 • 人気のスタンプを BetterTTV と FrankerFaceZ プラグインでサポート
 • チャットのリプレイ付きで VOD とクリップを視聴

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.andreyasadchy.xtra.player.lowlatency;
+package com.endlessbum.twitchpro.player.lowlatency;
 
 import static androidx.media3.common.util.Util.castNonNull;
 import static androidx.media3.datasource.HttpUtil.buildRangeRequestHeader;
@@ -35,7 +35,7 @@ import androidx.media3.datasource.HttpDataSource;
 import androidx.media3.datasource.HttpUtil;
 import androidx.media3.datasource.TransferListener;
 
-import com.github.andreyasadchy.xtra.ui.player.ExoPlayerService;
+import com.endlessbum.twitchpro.ui.player.ExoPlayerService;
 import com.google.common.base.Predicate;
 import com.google.common.io.ByteStreams;
 import com.google.common.net.HttpHeaders;
@@ -85,7 +85,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
     @Nullable private CacheControl cacheControl;
     @Nullable private Predicate<String> contentTypePredicate;
 
-    @Nullable private final Call.Factory customProxyClient; // xtra: proxy
+    @Nullable private final Call.Factory customProxyClient; // twitchpro: proxy
     @Nullable private final String customProxyUrl;
     @Nullable private final Call.Factory multivariantPlaylistProxyClient;
     @Nullable private final Call.Factory mediaPlaylistProxyClient;
@@ -99,7 +99,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
      */
     public Factory(Call.Factory callFactory, @Nullable Call.Factory customProxyClient, @Nullable String customProxyUrl, @Nullable Call.Factory multivariantPlaylistProxyClient, @Nullable Call.Factory mediaPlaylistProxyClient, Function0<Boolean> getProxyMediaPlaylist) {
       this.callFactory = callFactory;
-      this.customProxyClient = customProxyClient; // xtra: proxy
+      this.customProxyClient = customProxyClient; // twitchpro: proxy
       this.customProxyUrl = customProxyUrl;
       this.multivariantPlaylistProxyClient = multivariantPlaylistProxyClient;
       this.mediaPlaylistProxyClient = mediaPlaylistProxyClient;
@@ -180,7 +180,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
     @Override
     public OkHttpDataSource createDataSource() {
       OkHttpDataSource dataSource =
-          new OkHttpDataSource( // xtra: proxy
+          new OkHttpDataSource( // twitchpro: proxy
               callFactory, customProxyClient, customProxyUrl, multivariantPlaylistProxyClient, mediaPlaylistProxyClient, getProxyMediaPlaylist, userAgent, cacheControl, defaultRequestProperties, contentTypePredicate);
       if (transferListener != null) {
         dataSource.addTransferListener(transferListener);
@@ -204,7 +204,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
   private long bytesToRead;
   private long bytesRead;
 
-  @Nullable private final Call.Factory customProxyClient; // xtra: proxy
+  @Nullable private final Call.Factory customProxyClient; // twitchpro: proxy
   @Nullable private final String customProxyUrl;
   @Nullable private final Call.Factory multivariantPlaylistProxyClient;
   @Nullable private final Call.Factory mediaPlaylistProxyClient;
@@ -212,7 +212,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
 
   private OkHttpDataSource(
       Call.Factory callFactory,
-      @Nullable Call.Factory customProxyClient, // xtra: proxy
+      @Nullable Call.Factory customProxyClient, // twitchpro: proxy
       @Nullable String customProxyUrl,
       @Nullable Call.Factory multivariantPlaylistProxyClient,
       @Nullable Call.Factory mediaPlaylistProxyClient,
@@ -223,7 +223,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
       @Nullable Predicate<String> contentTypePredicate) {
     super(/* isNetwork= */ true);
     this.callFactory = checkNotNull(callFactory);
-    this.customProxyClient = customProxyClient; // xtra: proxy
+    this.customProxyClient = customProxyClient; // twitchpro: proxy
     this.customProxyUrl = customProxyUrl;
     this.multivariantPlaylistProxyClient = multivariantPlaylistProxyClient;
     this.mediaPlaylistProxyClient = mediaPlaylistProxyClient;
@@ -292,7 +292,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
     Request request = makeRequest(dataSpec);
     Response response;
     ResponseBody responseBody;
-    Call call; // xtra: proxy
+    Call call; // twitchpro: proxy
     if (customProxyClient != null && customProxyUrl != null && dataSpec.uri.toString().equals(customProxyUrl)) {
       call = customProxyClient.newCall(request);
     } else {

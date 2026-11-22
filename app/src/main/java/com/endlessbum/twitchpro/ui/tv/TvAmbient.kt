@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -16,8 +16,8 @@ import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.allowHardware
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * TV: background of the screens, a soft glow of the ambiance color (Xtra TV settings) in the corners
+ * TV: background of the screens, a soft glow of the ambiance color (TwitchPro settings) in the corners
  * over the color of the theme. Supports fixed colors and a "dynamic" mode following focused artwork.
  */
 object TvAmbient {
@@ -314,13 +314,13 @@ object TvAmbient {
     }
 
     fun picturesOf(item: Any?): List<String?>? = when (item) {
-        is com.github.andreyasadchy.xtra.model.ui.Stream -> listOf(item.thumbnail?.takeUnless { item.thumbnailURL.isNullOrBlank() }, item.channelImage)
-        is com.github.andreyasadchy.xtra.model.ui.Video -> listOf(item.thumbnail?.takeUnless { TvVideoThumbnail.isMissing(item.thumbnailURL) }, item.channelImage)
-        is com.github.andreyasadchy.xtra.model.ui.Clip -> listOf(item.thumbnail, item.channelImage)
-        is com.github.andreyasadchy.xtra.model.ui.Game -> listOf(item.boxArt)
-        is com.github.andreyasadchy.xtra.model.ui.User -> listOf(item.profileImage)
-        is com.github.andreyasadchy.xtra.model.ui.Bookmark -> listOf(item.thumbnail, item.userLogo)
-        is com.github.andreyasadchy.xtra.model.ui.OfflineVideo -> listOf(item.thumbnail, item.channelLogo)
+        is com.endlessbum.twitchpro.model.ui.Stream -> listOf(item.thumbnail?.takeUnless { item.thumbnailURL.isNullOrBlank() }, item.channelImage)
+        is com.endlessbum.twitchpro.model.ui.Video -> listOf(item.thumbnail?.takeUnless { TvVideoThumbnail.isMissing(item.thumbnailURL) }, item.channelImage)
+        is com.endlessbum.twitchpro.model.ui.Clip -> listOf(item.thumbnail, item.channelImage)
+        is com.endlessbum.twitchpro.model.ui.Game -> listOf(item.boxArt)
+        is com.endlessbum.twitchpro.model.ui.User -> listOf(item.profileImage)
+        is com.endlessbum.twitchpro.model.ui.Bookmark -> listOf(item.thumbnail, item.userLogo)
+        is com.endlessbum.twitchpro.model.ui.OfflineVideo -> listOf(item.thumbnail, item.channelLogo)
         is TvResumeHistory.Item -> listOf(item.thumbnail?.takeUnless { TvVideoThumbnail.isMissing(it) }, item.channelImage)
         else -> null
     }

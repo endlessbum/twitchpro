@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +11,10 @@ import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.request.target
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentGamesListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentGamesListItemBinding
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.util.TwitchApiHelper
 
 class PlayerGamesDialogAdapter(
     private val fragment: Fragment,

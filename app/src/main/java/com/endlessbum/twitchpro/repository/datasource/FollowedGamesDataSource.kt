@@ -1,12 +1,12 @@
-package com.github.andreyasadchy.xtra.repository.datasource
+package com.endlessbum.twitchpro.repository.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.model.ui.Tag
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.LocalGameFollowsRepository
-import com.github.andreyasadchy.xtra.util.C
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.model.ui.Tag
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.LocalGameFollowsRepository
+import com.endlessbum.twitchpro.util.C
 
 class FollowedGamesDataSource(
     private val localGameFollowsRepository: LocalGameFollowsRepository,
@@ -70,7 +70,7 @@ class FollowedGamesDataSource(
         }
         list.sortBy { it.name }
         return LoadResult.Page(
-            data = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterGames(list),
+            data = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterGames(list),
             prevKey = null,
             nextKey = null
         )

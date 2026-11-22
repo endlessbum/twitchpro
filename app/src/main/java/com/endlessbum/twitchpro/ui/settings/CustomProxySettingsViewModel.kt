@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.annotation.SuppressLint
 import android.net.http.HttpEngine
@@ -8,12 +8,12 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.CustomProxy
-import com.github.andreyasadchy.xtra.repository.PlayerRepository
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.CustomProxy
+import com.endlessbum.twitchpro.repository.PlayerRepository
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -160,9 +160,9 @@ class CustomProxySettingsViewModel(
     companion object {
         val CustomProxySettingsViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                CustomProxySettingsViewModel(xtraModule.playerRepository, xtraModule.httpEngine, xtraModule.cronetEngine, xtraModule.cronetExecutor, xtraModule.okHttpClient, xtraModule.json)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                CustomProxySettingsViewModel(twitchProModule.playerRepository, twitchProModule.httpEngine, twitchProModule.cronetEngine, twitchProModule.cronetExecutor, twitchProModule.okHttpClient, twitchProModule.json)
             }
         }
     }

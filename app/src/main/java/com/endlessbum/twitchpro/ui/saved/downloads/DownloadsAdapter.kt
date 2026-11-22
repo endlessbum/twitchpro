@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.saved.downloads
+package com.endlessbum.twitchpro.ui.saved.downloads
 
 import android.content.ContentResolver
 import android.content.Context
@@ -23,17 +23,17 @@ import coil3.transform.CircleCropTransformation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentDownloadsListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.DownloadProgress
-import com.github.andreyasadchy.xtra.model.ui.OfflineVideo
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentDownloadsListItemBinding
+import com.endlessbum.twitchpro.model.ui.DownloadProgress
+import com.endlessbum.twitchpro.model.ui.OfflineVideo
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlin.math.min
 
 class DownloadsAdapter(

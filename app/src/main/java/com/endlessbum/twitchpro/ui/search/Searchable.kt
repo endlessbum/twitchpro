@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.search
+package com.endlessbum.twitchpro.ui.search
 
 interface Searchable {
     fun search(query: String)

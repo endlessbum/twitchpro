@@ -1,12 +1,12 @@
-package com.github.andreyasadchy.xtra.ui.search
+package com.endlessbum.twitchpro.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.databinding.FragmentRecentSearchListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.RecentSearch
+import com.endlessbum.twitchpro.databinding.FragmentRecentSearchListItemBinding
+import com.endlessbum.twitchpro.model.ui.RecentSearch
 
 class RecentSearchAdapter(
     private val select: (RecentSearch) -> Unit,

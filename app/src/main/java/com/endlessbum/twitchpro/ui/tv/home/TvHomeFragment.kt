@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv.home
+package com.endlessbum.twitchpro.ui.tv.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,18 +17,18 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.tv.TvTheme
-import com.github.andreyasadchy.xtra.ui.tv.home.TvHomeViewModel.Companion.TvHomeViewModelFactory
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.tv.TvTheme
+import com.endlessbum.twitchpro.ui.tv.home.TvHomeViewModel.Companion.TvHomeViewModelFactory
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -36,7 +36,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 /** TV home written with Compose: rows of cards like the YouTube app, the focus is handled by Compose. */
-class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.Previewer {
+class TvHomeFragment : Fragment(), com.endlessbum.twitchpro.ui.tv.TvPreviewSource.Previewer {
 
     private val viewModel: TvHomeViewModel by activityViewModels { TvHomeViewModelFactory }
     private val previewLogin = mutableStateOf<String?>(null)
@@ -48,7 +48,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
     /** Time "refresh" was pressed (0: the rows load by themselves), for its animation and its message. */
     private var refreshClickedAt = 0L
     private val homeSweep = androidx.compose.runtime.mutableIntStateOf(0)
-    private val resumeItems = mutableStateOf<List<com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item>>(emptyList())
+    private val resumeItems = mutableStateOf<List<com.endlessbum.twitchpro.ui.tv.TvResumeHistory.Item>>(emptyList())
     // the badges are computed on the IO thread (the statistics JSON), the composition only reads this
     private val statsBadgesState = mutableStateOf<List<Pair<Int, String>>>(emptyList())
     private val videoPositions = mutableStateOf<Map<String, Long>>(emptyMap())
@@ -72,7 +72,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
     /** Picture of the focused stream behind the rows. */
 
     init {
-        com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.register(this)
+        com.endlessbum.twitchpro.ui.tv.TvPreviewSource.register(this)
     }
 
     companion object {
@@ -87,7 +87,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         }
         val accent = MaterialColors.getColor(context, androidx.appcompat.R.attr.colorPrimary, 0xFF9147FF.toInt())
         val truncate = context.prefs().getBoolean(C.UI_TRUNCATE_VIEW_COUNT, true)
-        val positionOf: (com.github.andreyasadchy.xtra.model.ui.Video) -> Long? = { video ->
+        val positionOf: (com.endlessbum.twitchpro.model.ui.Video) -> Long? = { video ->
             val id = video.id
             if (id.isNullOrBlank()) null
             else (resumeItems.value.find { it.id == id }?.positionMs ?: videoPositions.value[id])?.takeIf { it > 0L }
@@ -143,7 +143,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
                 schedulePreview(stream)
                 stream?.let { s ->
                     context?.let { ctx ->
-                        com.github.andreyasadchy.xtra.ui.tv.TvAmbient.updateFromItem(ctx, s, viewLifecycleOwner.lifecycleScope)
+                        com.endlessbum.twitchpro.ui.tv.TvAmbient.updateFromItem(ctx, s, viewLifecycleOwner.lifecycleScope)
                     }
                 }
             },
@@ -153,7 +153,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
             },
             onPictureFocused = { item ->
                 // the other cards of the home (videos, clips, categories): the same dynamic ambiance as the streams
-                context?.let { ctx -> com.github.andreyasadchy.xtra.ui.tv.TvAmbient.updateFromItem(ctx, item, viewLifecycleOwner.lifecycleScope) }
+                context?.let { ctx -> com.endlessbum.twitchpro.ui.tv.TvAmbient.updateFromItem(ctx, item, viewLifecycleOwner.lifecycleScope) }
             },
             onHeroUnfocused = {
                 // only the video of the banner: the focus may already be on a card, with its own preview
@@ -165,7 +165,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
                 // the stream plays in the banner while it has the focus, always without sound
                 schedulePreview(stream, muted = true)
                 context?.let { ctx ->
-                    com.github.andreyasadchy.xtra.ui.tv.TvAmbient.updateFromItem(ctx, stream, viewLifecycleOwner.lifecycleScope)
+                    com.endlessbum.twitchpro.ui.tv.TvAmbient.updateFromItem(ctx, stream, viewLifecycleOwner.lifecycleScope)
                 }
             },
             formatViewers = { count -> resources.getQuantityString(R.plurals.viewers, count, TwitchApiHelper.formatCount(count, truncate)) },
@@ -186,11 +186,11 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
                 if (act != null && !context.prefs().getBoolean(C.TV_HIDE_MENU_STATS, false)) {
                     act.openTvSection(R.id.tvStatsFragment)
                 } else if (act != null) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvStatsPage.show(act) { loadStats() }
+                    com.endlessbum.twitchpro.ui.tv.TvStatsPage.show(act) { loadStats() }
                 }
             },
             uptime = { stream ->
-                context.takeIf { it.prefs().getBoolean(C.UI_UPTIME, true) }?.let { com.github.andreyasadchy.xtra.ui.tv.TvUptime.format(it, stream.createdAt) }
+                context.takeIf { it.prefs().getBoolean(C.UI_UPTIME, true) }?.let { com.endlessbum.twitchpro.ui.tv.TvUptime.format(it, stream.createdAt) }
             },
             openVideo = { item ->
                 stopPreview()
@@ -220,7 +220,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
             openMultiStream = { item ->
                 stopPreview()
                 (activity as? MainActivity)?.let { act ->
-                    com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamGroups.launchGroup(act, item.group)
+                    com.endlessbum.twitchpro.ui.tv.TvMultiStreamGroups.launchGroup(act, item.group)
                 }
             },
             showMultiStreamActions = { item -> showMultiStreamActions(item) },
@@ -252,7 +252,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
             viewModel.stamp.collect { homeStamp.longValue = it }
         }
         viewLifecycleOwner.lifecycleScope.launch {
-            (requireActivity().application as XtraApp).xtraModule.playerRepository.loadVideoPositions().collect { list ->
+            (requireActivity().application as TwitchProApp).twitchProModule.playerRepository.loadVideoPositions().collect { list ->
                 videoPositions.value = list.associate { it.id.toString() to it.position }
             }
         }
@@ -267,7 +267,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
                     if (wait > 0L) kotlinx.coroutines.delay(wait)
                     homeRefreshing.value = false
                     homeSweep.intValue++
-                    context?.let { com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(it, R.string.tv_refreshed, android.widget.Toast.LENGTH_SHORT).show() }
+                    context?.let { com.endlessbum.twitchpro.ui.tv.TvToast.makeText(it, R.string.tv_refreshed, android.widget.Toast.LENGTH_SHORT).show() }
                 } else {
                     homeRefreshing.value = false
                 }
@@ -275,16 +275,16 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         }
         viewLifecycleOwner.lifecycleScope.launch {
             // a video watched in the mini player over the home comes in "Continue watching" right away
-            com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.changes.collect {
+            com.endlessbum.twitchpro.ui.tv.TvResumeHistory.changes.collect {
                 val ctx = context ?: return@collect
                 resumeItems.value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                    runCatching { com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.list(ctx) }.getOrDefault(emptyList())
+                    runCatching { com.endlessbum.twitchpro.ui.tv.TvResumeHistory.list(ctx) }.getOrDefault(emptyList())
                 }
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
             // the statistics follow what is watched in the mini player over the home
-            com.github.andreyasadchy.xtra.ui.tv.TvStats.changes.collect { loadStats() }
+            com.endlessbum.twitchpro.ui.tv.TvStats.changes.collect { loadStats() }
         }
         val followedId = if (context.prefs().getBoolean(C.UI_FOLLOW_PAGER, true)) R.id.followPagerFragment else R.id.followMediaFragment
         syncHomePrefs(context)
@@ -325,13 +325,13 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
                 androidx.compose.runtime.LaunchedEffect(heroStream?.channelLogin) {
                     // only until a first picture got the focus: after that the color follows the focus, a row that
                     // loads again does not change it under a card
-                    if (heroStream != null && !com.github.andreyasadchy.xtra.ui.tv.TvAmbient.hasSessionColor) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvAmbient.updateFromItem(context, heroStream, viewLifecycleOwner.lifecycleScope)
+                    if (heroStream != null && !com.endlessbum.twitchpro.ui.tv.TvAmbient.hasSessionColor) {
+                        com.endlessbum.twitchpro.ui.tv.TvAmbient.updateFromItem(context, heroStream, viewLifecycleOwner.lifecycleScope)
                     }
                 }
                 androidx.compose.runtime.LaunchedEffect(followed) {
                     followed?.let { list ->
-                        com.github.andreyasadchy.xtra.ui.tv.TvLauncherChannels.syncFollowedLive(context, list)
+                        com.endlessbum.twitchpro.ui.tv.TvLauncherChannels.syncFollowedLive(context, list)
                     }
                 }
                 val sections = buildList {
@@ -464,7 +464,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
                                                         onSeeAll = {
                                                             stopPreview()
                                                             navigateToGame(
-                                                                com.github.andreyasadchy.xtra.model.ui.Game(
+                                                                com.endlessbum.twitchpro.model.ui.Game(
                                                                     id = spec.gameId,
                                                                     slug = spec.slug.ifBlank { null },
                                                                     name = spec.name,
@@ -504,7 +504,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         }
     }
 
-    private fun navigateToGame(game: com.github.andreyasadchy.xtra.model.ui.Game) {
+    private fun navigateToGame(game: com.endlessbum.twitchpro.model.ui.Game) {
         val ctx = context ?: return
         findNavController().navigate(
             if (ctx.prefs().getBoolean(C.UI_GAME_PAGER, true)) {
@@ -515,23 +515,23 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         )
     }
 
-    private fun showGameActions(game: com.github.andreyasadchy.xtra.model.ui.Game) {
+    private fun showGameActions(game: com.endlessbum.twitchpro.model.ui.Game) {
         stopPreview()
         val activity = activity as? MainActivity ?: return
-        com.github.andreyasadchy.xtra.ui.tv.TvGameActions.show(
+        com.endlessbum.twitchpro.ui.tv.TvGameActions.show(
             context = activity,
             game = game,
             onOpenCategory = { navigateToGame(game) },
         )
     }
 
-    private fun showClipActions(clip: com.github.andreyasadchy.xtra.model.ui.Clip, queue: List<com.github.andreyasadchy.xtra.model.ui.Clip>) {
+    private fun showClipActions(clip: com.endlessbum.twitchpro.model.ui.Clip, queue: List<com.endlessbum.twitchpro.model.ui.Clip>) {
         stopPreview()
         val activity = activity as? MainActivity ?: return
         val channelLabel = clip.channelName ?: clip.channelLogin.orEmpty()
         val actions = buildList {
             add(
-                com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                     getString(R.string.tv_multistream_watch),
                     R.drawable.tv_ic_play,
                 ) {
@@ -540,13 +540,13 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
             )
             if (!clip.videoId.isNullOrBlank()) {
                 add(
-                    com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                    com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                         getString(R.string.watch_video),
                         R.drawable.tv_ic_video_library,
                     ) {
                         val offsetMs = clip.videoOffsetSeconds?.toLong()?.times(1000L)
                         activity.startVideo(
-                            com.github.andreyasadchy.xtra.model.ui.Video(
+                            com.endlessbum.twitchpro.model.ui.Video(
                                 id = clip.videoId,
                                 channelId = clip.channelId,
                                 channelLogin = clip.channelLogin,
@@ -567,7 +567,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
             }
             if (!clip.channelLogin.isNullOrBlank() || !clip.channelId.isNullOrBlank()) {
                 add(
-                    com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                    com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                         getString(R.string.tv_open_channel, channelLabel),
                         R.drawable.tv_ic_person,
                     ) {
@@ -584,7 +584,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
                 )
             }
         }
-        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.show(activity, clip.title ?: channelLabel, actions)
+        com.endlessbum.twitchpro.ui.tv.TvActionPanel.show(activity, clip.title ?: channelLabel, actions)
     }
 
     private fun syncHomePrefs(context: android.content.Context) {
@@ -633,45 +633,45 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         val activity = activity as? MainActivity ?: return
         val actions = buildList {
             add(
-                com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                     getString(R.string.tv_multistream_watch),
                     R.drawable.tv_ic_multistream,
                 ) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamGroups.launchGroup(activity, item.group)
+                    com.endlessbum.twitchpro.ui.tv.TvMultiStreamGroups.launchGroup(activity, item.group)
                 }
             )
             add(
-                com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                     getString(R.string.tv_multistream_rename),
                     R.drawable.tv_ic_edit,
                 ) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvDialogs.show(activity) { dismiss ->
-                        com.github.andreyasadchy.xtra.ui.tv.ChatComposer(
+                    com.endlessbum.twitchpro.ui.tv.TvDialogs.show(activity) { dismiss ->
+                        com.endlessbum.twitchpro.ui.tv.ChatComposer(
                             title = activity.getString(R.string.tv_multistream_rename),
                             hint = activity.getString(R.string.tv_multistream_name_hint),
                             sendLabel = activity.getString(android.R.string.ok),
                             initialText = item.group.label,
                         ) { newName ->
-                            com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamGroups.rename(activity, item.group.id, newName)
+                            com.endlessbum.twitchpro.ui.tv.TvMultiStreamGroups.rename(activity, item.group.id, newName)
                             dismiss()
                         }
                     }
                 }
             )
             add(
-                com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                     getString(R.string.tv_multistream_remove_group),
                     R.drawable.tv_ic_delete,
                 ) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamGroups.remove(activity, item.group.id)
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, R.string.tv_multistream_group_removed, android.widget.Toast.LENGTH_SHORT).show()
+                    com.endlessbum.twitchpro.ui.tv.TvMultiStreamGroups.remove(activity, item.group.id)
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, R.string.tv_multistream_group_removed, android.widget.Toast.LENGTH_SHORT).show()
                 }
             )
             item.group.streams.forEach { member ->
                 val resolved = item.liveStreams.find { it.channelLogin.equals(member.channelLogin, ignoreCase = true) } ?: member
                 val name = resolved.channelName ?: resolved.channelLogin ?: return@forEach
                 add(
-                    com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                    com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                         getString(R.string.tv_open_channel, name),
                         R.drawable.tv_ic_person,
                     ) {
@@ -680,7 +680,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
                 )
             }
         }
-        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.show(activity, item.group.label, actions)
+        com.endlessbum.twitchpro.ui.tv.TvActionPanel.show(activity, item.group.label, actions)
     }
 
     /** Name of a language in the language of the app ("fr" -> "Français"). */
@@ -695,13 +695,13 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         viewLifecycleOwner.lifecycleScope.launch {
             // the JSON work of the lists and the statistics goes to the IO thread
             val (items, badges) = kotlinx.coroutines.coroutineScope {
-                val itemsDeferred = async { runCatching { com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.list(context) }.getOrDefault(emptyList()) }
+                val itemsDeferred = async { runCatching { com.endlessbum.twitchpro.ui.tv.TvResumeHistory.list(context) }.getOrDefault(emptyList()) }
                 val badgesDeferred = async { runCatching { statsBadges() }.getOrDefault(emptyList()) }
                 itemsDeferred.await() to badgesDeferred.await()
             }
             resumeItems.value = items
             statsBadgesState.value = badges
-            com.github.andreyasadchy.xtra.ui.tv.TvLauncherChannels.syncWatchNext(context)
+            com.endlessbum.twitchpro.ui.tv.TvLauncherChannels.syncWatchNext(context)
             loadStats()
         }
     }
@@ -709,8 +709,8 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
     /** The statistics of the badge of the top of the home, the ones that have something to say. */
     private suspend fun statsBadges(): List<Pair<Int, String>> {
         val context = context ?: return emptyList()
-        val today = com.github.andreyasadchy.xtra.ui.tv.TvStats.detail(context, 1)
-        val week = com.github.andreyasadchy.xtra.ui.tv.TvStats.detail(context, 7)
+        val today = com.endlessbum.twitchpro.ui.tv.TvStats.detail(context, 1)
+        val week = com.endlessbum.twitchpro.ui.tv.TvStats.detail(context, 7)
         val time = { ms: Long -> getString(R.string.tv_stats_hours, ms / 3_600_000L, (ms / 60_000L) % 60) }
         return listOfNotNull(
             today.watchMs.takeIf { it >= 60_000L }?.let { R.drawable.tv_ic_schedule to getString(R.string.tv_badge_today, time(it)) },
@@ -722,9 +722,9 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
     }
 
     /** A video of a channel live now, started with that live (or still without a picture): it records it. */
-    private fun isRecording(video: com.github.andreyasadchy.xtra.model.ui.Video, live: List<com.github.andreyasadchy.xtra.model.ui.Stream>?): Boolean {
+    private fun isRecording(video: com.endlessbum.twitchpro.model.ui.Video, live: List<com.endlessbum.twitchpro.model.ui.Stream>?): Boolean {
         val stream = live?.find { it.channelLogin != null && it.channelLogin.equals(video.channelLogin, true) } ?: return false
-        if (com.github.andreyasadchy.xtra.ui.tv.TvVideoThumbnail.isMissing(video.thumbnailURL)) {
+        if (com.endlessbum.twitchpro.ui.tv.TvVideoThumbnail.isMissing(video.thumbnailURL)) {
             return true
         }
         val videoStart = video.createdAt?.let { kotlin.time.Instant.parseOrNull(it)?.toEpochMilliseconds() } ?: return false
@@ -735,7 +735,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
     private fun loadStats() {
         val context = context ?: return
         viewLifecycleOwner.lifecycleScope.launch {
-            val stats = runCatching { com.github.andreyasadchy.xtra.ui.tv.TvStats.read(context) }.getOrNull() ?: return@launch
+            val stats = runCatching { com.endlessbum.twitchpro.ui.tv.TvStats.read(context) }.getOrNull() ?: return@launch
             val hours = stats.watchMs / 3_600_000L
             val minutes = (stats.watchMs / 60_000L) % 60
             val formatTime = { ms: Long -> getString(R.string.tv_stats_hours, ms / 3_600_000L, (ms / 60_000L) % 60) }
@@ -764,7 +764,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         }
     }
 
-    private fun com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item.toVideo() = com.github.andreyasadchy.xtra.model.ui.Video(
+    private fun com.endlessbum.twitchpro.ui.tv.TvResumeHistory.Item.toVideo() = com.endlessbum.twitchpro.model.ui.Video(
         id = id,
         channelId = channelId,
         channelLogin = channelLogin,
@@ -779,7 +779,7 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         type = type,
     )
 
-    private fun com.github.andreyasadchy.xtra.model.ui.Video.toResumeItem(positionMs: Long) = com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item(
+    private fun com.endlessbum.twitchpro.model.ui.Video.toResumeItem(positionMs: Long) = com.endlessbum.twitchpro.ui.tv.TvResumeHistory.Item(
         id = id.orEmpty(),
         title = title,
         channelId = channelId,
@@ -796,11 +796,11 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
     )
 
     /** OK held down on a video of "Continue watching" or "Followed videos": resume, watch from the start, remove from the history, open channel. */
-    private fun showVideoActions(item: com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item) {
+    private fun showVideoActions(item: com.endlessbum.twitchpro.ui.tv.TvResumeHistory.Item) {
         stopPreview()
         val activity = activity as? MainActivity ?: return
         // the same panel as on the lists of videos
-        com.github.andreyasadchy.xtra.ui.tv.TvVideoActions.show(activity, item.toVideo(), item.positionMs, onHistoryRemoved = { loadLocalRows() })
+        com.endlessbum.twitchpro.ui.tv.TvVideoActions.show(activity, item.toVideo(), item.positionMs, onHistoryRemoved = { loadLocalRows() })
     }
 
     override fun onPause() {
@@ -822,26 +822,26 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         scheduledLogin = login
         scheduledMuted = muted
         val context = context ?: return
-        if (login.isNullOrBlank() || !context.prefs().getBoolean(C.UI_TV_PREVIEW, true) || com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.suspended) {
+        if (login.isNullOrBlank() || !context.prefs().getBoolean(C.UI_TV_PREVIEW, true) || com.endlessbum.twitchpro.ui.tv.TvPreviewSource.suspended) {
             return
         }
         previewJob = viewLifecycleOwner.lifecycleScope.launch {
-            delay(com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.START_DELAY)
-            val url = com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.getPlaylistUrl(context, login) ?: return@launch
-            if (com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.suspended) {
+            delay(com.endlessbum.twitchpro.ui.tv.TvPreviewSource.START_DELAY)
+            val url = com.endlessbum.twitchpro.ui.tv.TvPreviewSource.getPlaylistUrl(context, login) ?: return@launch
+            if (com.endlessbum.twitchpro.ui.tv.TvPreviewSource.suspended) {
                 return@launch
             }
-            val player = previewPlayer.value ?: com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.createPlayer(context).also {
+            val player = previewPlayer.value ?: com.endlessbum.twitchpro.ui.tv.TvPreviewSource.createPlayer(context).also {
                 previewPlayer.value = it
             }
-            player.volume = if (!muted && com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.hasSound(context)) 1f else 0f
+            player.volume = if (!muted && com.endlessbum.twitchpro.ui.tv.TvPreviewSource.hasSound(context)) 1f else 0f
             player.setMediaItem(MediaItem.Builder().setUri(url).setMimeType(MimeTypes.APPLICATION_M3U8).build())
             player.prepare()
             player.playWhenReady = true
             previewLogin.value = login
             previewMuted = muted
             if (!muted) {
-                com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.notifyPreviewSound(context, true)
+                com.endlessbum.twitchpro.ui.tv.TvPreviewSource.notifyPreviewSound(context, true)
             }
         }
     }
@@ -858,10 +858,10 @@ class TvHomeFragment : Fragment(), com.github.andreyasadchy.xtra.ui.tv.TvPreview
         previewJob?.cancel()
         previewJob = null
         if (previewLogin.value != null && !previewMuted) {
-            context?.let { com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.notifyPreviewSound(it, false) }
+            context?.let { com.endlessbum.twitchpro.ui.tv.TvPreviewSource.notifyPreviewSound(it, false) }
         }
         previewLogin.value = null
-        if (com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.suspended || !isResumed) {
+        if (com.endlessbum.twitchpro.ui.tv.TvPreviewSource.suspended || !isResumed) {
             previewPlayer.value?.release()
             previewPlayer.value = null
         } else {

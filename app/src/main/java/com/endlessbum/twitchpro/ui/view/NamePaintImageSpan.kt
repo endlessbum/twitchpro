@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.view
+package com.endlessbum.twitchpro.ui.view
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -7,7 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.Drawable
 import android.text.style.ReplacementSpan
-import com.github.andreyasadchy.xtra.model.chat.NamePaint
+import com.endlessbum.twitchpro.model.chat.NamePaint
 import kotlin.math.ceil
 import kotlin.math.max
 

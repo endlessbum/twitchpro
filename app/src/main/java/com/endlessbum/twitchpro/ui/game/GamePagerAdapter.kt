@@ -1,10 +1,10 @@
-package com.github.andreyasadchy.xtra.ui.game
+package com.endlessbum.twitchpro.ui.game
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.github.andreyasadchy.xtra.ui.game.clips.GameClipsFragment
-import com.github.andreyasadchy.xtra.ui.game.streams.GameStreamsFragment
-import com.github.andreyasadchy.xtra.ui.game.videos.GameVideosFragment
+import com.endlessbum.twitchpro.ui.game.clips.GameClipsFragment
+import com.endlessbum.twitchpro.ui.game.streams.GameStreamsFragment
+import com.endlessbum.twitchpro.ui.game.videos.GameVideosFragment
 import kotlin.math.max
 
 class GamePagerAdapter(

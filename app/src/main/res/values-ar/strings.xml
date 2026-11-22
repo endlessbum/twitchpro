@@ -539,7 +539,7 @@
     <string name="external_login_message">You can log in using an external browser.\n\nFollow these steps:\n• Press \"Open URL\" to open the login page.\n• Login to your account and press \"Authorize\".\n• A page with an error should appear. Copy the URL of that page, paste the URL into the box below and press \"OK\".</string>
     <string name="loading">جارٍ التحميل…</string>
     <string name="copy_code">نسخ الرمز</string>
-    <string name="external_tv_login_message">للوصول إلى كل الميزات، سجّل الدخول كجهاز Android TV.\n\nالخطوات:\n• انسخ الرمز الظاهر على الشاشة.\n• اضغط زر \"فتح الرابط\".\n• أدخل الرمز واضغط \"تفعيل\".\n• اضغط \"السماح\".\n• ارجع إلى Xtra واضغط \"التالي\".</string>
+    <string name="external_tv_login_message">للوصول إلى كل الميزات، سجّل الدخول كجهاز Android TV.\n\nالخطوات:\n• انسخ الرمز الظاهر على الشاشة.\n• اضغط زر \"فتح الرابط\".\n• أدخل الرمز واضغط \"تفعيل\".\n• اضغط \"السماح\".\n• ارجع إلى TwitchPro واضغط \"التالي\".</string>
     <string name="activate_notifications_when_following">تفعيل الإشعارات عند المتابعة</string>
     <string name="account">الحساب</string>
     <string name="downloading_update_progress">جارٍ تنزيل التحديث… %1$s / %2$s</string>
@@ -587,8 +587,8 @@
     <string name="tv_more_actions">إجراءات أخرى</string>
     <string name="tv_account">الحساب</string>
     <string name="tv_stream_preview">معاينة مباشرة للبث المحدد (التلفاز)</string>
-    <string name="xtratv_settings">إعدادات Xtra TV</string>
-    <string name="xtratv_settings_summary">مانع الإعلانات، مطابقة معدل الإطارات، المعاينات، الصفحة الرئيسية واختصارات جهاز التحكم</string>
+    <string name="twitchpro_settings">إعدادات TwitchPro</string>
+    <string name="twitchpro_settings_summary">مانع الإعلانات، مطابقة معدل الإطارات، المعاينات، الصفحة الرئيسية واختصارات جهاز التحكم</string>
     <string name="tv_preview_sound">صوت المعاينات</string>
     <string name="close_player">إغلاق</string>
     <string name="tv_back_minimizes_player">زر الرجوع يصغّر المشغل بدلاً من إغلاقه</string>
@@ -666,7 +666,7 @@
     <string name="tv_back_audio">الصوت فقط</string>
     <string name="tv_dpad_up_down">اختصارات أعلى وأسفل في البث المباشر والفيديوهات</string>
     <string name="tv_dpad_up_down_summary">عند إخفاء عناصر التحكم: أعلى يعرض البثوث الأخرى، وأسفل يعرض الدردشة أو يخفيها</string>
-    <string name="tv_1440p_warning">⚠ دقة 1440p لا تعمل مع البروكسيات العامة (Luminous وغيرها) المحدودة بدقة 1080p. للحصول على 1440p، عطّل البروكسي المخصص واستخدم مانع الإعلانات (إعدادات Xtra TV) أو استخدم بروكسي خاصًا بك يدعم 1440p.</string>
+    <string name="tv_1440p_warning">⚠ دقة 1440p لا تعمل مع البروكسيات العامة (Luminous وغيرها) المحدودة بدقة 1080p. للحصول على 1440p، عطّل البروكسي المخصص واستخدم مانع الإعلانات (إعدادات TwitchPro) أو استخدم بروكسي خاصًا بك يدعم 1440p.</string>
     <string name="tv_login_with_code">باستخدام رمز على twitch.tv/activate</string>
     <string name="tv_login_with_page">بصفحة تسجيل الدخول إلى Twitch (مطلوبة لدقة 1440p)</string>
     <string name="tv_login_code_help">على هاتفك أو حاسوبك، انتقل إلى twitch.tv/activate واكتب هذا الرمز. يكتمل تسجيل الدخول تلقائيًا. دقة 1440p تتطلب تسجيل الدخول بصفحة Twitch.</string>
@@ -811,7 +811,7 @@
     <string name="tv_pip_pos_c">الوسط</string>
     <string name="tv_pip_pos_mr">وسط اليمين</string>
     <string name="tv_pip_pos_bc">أسفل الوسط</string>
-    <string name="tv_enable_unknown_sources">اسمح لتطبيق Xtra TV بتثبيت التطبيقات غير المعروفة، ثم اضغط على رجوع لبدء التحديث</string>
+    <string name="tv_enable_unknown_sources">اسمح لتطبيق TwitchPro بتثبيت التطبيقات غير المعروفة، ثم اضغط على رجوع لبدء التحديث</string>
     <string name="tv_pip_size">الحجم</string>
     <string name="tv_pip_size_small">صغيرة</string>
     <string name="tv_pip_size_medium">متوسطة</string>
@@ -856,7 +856,7 @@
     <string name="tv_proxy_all_settings">كل إعدادات البروكسي…</string>
     <string name="tv_focus_switch">تغيير الصفحة بدون OK</string>
     <string name="tv_focus_switch_summary">تعرض التبويبات والقائمة الجانبية صفحتها بمجرد حصولها على التركيز</string>
-    <string name="tv_update_title_version">Xtra TV %1$s متاح</string>
+    <string name="tv_update_title_version">TwitchPro %1$s متاح</string>
     <string name="tv_update_now">تحديث</string>
     <string name="tv_update_ignore">تجاهل</string>
     <string name="tv_proxy_add">إضافة بروكسي</string>
@@ -1187,7 +1187,7 @@
     <string name="tv_remote_action_pip_close">النافذة الصغيرة: إغلاق</string>
     <string name="tv_adblock_and_proxies_title">مانع الإعلانات والبروكسيات</string>
     <string name="tv_adblock_and_proxies_subtitle">مانع الإعلانات التجريبي أو بروكسيات HLS المخصصة للبث المباشر</string>
-    <string name="tv_update_install_blocked">منع النظام التثبيت. اسمح بخيار «تثبيت تطبيقات غير معروفة» لتطبيق Xtra TV من إعدادات النظام، أو نزّل التحديث عبر المتصفح.</string>
+    <string name="tv_update_install_blocked">منع النظام التثبيت. اسمح بخيار «تثبيت تطبيقات غير معروفة» لتطبيق TwitchPro من إعدادات النظام، أو نزّل التحديث عبر المتصفح.</string>
     <string name="tv_update_try_again">إعادة المحاولة</string>
     <string name="tv_remote_action_pip_swap_default">النافذة الصغيرة: تبديل البثوث (افتراضي)</string>
     <string name="tv_remote_action_show_controls">إظهار عناصر التحكم</string>
@@ -1346,7 +1346,7 @@
     <string name="tv_osd_chat_shown">تم إظهار الدردشة</string>
     <string name="tv_osd_chat_hidden">تم إخفاء الدردشة</string>
     <string name="tv_backup_perm_title">مطلوب إذن الوصول إلى الملفات</string>
-    <string name="tv_backup_perm_summary">لاستبدال أو قراءة ملف XtraTV-backup.zip في التنزيلات، اسمح بالوصول إلى الملفات في الشاشة التالية.</string>
+    <string name="tv_backup_perm_summary">لاستبدال أو قراءة ملف TwitchPro-backup.zip في التنزيلات، اسمح بالوصول إلى الملفات في الشاشة التالية.</string>
     <string name="tv_backup_perm_grant">السماح بالوصول إلى الملفات</string>
     <string name="tv_backup_perm_continue_anyway">المتابعة بدون إذن</string>
     <string name="tv_backup_save_failed">تعذّر حفظ ملف النسخ الاحتياطي</string>

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.chat
+package com.endlessbum.twitchpro.ui.chat
 
 import android.content.ContentResolver
 import android.content.Context
@@ -12,45 +12,45 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.chat.Badge
-import com.github.andreyasadchy.xtra.model.chat.ChannelPointReward
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.chat.Chatter
-import com.github.andreyasadchy.xtra.model.chat.CheerEmote
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.model.chat.NamePaint
-import com.github.andreyasadchy.xtra.model.chat.Poll
-import com.github.andreyasadchy.xtra.model.chat.Prediction
-import com.github.andreyasadchy.xtra.model.chat.Raid
-import com.github.andreyasadchy.xtra.model.chat.RecentEmote
-import com.github.andreyasadchy.xtra.model.chat.RoomState
-import com.github.andreyasadchy.xtra.model.chat.STVBadge
-import com.github.andreyasadchy.xtra.model.chat.STVUser
-import com.github.andreyasadchy.xtra.model.chat.TwitchBadge
-import com.github.andreyasadchy.xtra.model.chat.TwitchEmote
-import com.github.andreyasadchy.xtra.model.chat.VideoChatMessage
-import com.github.andreyasadchy.xtra.model.ui.TranslatedChannel
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.PlayerRepository
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.chat.ChatReadIRCSocket
-import com.github.andreyasadchy.xtra.util.chat.ChatReadWebSocket
-import com.github.andreyasadchy.xtra.util.chat.ChatUtils
-import com.github.andreyasadchy.xtra.util.chat.TvChatNotices
-import com.github.andreyasadchy.xtra.util.chat.ChatWriteIRCSocket
-import com.github.andreyasadchy.xtra.util.chat.ChatWriteWebSocket
-import com.github.andreyasadchy.xtra.util.chat.EventSubUtils
-import com.github.andreyasadchy.xtra.util.chat.EventSubWebSocket
-import com.github.andreyasadchy.xtra.util.chat.HermesWebSocket
-import com.github.andreyasadchy.xtra.util.chat.PubSubUtils
-import com.github.andreyasadchy.xtra.util.chat.STVEventApiUtils
-import com.github.andreyasadchy.xtra.util.chat.STVEventApiWebSocket
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.chat.Badge
+import com.endlessbum.twitchpro.model.chat.ChannelPointReward
+import com.endlessbum.twitchpro.model.chat.ChatMessage
+import com.endlessbum.twitchpro.model.chat.Chatter
+import com.endlessbum.twitchpro.model.chat.CheerEmote
+import com.endlessbum.twitchpro.model.chat.Emote
+import com.endlessbum.twitchpro.model.chat.NamePaint
+import com.endlessbum.twitchpro.model.chat.Poll
+import com.endlessbum.twitchpro.model.chat.Prediction
+import com.endlessbum.twitchpro.model.chat.Raid
+import com.endlessbum.twitchpro.model.chat.RecentEmote
+import com.endlessbum.twitchpro.model.chat.RoomState
+import com.endlessbum.twitchpro.model.chat.STVBadge
+import com.endlessbum.twitchpro.model.chat.STVUser
+import com.endlessbum.twitchpro.model.chat.TwitchBadge
+import com.endlessbum.twitchpro.model.chat.TwitchEmote
+import com.endlessbum.twitchpro.model.chat.VideoChatMessage
+import com.endlessbum.twitchpro.model.ui.TranslatedChannel
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.PlayerRepository
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.chat.ChatReadIRCSocket
+import com.endlessbum.twitchpro.util.chat.ChatReadWebSocket
+import com.endlessbum.twitchpro.util.chat.ChatUtils
+import com.endlessbum.twitchpro.util.chat.TvChatNotices
+import com.endlessbum.twitchpro.util.chat.ChatWriteIRCSocket
+import com.endlessbum.twitchpro.util.chat.ChatWriteWebSocket
+import com.endlessbum.twitchpro.util.chat.EventSubUtils
+import com.endlessbum.twitchpro.util.chat.EventSubWebSocket
+import com.endlessbum.twitchpro.util.chat.HermesWebSocket
+import com.endlessbum.twitchpro.util.chat.PubSubUtils
+import com.endlessbum.twitchpro.util.chat.STVEventApiUtils
+import com.endlessbum.twitchpro.util.chat.STVEventApiWebSocket
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
@@ -194,7 +194,7 @@ class ChatViewModel(
 
     val pinnedMessage = MutableStateFlow<PubSubUtils.PinnedChatData?>(null)
     private var pinnedExpiryJob: Job? = null
-    val coStreamers = MutableStateFlow<List<com.github.andreyasadchy.xtra.model.ui.Stream>>(emptyList())
+    val coStreamers = MutableStateFlow<List<com.endlessbum.twitchpro.model.ui.Stream>>(emptyList())
     private val sourceRoomCache = ConcurrentHashMap<String, Pair<String?, String?>>()
     private val pendingSourceRoomLookups = ConcurrentHashMap.newKeySet<String>()
 
@@ -285,7 +285,7 @@ class ChatViewModel(
                 val login = user.login ?: return@mapNotNull null
                 if (uid == selfChannelId || login.equals(selfChannelLogin, ignoreCase = true)) return@mapNotNull null
                 sourceRoomCache[uid] = Pair(user.profileImageURL, user.displayName ?: login)
-                com.github.andreyasadchy.xtra.model.ui.Stream(
+                com.endlessbum.twitchpro.model.ui.Stream(
                     id = st.id,
                     channelId = uid,
                     channelLogin = login,
@@ -318,7 +318,7 @@ class ChatViewModel(
         if (cleanIds.isEmpty()) return
         runCatching {
             val resp = graphQLRepository.loadQueryUsersStream(networkLibrary, headers, ids = cleanIds)
-            val liveFound = mutableListOf<com.github.andreyasadchy.xtra.model.ui.Stream>()
+            val liveFound = mutableListOf<com.endlessbum.twitchpro.model.ui.Stream>()
             resp.data?.users?.forEach { user ->
                 if (user == null) return@forEach
                 val uid = user.id?.takeIf { it.isNotBlank() } ?: return@forEach
@@ -328,7 +328,7 @@ class ChatViewModel(
                 val st = user.stream
                 if (st != null && uid != selfChannelId && !login.equals(selfChannelLogin, ignoreCase = true)) {
                     liveFound.add(
-                        com.github.andreyasadchy.xtra.model.ui.Stream(
+                        com.endlessbum.twitchpro.model.ui.Stream(
                             id = st.id,
                             channelId = uid,
                             channelLogin = login,
@@ -352,9 +352,9 @@ class ChatViewModel(
         }
     }
 
-    private fun mergeCoStreamers(found: List<com.github.andreyasadchy.xtra.model.ui.Stream>) {
+    private fun mergeCoStreamers(found: List<com.endlessbum.twitchpro.model.ui.Stream>) {
         if (found.isEmpty()) return
-        val merged = LinkedHashMap<String, com.github.andreyasadchy.xtra.model.ui.Stream>()
+        val merged = LinkedHashMap<String, com.endlessbum.twitchpro.model.ui.Stream>()
         coStreamers.value.forEach { s ->
             s.channelLogin?.lowercase()?.let { merged[it] = s }
         }
@@ -363,7 +363,7 @@ class ChatViewModel(
         }
         val list = merged.values.take(5)
         coStreamers.value = list
-        com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.putPartners(resolvedChannelId, activeChannelLogin, list)
+        com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.putPartners(resolvedChannelId, activeChannelLogin, list)
     }
 
     private fun onChannelIdResolved(roomId: String, channelLogin: String?) {
@@ -1155,7 +1155,7 @@ class ChatViewModel(
                             else -> null
                         }?.let { msg ->
                             recordSeenChatter(msg, channelLogin, myId, myLogin)
-                            if (!com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.shouldFilter(applicationContext, msg, channelLogin, myId, myLogin)) {
+                            if (!com.endlessbum.twitchpro.util.chat.ChatBlocklist.shouldFilter(applicationContext, msg, channelLogin, myId, myLogin)) {
                                 if (msg.reply?.message != null && showReplies()) {
                                     val replyLine = ChatMessage(
                                         type = ChatMessage.REPLY_MESSAGE,
@@ -1163,7 +1163,7 @@ class ChatViewModel(
                                         replyParent = msg,
                                         timestamp = msg.timestamp,
                                     )
-                                    if (!com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.shouldFilter(applicationContext, replyLine, channelLogin, myId, myLogin)) {
+                                    if (!com.endlessbum.twitchpro.util.chat.ChatBlocklist.shouldFilter(applicationContext, replyLine, channelLogin, myId, myLogin)) {
                                         list.add(replyLine)
                                     }
                                 }
@@ -1182,9 +1182,9 @@ class ChatViewModel(
                             }
                         }
                         if (forceAutoDelay?.invoke() == true) {
-                            val nowMs = com.github.andreyasadchy.xtra.util.TwitchClock.nowMs()
+                            val nowMs = com.endlessbum.twitchpro.util.TwitchClock.nowMs()
                             val cutoffMs = runCatching { programTime?.invoke() }.getOrNull()?.plus(chatterBaselineLatencyMs)
-                                ?: (nowMs - com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS + chatterBaselineLatencyMs)
+                                ?: (nowMs - com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS + chatterBaselineLatencyMs)
                             val pastItems = list.filter { (it.timestamp ?: Long.MIN_VALUE) <= cutoffMs }
                             val futureItems = list.filter { (it.timestamp ?: Long.MIN_VALUE) > cutoffMs }
                             if (pastItems.isNotEmpty()) {
@@ -1326,7 +1326,7 @@ class ChatViewModel(
     private var activeChannelLogin: String? = null
     private val seenChattersLock = Any()
     private var seenChattersChannel: String? = null
-    private val seenChatters = ArrayDeque<com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.BlockedUser>()
+    private val seenChatters = ArrayDeque<com.endlessbum.twitchpro.util.chat.ChatBlocklist.BlockedUser>()
     private val slowChatLock = Any()
     private var slowChatTokens = 1.6
     private var slowChatLastRefillAt = 0L
@@ -1345,7 +1345,7 @@ class ChatViewModel(
 
     fun effectiveAutoDelayMs(): Long =
         if (!autoDelayMeasured && autoDelayMs == 0L && forceAutoDelay?.invoke() == true) {
-            com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS
+            com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS
         } else {
             autoDelayMs
         }
@@ -1383,7 +1383,7 @@ class ChatViewModel(
         val chan = activeChannelLogin
         if (!chan.isNullOrBlank() && msg.userLogin?.equals(chan, ignoreCase = true) == true) return true
         if (msg.badges?.any { it.setId in slowChatPriorityBadges } == true) return true
-        if (com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.isHighlighted(applicationContext, msg.userLogin)) return true
+        if (com.endlessbum.twitchpro.util.chat.ChatBlocklist.isHighlighted(applicationContext, msg.userLogin)) return true
         val myLogin = ownUserLogin?.trim()?.lowercase()?.takeIf { it.isNotEmpty() }
         if (myLogin != null) {
             if (msg.userLogin?.equals(myLogin, ignoreCase = true) == true || msg.userName?.equals(myLogin, ignoreCase = true) == true) {
@@ -1450,12 +1450,12 @@ class ChatViewModel(
             return
         }
         if (!myId.isNullOrBlank() && message.userId == myId) return
-        val norm = com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.normalizeLogin(message.userLogin) ?: return
+        val norm = com.endlessbum.twitchpro.util.chat.ChatBlocklist.normalizeLogin(message.userLogin) ?: return
         if (!myLogin.isNullOrBlank() && norm.equals(myLogin, ignoreCase = true)) return
         if (!channelLogin.isNullOrBlank() && norm.equals(channelLogin, ignoreCase = true)) return
         if (applicationContext.prefs().getBoolean(C.CHAT_HIDE_BOTS, false) &&
-            com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.isBotMessage(message) &&
-            !com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.isBlocked(applicationContext, norm)
+            com.endlessbum.twitchpro.util.chat.ChatBlocklist.isBotMessage(message) &&
+            !com.endlessbum.twitchpro.util.chat.ChatBlocklist.isBlocked(applicationContext, norm)
         ) {
             return
         }
@@ -1466,30 +1466,30 @@ class ChatViewModel(
                 seenChatters.clear()
             }
             seenChatters.removeAll { it.login == norm }
-            seenChatters.addFirst(com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.BlockedUser(norm, cleanName))
+            seenChatters.addFirst(com.endlessbum.twitchpro.util.chat.ChatBlocklist.BlockedUser(norm, cleanName))
             while (seenChatters.size > 40) {
                 seenChatters.removeLast()
             }
         }
     }
 
-    fun getRecentChatters(limit: Int = 40): List<com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.BlockedUser> {
+    fun getRecentChatters(limit: Int = 40): List<com.endlessbum.twitchpro.util.chat.ChatBlocklist.BlockedUser> {
         val hideBots = applicationContext.prefs().getBoolean(C.CHAT_HIDE_BOTS, false)
-        val result = ArrayList<com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.BlockedUser>(limit)
+        val result = ArrayList<com.endlessbum.twitchpro.util.chat.ChatBlocklist.BlockedUser>(limit)
         val seen = HashSet<String>()
         synchronized(chatMessages) {
             for (i in chatMessages.lastIndex downTo 0) {
                 val msg = chatMessages[i]
                 if (msg.type != ChatMessage.USER_MESSAGE || !msg.systemMsg.isNullOrBlank() || msg.noticeIcon != null) continue
                 if (!ownUserId.isNullOrBlank() && msg.userId == ownUserId) continue
-                val norm = com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.normalizeLogin(msg.userLogin) ?: continue
+                val norm = com.endlessbum.twitchpro.util.chat.ChatBlocklist.normalizeLogin(msg.userLogin) ?: continue
                 if (!ownUserLogin.isNullOrBlank() && norm.equals(ownUserLogin, ignoreCase = true)) continue
                 if (!activeChannelLogin.isNullOrBlank() && norm.equals(activeChannelLogin, ignoreCase = true)) continue
-                if (hideBots && com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.isBotMessage(msg) &&
-                    !com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.isBlocked(applicationContext, norm)
+                if (hideBots && com.endlessbum.twitchpro.util.chat.ChatBlocklist.isBotMessage(msg) &&
+                    !com.endlessbum.twitchpro.util.chat.ChatBlocklist.isBlocked(applicationContext, norm)
                 ) continue
                 if (seen.add(norm)) {
-                    result.add(com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.BlockedUser(norm, msg.userName?.trim()?.takeIf { it.isNotEmpty() }))
+                    result.add(com.endlessbum.twitchpro.util.chat.ChatBlocklist.BlockedUser(norm, msg.userName?.trim()?.takeIf { it.isNotEmpty() }))
                     if (result.size >= limit) return result
                 }
             }
@@ -1510,21 +1510,21 @@ class ChatViewModel(
     fun purgeFilteredMessages(): Boolean {
         synchronized(delayedMessages) {
             delayedMessages.removeAll { (msg, _) ->
-                com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.shouldFilter(
+                com.endlessbum.twitchpro.util.chat.ChatBlocklist.shouldFilter(
                     applicationContext, msg, activeChannelLogin, ownUserId, ownUserLogin
                 )
             }
         }
         synchronized(liveBackupBuffer) {
             liveBackupBuffer.removeAll { msg ->
-                com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.shouldFilter(
+                com.endlessbum.twitchpro.util.chat.ChatBlocklist.shouldFilter(
                     applicationContext, msg, activeChannelLogin, ownUserId, ownUserLogin
                 )
             }
         }
         return synchronized(chatMessages) {
             chatMessages.removeAll { msg ->
-                com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.shouldFilter(
+                com.endlessbum.twitchpro.util.chat.ChatBlocklist.shouldFilter(
                     applicationContext, msg, activeChannelLogin, ownUserId, ownUserLogin
                 )
             }
@@ -1545,7 +1545,7 @@ class ChatViewModel(
 
     suspend fun onMessage(message: ChatMessage, fromReplay: Boolean = false) {
         recordSeenChatter(message, activeChannelLogin, ownUserId, ownUserLogin)
-        if (com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.shouldFilter(
+        if (com.endlessbum.twitchpro.util.chat.ChatBlocklist.shouldFilter(
                 applicationContext, message, activeChannelLogin, ownUserId, ownUserLogin
             )
         ) {
@@ -1613,7 +1613,7 @@ class ChatViewModel(
                 val (message, arrival) = head
                 val waited = System.currentTimeMillis() - arrival
                 if (hybridReplayActive) {
-                    if (waited >= com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS) {
+                    if (waited >= com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS) {
                         synchronized(delayedMessages) {
                             if (delayedMessages.firstOrNull() === head) delayedMessages.removeFirst()
                         }
@@ -1646,7 +1646,7 @@ class ChatViewModel(
                             val fallbackDelay = if (autoDelayMeasured || autoDelayMs > 0L) {
                                 autoDelayMs
                             } else if (forcedAuto) {
-                                com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS
+                                com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS
                             } else {
                                 0L
                             }
@@ -2535,7 +2535,7 @@ class ChatViewModel(
             val ids = PubSubUtils.parseSharedChatChannelIds(message, selfId) ?: return
             if (ids.isEmpty()) {
                 coStreamers.value = emptyList()
-                com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.putPartners(selfId, channelLogin, emptyList(), clearIfEmpty = true)
+                com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.putPartners(selfId, channelLogin, emptyList(), clearIfEmpty = true)
                 if (!selfId.isNullOrBlank()) {
                     viewModelScope.launch(Dispatchers.IO) {
                         val remaining = graphQLRepository.loadSharedChatChannelIds(networkLibrary, gqlHeaders, selfId)
@@ -2952,7 +2952,7 @@ class ChatViewModel(
         if (!message.startsWith("/")) {
             // statistics of the TV home (the JSON work goes to the IO thread, the send is not delayed by it)
             viewModelScope.launch {
-                runCatching { com.github.andreyasadchy.xtra.ui.tv.TvStats.addMessage(applicationContext) }
+                runCatching { com.endlessbum.twitchpro.ui.tv.TvStats.addMessage(applicationContext) }
             }
         }
         if (useApiCommands) {
@@ -3804,7 +3804,7 @@ class ChatViewModel(
         override suspend fun onReplayBatch(messages: List<ChatMessage>) {
             val filtered = messages.filter { msg ->
                 recordSeenChatter(msg, activeChannelLogin, ownUserId, ownUserLogin)
-                !com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.shouldFilter(
+                !com.endlessbum.twitchpro.util.chat.ChatBlocklist.shouldFilter(
                     applicationContext, msg, activeChannelLogin, ownUserId, ownUserLogin
                 )
             }
@@ -4314,9 +4314,9 @@ class ChatViewModel(
 
         val ChatViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                ChatViewModel(application.applicationContext, xtraModule.graphQLRepository, xtraModule.helixRepository, xtraModule.playerRepository, xtraModule.json)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                ChatViewModel(application.applicationContext, twitchProModule.graphQLRepository, twitchProModule.helixRepository, twitchProModule.playerRepository, twitchProModule.json)
             }
         }
     }

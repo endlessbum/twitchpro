@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import androidx.fragment.app.Fragment
 

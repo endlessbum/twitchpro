@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.chat
+package com.endlessbum.twitchpro.ui.chat
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -16,9 +16,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.databinding.FragmentEmotesListItemBinding
-import com.github.andreyasadchy.xtra.model.chat.Emote
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.databinding.FragmentEmotesListItemBinding
+import com.endlessbum.twitchpro.model.chat.Emote
 
 class EmotesAdapter(
     private val fragment: Fragment,
@@ -65,7 +65,7 @@ class EmotesAdapter(
                                 )
                                 if (item.thirdParty) {
                                     httpHeaders(NetworkHeaders.Builder().apply {
-                                        add("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                                        add("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                                     }.build())
                                 }
                                 crossfade(true)
@@ -82,7 +82,7 @@ class EmotesAdapter(
                                     else -> item.url1x
                                 }.let {
                                     if (item.thirdParty) {
-                                        GlideUrl(it) { mapOf("User-Agent" to "Xtra/" + BuildConfig.VERSION_NAME) }
+                                        GlideUrl(it) { mapOf("User-Agent" to "TwitchPro/" + BuildConfig.VERSION_NAME) }
                                     } else it
                                 }
                             )

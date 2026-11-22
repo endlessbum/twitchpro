@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,8 +8,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatCheckBox
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.DialogSelectLanguagesBinding
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.DialogSelectLanguagesBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.util
+package com.endlessbum.twitchpro.util
 
 object C {
     const val GAME_ID = "gameId"

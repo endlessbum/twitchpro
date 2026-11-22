@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.team
+package com.endlessbum.twitchpro.ui.team
 
 import android.text.format.DateUtils
 import android.util.TypedValue
@@ -21,15 +21,15 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.databinding.FragmentStreamsListItemCompactBinding
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.databinding.FragmentStreamsListItemCompactBinding
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import com.google.android.material.R
 import kotlin.time.Clock
 import kotlin.time.Instant

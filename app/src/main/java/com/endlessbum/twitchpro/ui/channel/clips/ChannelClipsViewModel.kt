@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.channel.clips
+package com.endlessbum.twitchpro.ui.channel.clips
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
@@ -11,18 +11,18 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.graphql.type.ClipsPeriod
-import com.github.andreyasadchy.xtra.model.ui.ChannelSort
-import com.github.andreyasadchy.xtra.repository.ChannelSortRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.datasource.ChannelClipsDataSource
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentArgs
-import com.github.andreyasadchy.xtra.ui.common.VideosSortDialog
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.graphql.type.ClipsPeriod
+import com.endlessbum.twitchpro.model.ui.ChannelSort
+import com.endlessbum.twitchpro.repository.ChannelSortRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.datasource.ChannelClipsDataSource
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentArgs
+import com.endlessbum.twitchpro.ui.common.VideosSortDialog
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -120,9 +120,9 @@ class ChannelClipsViewModel(
         val ChannelClipsViewModelFactory = viewModelFactory {
             initializer {
                 val savedStateHandle = createSavedStateHandle()
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                ChannelClipsViewModel(application.applicationContext, xtraModule.channelSortRepository, xtraModule.graphQLRepository, xtraModule.helixRepository, savedStateHandle)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                ChannelClipsViewModel(application.applicationContext, twitchProModule.channelSortRepository, twitchProModule.graphQLRepository, twitchProModule.helixRepository, savedStateHandle)
             }
         }
     }

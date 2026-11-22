@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import android.content.Context
 import android.os.Bundle
@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.core.view.isVisible
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.DialogStreamsSortBinding
-import com.github.andreyasadchy.xtra.model.ui.Tag
-import com.github.andreyasadchy.xtra.ui.game.streams.GameStreamsFragment
-import com.github.andreyasadchy.xtra.ui.top.TopStreamsFragment
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.DialogStreamsSortBinding
+import com.endlessbum.twitchpro.model.ui.Tag
+import com.endlessbum.twitchpro.ui.game.streams.GameStreamsFragment
+import com.endlessbum.twitchpro.ui.top.TopStreamsFragment
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip

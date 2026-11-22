@@ -1,13 +1,13 @@
-package com.github.andreyasadchy.xtra.util
+package com.endlessbum.twitchpro.util
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.view.KeyEvent
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.ui.player.ExoPlayerService
-import com.github.andreyasadchy.xtra.ui.player.MediaPlayerService
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.ui.player.ExoPlayerService
+import com.endlessbum.twitchpro.ui.player.MediaPlayerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ class MediaButtonReceiver: BroadcastReceiver() {
                 val pendingResult = goAsync()
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        val savedStates = (context.applicationContext as XtraApp).xtraModule.playerRepository.getPlaybackStates()
+                        val savedStates = (context.applicationContext as TwitchProApp).twitchProModule.playerRepository.getPlaybackStates()
                         if (savedStates.isNotEmpty()) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 when (context.prefs().getString(C.PLAYER, C.EXOPLAYER)) {

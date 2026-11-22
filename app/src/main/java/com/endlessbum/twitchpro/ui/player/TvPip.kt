@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.graphics.Color
 import android.graphics.Outline
@@ -28,18 +28,18 @@ import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsManifest
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.tv.TvAccent
-import com.github.andreyasadchy.xtra.ui.tv.TvDim
-import com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock
-import com.github.andreyasadchy.xtra.ui.tv.TvLoadingPicture
-import com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource
-import com.github.andreyasadchy.xtra.ui.tv.TvThumbnails
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.tv.TvAccent
+import com.endlessbum.twitchpro.ui.tv.TvDim
+import com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock
+import com.endlessbum.twitchpro.ui.tv.TvLoadingPicture
+import com.endlessbum.twitchpro.ui.tv.TvPreviewSource
+import com.endlessbum.twitchpro.ui.tv.TvThumbnails
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -140,7 +140,7 @@ class TvPip(private val activity: MainActivity, private val container: ViewGroup
     fun open(stream: Stream, targetSlot: Int? = null) {
         val login = stream.channelLogin ?: return
         if (containsStream(login)) {
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, R.string.tv_pip_already_shown, Toast.LENGTH_SHORT).show()
+            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, R.string.tv_pip_already_shown, Toast.LENGTH_SHORT).show()
             return
         }
         val chosenIndex = when {
@@ -420,12 +420,12 @@ class TvPip(private val activity: MainActivity, private val container: ViewGroup
         slot.expUpgradeJob = null
         slot.experimentalVodActive = false
         slot.loadJob = activity.lifecycleScope.launch {
-            val app = activity.applicationContext as XtraApp
+            val app = activity.applicationContext as TwitchProApp
             if (TvExperimentalAdblock.isExperimentalEnabled(activity)) {
                 val currentStream = slot.stream
                 val outcome = TvExperimentalAdblock.resolveLiveVod(
                     context = activity,
-                    xtraModule = app.xtraModule,
+                    twitchProModule = app.twitchProModule,
                     channelLogin = login,
                     streamIdHint = currentStream?.id,
                     createdAtHint = currentStream?.createdAt,
@@ -438,7 +438,7 @@ class TvPip(private val activity: MainActivity, private val container: ViewGroup
                         activePlayer.setMediaSource(
                             TvExperimentalAdblock.buildMediaSource(
                                 activity,
-                                app.xtraModule,
+                                app.twitchProModule,
                                 vod.masterUri,
                                 slidingWindowOnly = true,
                                 createdAtMs = vod.createdAtMs,
@@ -469,7 +469,7 @@ class TvPip(private val activity: MainActivity, private val container: ViewGroup
     private fun scheduleExperimentalUpgrade(slot: PipSlot, login: String, streamIdHint: String?, createdAtHint: String?) {
         slot.expUpgradeJob?.cancel()
         slot.expUpgradeJob = activity.lifecycleScope.launch {
-            val app = activity.applicationContext as XtraApp
+            val app = activity.applicationContext as TwitchProApp
             for (attempt in 1..TvExperimentalAdblock.UPGRADE_MAX_ATTEMPTS) {
                 delay(TvExperimentalAdblock.UPGRADE_POLL_INTERVAL_MS)
                 if (slot.suspendedByMain || slot.stream?.channelLogin != login || slot.experimentalVodActive || !TvExperimentalAdblock.isExperimentalEnabled(activity)) {
@@ -477,7 +477,7 @@ class TvPip(private val activity: MainActivity, private val container: ViewGroup
                 }
                 val next = TvExperimentalAdblock.resolveLiveVod(
                     context = activity,
-                    xtraModule = app.xtraModule,
+                    twitchProModule = app.twitchProModule,
                     channelLogin = login,
                     streamIdHint = streamIdHint ?: slot.stream?.id,
                     createdAtHint = createdAtHint ?: slot.stream?.createdAt,
@@ -491,7 +491,7 @@ class TvPip(private val activity: MainActivity, private val container: ViewGroup
                         activePlayer.setMediaSource(
                             TvExperimentalAdblock.buildMediaSource(
                                 activity,
-                                app.xtraModule,
+                                app.twitchProModule,
                                 vod.masterUri,
                                 slidingWindowOnly = true,
                                 createdAtMs = vod.createdAtMs,
@@ -1273,7 +1273,7 @@ class TvPip(private val activity: MainActivity, private val container: ViewGroup
                         freeMoveCenterDown = true
                     } else if (event.action == KeyEvent.ACTION_UP && freeMoveCenterDown) {
                         exitFreeMoveMode(restorePrevious = false)
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, R.string.tv_free_move_saved, Toast.LENGTH_SHORT).show()
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, R.string.tv_free_move_saved, Toast.LENGTH_SHORT).show()
                     }
                     return true
                 }
@@ -1427,9 +1427,9 @@ class TvPip(private val activity: MainActivity, private val container: ViewGroup
         var leaveMuted = false
 
         fun showHint(activity: MainActivity) {
-            val keys = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys.bindingsForAction(
+            val keys = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys.bindingsForAction(
                 activity,
-                com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys.ACTION_PIP_SWAP,
+                com.endlessbum.twitchpro.ui.tv.TvRemoteKeys.ACTION_PIP_SWAP,
             )
             val text = if (keys.isNotEmpty()) {
                 val joined = keys.reduce { acc, key -> activity.getString(R.string.tv_key_or_join, acc, key) }
@@ -1437,7 +1437,7 @@ class TvPip(private val activity: MainActivity, private val container: ViewGroup
             } else {
                 activity.getString(R.string.tv_pip_hint_no_key)
             }
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, text, Toast.LENGTH_LONG).show()
+            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, text, Toast.LENGTH_LONG).show()
         }
     }
 }

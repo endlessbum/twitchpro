@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.main
+package com.endlessbum.twitchpro.ui.main
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,25 +10,25 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.XtraModule
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.TwitchProModule
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 
 class LiveNotificationWorker(
     private val context: Context,
     parameters: WorkerParameters,
 ) : CoroutineWorker(context, parameters) {
 
-    lateinit var xtraModule: XtraModule
+    lateinit var twitchProModule: TwitchProModule
 
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     override suspend fun doWork(): Result {
-        xtraModule = (context as XtraApp).xtraModule
-        val streams = xtraModule.notificationsRepository.getNewStreams(
+        twitchProModule = (context as TwitchProApp).twitchProModule
+        val streams = twitchProModule.notificationsRepository.getNewStreams(
             networkLibrary = context.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
             gqlHeaders = TwitchApiHelper.getGQLHeaders(context, true),
             helixHeaders = TwitchApiHelper.getHelixHeaders(context),
@@ -89,6 +89,6 @@ class LiveNotificationWorker(
     }
 
     companion object {
-        const val GROUP_KEY = "com.github.andreyasadchy.xtra.LIVE_NOTIFICATIONS"
+        const val GROUP_KEY = "com.endlessbum.twitchpro.LIVE_NOTIFICATIONS"
     }
 }

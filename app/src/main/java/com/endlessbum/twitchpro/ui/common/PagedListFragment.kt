@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import android.view.View
 import androidx.core.view.isVisible
@@ -8,10 +8,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.databinding.CommonRecyclerViewLayoutBinding
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.databinding.CommonRecyclerViewLayoutBinding
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -46,7 +46,7 @@ abstract class PagedListFragment : BaseNetworkFragment(), IntegrityDialog.Listen
                 adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
                     override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                         try {
-                            val isTv = recyclerView.resources.getBoolean(com.github.andreyasadchy.xtra.R.bool.isTv)
+                            val isTv = recyclerView.resources.getBoolean(com.endlessbum.twitchpro.R.bool.isTv)
                             if (positionStart == 0 && (!isTv || (!silentRefresh && !recyclerView.canScrollVertically(-1) && !recyclerView.hasFocus()))) {
                                 recyclerView.scrollToPosition(0)
                             }
@@ -104,14 +104,14 @@ abstract class PagedListFragment : BaseNetworkFragment(), IntegrityDialog.Listen
                 }
             }
             viewLifecycleOwner.lifecycleScope.launch {
-                val initialGen = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.changes.value
+                val initialGen = com.endlessbum.twitchpro.ui.tv.TvBlacklist.changes.value
                 var seenGen = initialGen
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.changes.collectLatest { gen ->
+                    com.endlessbum.twitchpro.ui.tv.TvBlacklist.changes.collectLatest { gen ->
                         if (gen != seenGen) {
                             seenGen = gen
-                            if (this@PagedListFragment !is com.github.andreyasadchy.xtra.ui.search.Searchable) {
-                                silentRefresh = context?.resources?.getBoolean(com.github.andreyasadchy.xtra.R.bool.isTv) == true
+                            if (this@PagedListFragment !is com.endlessbum.twitchpro.ui.search.Searchable) {
+                                silentRefresh = context?.resources?.getBoolean(com.endlessbum.twitchpro.R.bool.isTv) == true
                                 pagingAdapter.refresh()
                             }
                         }
@@ -142,7 +142,7 @@ abstract class PagedListFragment : BaseNetworkFragment(), IntegrityDialog.Listen
 
     override fun onResume() {
         super.onResume()
-        val isTv = context?.resources?.getBoolean(com.github.andreyasadchy.xtra.R.bool.isTv) == true
+        val isTv = context?.resources?.getBoolean(com.endlessbum.twitchpro.R.bool.isTv) == true
         if (isTv) {
             scheduleTvStaleRefresh(160L)
         } else {
@@ -167,14 +167,14 @@ abstract class PagedListFragment : BaseNetworkFragment(), IntegrityDialog.Listen
 
     /** Refreshes the list silently when stale, without disrupting active scrolling or deep focus on TV. */
     fun refreshIfStale(maxAgeMs: Long = 60_000L) {
-        if (!isAdded || this is com.github.andreyasadchy.xtra.ui.search.Searchable) return
+        if (!isAdded || this is com.endlessbum.twitchpro.ui.search.Searchable) return
         if ((activity as? MainActivity)?.isTvPlayerOverContent() == true) return
         val adapter = boundAdapter ?: return
         if (adapter.itemCount == 0 || lastRefreshedAt == 0L) return
         val now = System.currentTimeMillis()
         if (now - lastRefreshedAt < maxAgeMs) return
         val rv = boundRecyclerView
-        val isTv = context?.resources?.getBoolean(com.github.andreyasadchy.xtra.R.bool.isTv) == true
+        val isTv = context?.resources?.getBoolean(com.endlessbum.twitchpro.R.bool.isTv) == true
         if (isTv && rv != null) {
             if (rv.scrollState != RecyclerView.SCROLL_STATE_IDLE) return
             val focusedChild = rv.focusedChild

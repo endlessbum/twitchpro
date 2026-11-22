@@ -1,9 +1,9 @@
-package com.github.andreyasadchy.xtra.util.chat
+package com.endlessbum.twitchpro.util.chat
 
 import android.graphics.Color
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.model.chat.NamePaint
-import com.github.andreyasadchy.xtra.model.chat.STVBadge
+import com.endlessbum.twitchpro.model.chat.Emote
+import com.endlessbum.twitchpro.model.chat.NamePaint
+import com.endlessbum.twitchpro.model.chat.STVBadge
 import org.json.JSONObject
 
 object STVEventApiUtils {

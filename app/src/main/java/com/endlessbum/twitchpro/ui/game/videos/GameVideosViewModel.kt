@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.game.videos
+package com.endlessbum.twitchpro.ui.game.videos
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,26 +13,26 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.graphql.type.BroadcastType
-import com.github.andreyasadchy.xtra.graphql.type.VideoSort
-import com.github.andreyasadchy.xtra.model.ui.Bookmark
-import com.github.andreyasadchy.xtra.model.ui.GameSort
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.model.ui.Video
-import com.github.andreyasadchy.xtra.repository.BookmarksRepository
-import com.github.andreyasadchy.xtra.repository.GameSortRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.PlayerRepository
-import com.github.andreyasadchy.xtra.repository.datasource.GameVideosDataSource
-import com.github.andreyasadchy.xtra.ui.common.VideosSortDialog
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentArgs
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.graphql.type.BroadcastType
+import com.endlessbum.twitchpro.graphql.type.VideoSort
+import com.endlessbum.twitchpro.model.ui.Bookmark
+import com.endlessbum.twitchpro.model.ui.GameSort
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.model.ui.Video
+import com.endlessbum.twitchpro.repository.BookmarksRepository
+import com.endlessbum.twitchpro.repository.GameSortRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.PlayerRepository
+import com.endlessbum.twitchpro.repository.datasource.GameVideosDataSource
+import com.endlessbum.twitchpro.ui.common.VideosSortDialog
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentArgs
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -374,9 +374,9 @@ class GameVideosViewModel(
         val GameVideosViewModelFactory = viewModelFactory {
             initializer {
                 val savedStateHandle = createSavedStateHandle()
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                GameVideosViewModel(application.applicationContext, xtraModule.gameSortRepository, xtraModule.playerRepository, xtraModule.bookmarksRepository, xtraModule.graphQLRepository, xtraModule.helixRepository, xtraModule.httpEngine, xtraModule.cronetEngine, xtraModule.cronetExecutor, xtraModule.okHttpClient, savedStateHandle)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                GameVideosViewModel(application.applicationContext, twitchProModule.gameSortRepository, twitchProModule.playerRepository, twitchProModule.bookmarksRepository, twitchProModule.graphQLRepository, twitchProModule.helixRepository, twitchProModule.httpEngine, twitchProModule.cronetEngine, twitchProModule.cronetExecutor, twitchProModule.okHttpClient, savedStateHandle)
             }
         }
     }

@@ -1,13 +1,13 @@
-package com.github.andreyasadchy.xtra.ui.games
+package com.endlessbum.twitchpro.ui.games
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.andreyasadchy.xtra.databinding.DialogGamesSortBinding
-import com.github.andreyasadchy.xtra.model.ui.Tag
-import com.github.andreyasadchy.xtra.ui.common.SearchTagsDialog
+import com.endlessbum.twitchpro.databinding.DialogGamesSortBinding
+import com.endlessbum.twitchpro.model.ui.Tag
+import com.endlessbum.twitchpro.ui.common.SearchTagsDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip

@@ -27,7 +27,7 @@
                 tools:src="@tools:sample/backgrounds/scenic"
                 tools:visibility="visible" />
 
-            <com.github.andreyasadchy.xtra.ui.view.TextWithShadow
+            <com.endlessbum.twitchpro.ui.view.TextWithShadow
                 android:id="@+id/viewers"
                 style="@style/TvThumbnailBadge"
                 android:background="@drawable/tv_live_badge_background"
@@ -51,7 +51,7 @@
                 tools:text="▶ Playing"
                 tools:visibility="visible" />
 
-            <com.github.andreyasadchy.xtra.ui.view.TextWithShadow
+            <com.endlessbum.twitchpro.ui.view.TextWithShadow
                 android:id="@+id/uptime"
                 style="@style/TvThumbnailBadge"
                 android:visibility="gone"

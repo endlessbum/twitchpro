@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.repository
+package com.endlessbum.twitchpro.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,41 +11,41 @@ import com.apollographql.apollo.api.json.buildJsonString
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.json.writeObject
 import com.apollographql.apollo.api.parseResponse
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.db.CustomProxiesDao
-import com.github.andreyasadchy.xtra.db.PlaybackStatesDao
-import com.github.andreyasadchy.xtra.db.RecentEmotesDao
-import com.github.andreyasadchy.xtra.db.StreamProxiesDao
-import com.github.andreyasadchy.xtra.db.TranslatedChannelsDao
-import com.github.andreyasadchy.xtra.db.VideoPositionsDao
-import com.github.andreyasadchy.xtra.db.VideoSwapDao
-import com.github.andreyasadchy.xtra.graphql.StreamPlaybackAccessTokenQuery
-import com.github.andreyasadchy.xtra.graphql.type.BadgeImageSize
-import com.github.andreyasadchy.xtra.graphql.type.EmoteType
-import com.github.andreyasadchy.xtra.model.PlaybackState
-import com.github.andreyasadchy.xtra.model.VideoPosition
-import com.github.andreyasadchy.xtra.model.VideoQuality
-import com.github.andreyasadchy.xtra.model.chat.CheerEmote
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.model.chat.RecentEmote
-import com.github.andreyasadchy.xtra.model.chat.TwitchBadge
-import com.github.andreyasadchy.xtra.model.chat.TwitchEmote
-import com.github.andreyasadchy.xtra.model.gql.playlist.PlaybackAccessTokenResponse
-import com.github.andreyasadchy.xtra.model.misc.BTTVResponse
-import com.github.andreyasadchy.xtra.model.misc.FFZChannelResponse
-import com.github.andreyasadchy.xtra.model.misc.FFZGlobalResponse
-import com.github.andreyasadchy.xtra.model.misc.FFZResponse
-import com.github.andreyasadchy.xtra.model.misc.RecentMessagesResponse
-import com.github.andreyasadchy.xtra.model.misc.STVChannelResponse
-import com.github.andreyasadchy.xtra.model.misc.STVEmoteSetResponse
-import com.github.andreyasadchy.xtra.model.ui.CustomProxy
-import com.github.andreyasadchy.xtra.model.ui.StreamProxy
-import com.github.andreyasadchy.xtra.model.ui.TranslatedChannel
-import com.github.andreyasadchy.xtra.model.ui.VideoSwap
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.db.CustomProxiesDao
+import com.endlessbum.twitchpro.db.PlaybackStatesDao
+import com.endlessbum.twitchpro.db.RecentEmotesDao
+import com.endlessbum.twitchpro.db.StreamProxiesDao
+import com.endlessbum.twitchpro.db.TranslatedChannelsDao
+import com.endlessbum.twitchpro.db.VideoPositionsDao
+import com.endlessbum.twitchpro.db.VideoSwapDao
+import com.endlessbum.twitchpro.graphql.StreamPlaybackAccessTokenQuery
+import com.endlessbum.twitchpro.graphql.type.BadgeImageSize
+import com.endlessbum.twitchpro.graphql.type.EmoteType
+import com.endlessbum.twitchpro.model.PlaybackState
+import com.endlessbum.twitchpro.model.VideoPosition
+import com.endlessbum.twitchpro.model.VideoQuality
+import com.endlessbum.twitchpro.model.chat.CheerEmote
+import com.endlessbum.twitchpro.model.chat.Emote
+import com.endlessbum.twitchpro.model.chat.RecentEmote
+import com.endlessbum.twitchpro.model.chat.TwitchBadge
+import com.endlessbum.twitchpro.model.chat.TwitchEmote
+import com.endlessbum.twitchpro.model.gql.playlist.PlaybackAccessTokenResponse
+import com.endlessbum.twitchpro.model.misc.BTTVResponse
+import com.endlessbum.twitchpro.model.misc.FFZChannelResponse
+import com.endlessbum.twitchpro.model.misc.FFZGlobalResponse
+import com.endlessbum.twitchpro.model.misc.FFZResponse
+import com.endlessbum.twitchpro.model.misc.RecentMessagesResponse
+import com.endlessbum.twitchpro.model.misc.STVChannelResponse
+import com.endlessbum.twitchpro.model.misc.STVEmoteSetResponse
+import com.endlessbum.twitchpro.model.ui.CustomProxy
+import com.endlessbum.twitchpro.model.ui.StreamProxy
+import com.endlessbum.twitchpro.model.ui.TranslatedChannel
+import com.endlessbum.twitchpro.model.ui.VideoSwap
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -1007,7 +1007,7 @@ class PlayerRepository(
                         cronetExecutor.value,
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1026,7 +1026,7 @@ class PlayerRepository(
                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                         cronetExecutor.value
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1040,7 +1040,7 @@ class PlayerRepository(
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
-                    header("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                    header("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                 }.build()).executeAsync().use { response ->
                     json.decodeFromString<RecentMessagesResponse>(response.body.string())
                 }
@@ -1059,7 +1059,7 @@ class PlayerRepository(
                         cronetExecutor.value,
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1078,7 +1078,7 @@ class PlayerRepository(
                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                         cronetExecutor.value
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1092,7 +1092,7 @@ class PlayerRepository(
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
-                    header("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                    header("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                 }.build()).executeAsync().use { response ->
                     response.body.string()
                 }
@@ -1111,7 +1111,7 @@ class PlayerRepository(
                         cronetExecutor.value,
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1130,7 +1130,7 @@ class PlayerRepository(
                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                         cronetExecutor.value
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1144,7 +1144,7 @@ class PlayerRepository(
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
-                    header("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                    header("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                 }.build()).executeAsync().use { response ->
                     response.body.string()
                 }
@@ -1168,7 +1168,7 @@ class PlayerRepository(
                         cronetExecutor.value,
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1187,7 +1187,7 @@ class PlayerRepository(
                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                         cronetExecutor.value
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1201,7 +1201,7 @@ class PlayerRepository(
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
-                    header("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                    header("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                 }.build()).executeAsync().use { response ->
                     response.body.string()
                 }
@@ -1260,7 +1260,7 @@ class PlayerRepository(
                         cronetExecutor.value,
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1279,7 +1279,7 @@ class PlayerRepository(
                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                         cronetExecutor.value
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1293,7 +1293,7 @@ class PlayerRepository(
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
-                    header("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                    header("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                 }.build()).executeAsync().use { response ->
                     response.body.string()
                 }
@@ -1323,7 +1323,7 @@ class PlayerRepository(
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).apply {
                         addHeader("Content-Type", "application/json")
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                         setUploadDataProvider(NetworkUtils.ByteArrayUploadProvider(body.toByteArray()), cronetExecutor.value)
                     }.build()
                     timeout.start(request, continuation)
@@ -1343,7 +1343,7 @@ class PlayerRepository(
                         cronetExecutor.value
                     ).apply {
                         addHeader("Content-Type", "application/json")
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                         setUploadDataProvider(UploadDataProviders.create(body.toByteArray()), cronetExecutor.value)
                     }.build()
                     timeout.start(request, continuation)
@@ -1358,7 +1358,7 @@ class PlayerRepository(
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
                     header("Content-Type", "application/json")
-                    header("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                    header("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     post(body.toRequestBody())
                 }.build()).executeAsync()
             }
@@ -1376,7 +1376,7 @@ class PlayerRepository(
                         cronetExecutor.value,
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1395,7 +1395,7 @@ class PlayerRepository(
                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                         cronetExecutor.value
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1409,7 +1409,7 @@ class PlayerRepository(
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
-                    header("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                    header("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                 }.build()).executeAsync().use { response ->
                     response.body.string()
                 }
@@ -1433,7 +1433,7 @@ class PlayerRepository(
                         cronetExecutor.value,
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1452,7 +1452,7 @@ class PlayerRepository(
                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                         cronetExecutor.value
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1466,7 +1466,7 @@ class PlayerRepository(
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
-                    header("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                    header("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                 }.build()).executeAsync().use { response ->
                     response.body.string()
                 }
@@ -1517,7 +1517,7 @@ class PlayerRepository(
                         cronetExecutor.value,
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1536,7 +1536,7 @@ class PlayerRepository(
                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                         cronetExecutor.value
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1550,7 +1550,7 @@ class PlayerRepository(
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
-                    header("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                    header("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                 }.build()).executeAsync().use { response ->
                     response.body.string()
                 }
@@ -1576,7 +1576,7 @@ class PlayerRepository(
                         cronetExecutor.value,
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1595,7 +1595,7 @@ class PlayerRepository(
                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
                         cronetExecutor.value
                     ).apply {
-                        addHeader("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        addHeader("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build()
                     timeout.start(request, continuation)
                     request.start()
@@ -1609,7 +1609,7 @@ class PlayerRepository(
             else -> {
                 okHttpClient.value.newCall(Request.Builder().apply {
                     url(url)
-                    header("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                    header("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                 }.build()).executeAsync().use { response ->
                     response.body.string()
                 }

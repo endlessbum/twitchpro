@@ -1,6 +1,6 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.R
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -15,10 +15,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withResumed
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.databinding.DialogSearchTagsBinding
-import com.github.andreyasadchy.xtra.model.ui.Tag
-import com.github.andreyasadchy.xtra.ui.common.SearchTagsViewModel.Companion.SearchTagsViewModelFactory
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.databinding.DialogSearchTagsBinding
+import com.endlessbum.twitchpro.model.ui.Tag
+import com.endlessbum.twitchpro.ui.common.SearchTagsViewModel.Companion.SearchTagsViewModelFactory
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -84,7 +84,7 @@ class SearchTagsDialog : DialogFragment() {
             recyclerView.adapter = pagingAdapter
             if (resources.getBoolean(R.bool.isTv)) {
                 // TV: search bar with the mic in it
-                com.github.andreyasadchy.xtra.ui.tv.TvDialogs.replaceSearchView(searchView, getString(R.string.search))?.let { bar ->
+                com.endlessbum.twitchpro.ui.tv.TvDialogs.replaceSearchView(searchView, getString(R.string.search))?.let { bar ->
                     bar.post { bar.requestFocus() }
                 }
             } else {

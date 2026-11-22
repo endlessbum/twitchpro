@@ -1,8 +1,8 @@
-package com.github.andreyasadchy.xtra.repository
+package com.endlessbum.twitchpro.repository
 
-import com.github.andreyasadchy.xtra.db.BookmarksDao
-import com.github.andreyasadchy.xtra.db.OfflineVideosDao
-import com.github.andreyasadchy.xtra.model.ui.OfflineVideo
+import com.endlessbum.twitchpro.db.BookmarksDao
+import com.endlessbum.twitchpro.db.OfflineVideosDao
+import com.endlessbum.twitchpro.model.ui.OfflineVideo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

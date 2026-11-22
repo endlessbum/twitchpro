@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.saved.filters
+package com.endlessbum.twitchpro.ui.saved.filters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -8,9 +8,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.SavedFilter
-import com.github.andreyasadchy.xtra.repository.SavedFiltersRepository
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.SavedFilter
+import com.endlessbum.twitchpro.repository.SavedFiltersRepository
 import kotlinx.coroutines.launch
 
 class FiltersViewModel(
@@ -32,9 +32,9 @@ class FiltersViewModel(
     companion object {
         val FiltersViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                FiltersViewModel(xtraModule.savedFiltersRepository)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                FiltersViewModel(twitchProModule.savedFiltersRepository)
             }
         }
     }

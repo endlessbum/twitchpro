@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +8,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.databinding.SettingsSearchListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.SettingsSearchItem
+import com.endlessbum.twitchpro.databinding.SettingsSearchListItemBinding
+import com.endlessbum.twitchpro.model.ui.SettingsSearchItem
 
 class SettingsSearchAdapter(
     private val fragment: Fragment,

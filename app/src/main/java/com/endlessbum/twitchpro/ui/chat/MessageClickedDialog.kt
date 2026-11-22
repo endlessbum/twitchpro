@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.chat
+package com.endlessbum.twitchpro.ui.chat
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -26,17 +26,17 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.DialogChatMessageClickBinding
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.ui.chat.MessageClickedViewModel.Companion.MessageClickedViewModelFactory
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.DialogChatMessageClickBinding
+import com.endlessbum.twitchpro.model.chat.ChatMessage
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.ui.chat.MessageClickedViewModel.Companion.MessageClickedViewModelFactory
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.mlkit.nl.translate.TranslateLanguage

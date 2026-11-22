@@ -1,12 +1,12 @@
-package com.github.andreyasadchy.xtra.repository.datasource
+package com.endlessbum.twitchpro.repository.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.LocalChannelFollowsRepository
-import com.github.andreyasadchy.xtra.util.C
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.LocalChannelFollowsRepository
+import com.endlessbum.twitchpro.util.C
 
 class FollowedStreamsDataSource(
     private val userId: String?,
@@ -116,8 +116,8 @@ class FollowedStreamsDataSource(
             }
             LoadResult.Page(
                 // TV: the favorite channels live first (none on the phone and tablet)
-                data = com.github.andreyasadchy.xtra.ui.tv.TvFavorites.sort(
-                    com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(list)
+                data = com.endlessbum.twitchpro.ui.tv.TvFavorites.sort(
+                    com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(list)
                 ),
                 prevKey = null,
                 nextKey = finalNextKey
@@ -163,7 +163,7 @@ class FollowedStreamsDataSource(
         offset = items.lastOrNull()?.cursor?.toString()
         val nextPage = data.pageInfo?.hasNextPage != false
         return LoadResult.Page(
-            data = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(list),
+            data = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(list),
             prevKey = null,
             nextKey = if (!offset.isNullOrBlank() && nextPage) {
                 (params.key ?: 1) + 1
@@ -200,7 +200,7 @@ class FollowedStreamsDataSource(
         offset = items.lastOrNull()?.cursor
         val nextPage = data.pageInfo?.hasNextPage != false
         return LoadResult.Page(
-            data = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(list),
+            data = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(list),
             prevKey = null,
             nextKey = if (!offset.isNullOrBlank() && nextPage) {
                 (params.key ?: 1) + 1
@@ -243,7 +243,7 @@ class FollowedStreamsDataSource(
         }
         offset = response.pagination?.cursor
         return LoadResult.Page(
-            data = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(list),
+            data = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(list),
             prevKey = null,
             nextKey = if (!offset.isNullOrBlank()) {
                 (params.key ?: 1) + 1

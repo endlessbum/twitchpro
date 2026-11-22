@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.search.games
+package com.endlessbum.twitchpro.ui.search.games
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -9,15 +9,15 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.RecentSearch
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.RecentSearchesRepository
-import com.github.andreyasadchy.xtra.repository.datasource.SearchGamesDataSource
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.RecentSearch
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.RecentSearchesRepository
+import com.endlessbum.twitchpro.repository.datasource.SearchGamesDataSource
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -79,9 +79,9 @@ class GameSearchViewModel(
     companion object {
         val GameSearchViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                GameSearchViewModel(application.applicationContext, xtraModule.recentSearchesRepository, xtraModule.graphQLRepository, xtraModule.helixRepository)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                GameSearchViewModel(application.applicationContext, twitchProModule.recentSearchesRepository, twitchProModule.graphQLRepository, twitchProModule.helixRepository)
             }
         }
     }

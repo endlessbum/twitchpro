@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,20 +21,20 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.db.AppDatabase
-import com.github.andreyasadchy.xtra.model.ui.OfflineVideo
-import com.github.andreyasadchy.xtra.repository.NotificationsRepository
-import com.github.andreyasadchy.xtra.repository.OfflineVideosRepository
-import com.github.andreyasadchy.xtra.repository.PlayerRepository
-import com.github.andreyasadchy.xtra.repository.RecentSearchesRepository
-import com.github.andreyasadchy.xtra.ui.main.LiveNotificationWorker
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
-import com.github.andreyasadchy.xtra.util.UpdateInstallHelper
-import com.github.andreyasadchy.xtra.util.m3u8.PlaylistUtils
-import com.github.andreyasadchy.xtra.util.m3u8.Segment
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.db.AppDatabase
+import com.endlessbum.twitchpro.model.ui.OfflineVideo
+import com.endlessbum.twitchpro.repository.NotificationsRepository
+import com.endlessbum.twitchpro.repository.OfflineVideosRepository
+import com.endlessbum.twitchpro.repository.PlayerRepository
+import com.endlessbum.twitchpro.repository.RecentSearchesRepository
+import com.endlessbum.twitchpro.ui.main.LiveNotificationWorker
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.util.UpdateInstallHelper
+import com.endlessbum.twitchpro.util.m3u8.PlaylistUtils
+import com.endlessbum.twitchpro.util.m3u8.Segment
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -276,7 +276,7 @@ class SettingsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             updateUrl.emit(
                 try {
-                    val requestUrl = com.github.andreyasadchy.xtra.ui.main.MainViewModel.resolveUpdateRequestUrl(url)
+                    val requestUrl = com.endlessbum.twitchpro.ui.main.MainViewModel.resolveUpdateRequestUrl(url)
                     // captured once: the engine can be torn down between the check and the use
                     val httpEngineRef = if (networkLibrary == C.HTTP_ENGINE) httpEngine.value else null
                     val cronetEngineRef = if (networkLibrary == C.CRONET) cronetEngine.value else null
@@ -321,7 +321,7 @@ class SettingsViewModel(
                             }
                         }
                     }
-                    com.github.andreyasadchy.xtra.ui.main.MainViewModel.parseUpdatePayload(json, rawBody, lastChecked)?.let { parsed ->
+                    com.endlessbum.twitchpro.ui.main.MainViewModel.parseUpdatePayload(json, rawBody, lastChecked)?.let { parsed ->
                         updateSize = parsed.size
                         updateVersion = parsed.version
                         updateNotes = parsed.notes
@@ -512,7 +512,7 @@ class SettingsViewModel(
     fun backupSettings(url: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val zipBytes = runCatching {
-                com.github.andreyasadchy.xtra.ui.tv.TvBackup.buildBackupZip(applicationContext)
+                com.endlessbum.twitchpro.ui.tv.TvBackup.buildBackupZip(applicationContext)
             }.getOrNull() ?: return@launch
 
             val savedName = runCatching {
@@ -523,7 +523,7 @@ class SettingsViewModel(
                 val zipSaved = writeTreeDocument(
                     treeUri = treeUri,
                     directoryUri = directoryUri,
-                    fileName = com.github.andreyasadchy.xtra.ui.tv.TvBackup.FILE_NAME,
+                    fileName = com.endlessbum.twitchpro.ui.tv.TvBackup.FILE_NAME,
                     mimeType = "application/zip",
                     bytes = zipBytes
                 )
@@ -533,10 +533,10 @@ class SettingsViewModel(
                     directoryUri = directoryUri,
                     fileName = prefsName,
                     mimeType = "text/xml",
-                    bytes = com.github.andreyasadchy.xtra.ui.tv.TvBackup.exportDefaultPrefsXml(applicationContext)
+                    bytes = com.endlessbum.twitchpro.ui.tv.TvBackup.exportDefaultPrefsXml(applicationContext)
                 )
                 val dbFile = applicationContext.getDatabasePath("database")
-                if (com.github.andreyasadchy.xtra.ui.tv.TvBackup.isValidSqliteFile(dbFile)) {
+                if (com.endlessbum.twitchpro.ui.tv.TvBackup.isValidSqliteFile(dbFile)) {
                     runCatching {
                         writeTreeDocument(
                             treeUri = treeUri,
@@ -552,14 +552,14 @@ class SettingsViewModel(
 
             if (savedName != null) {
                 kotlinx.coroutines.withContext(Dispatchers.Main) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(
                         applicationContext,
-                        applicationContext.getString(com.github.andreyasadchy.xtra.R.string.tv_backup_saved, savedName),
+                        applicationContext.getString(com.endlessbum.twitchpro.R.string.tv_backup_saved, savedName),
                         android.widget.Toast.LENGTH_LONG
                     ).show()
                 }
             } else {
-                com.github.andreyasadchy.xtra.ui.tv.TvBackup.saveToTv(applicationContext, viewModelScope)
+                com.endlessbum.twitchpro.ui.tv.TvBackup.saveToTv(applicationContext, viewModelScope)
             }
         }
     }
@@ -569,7 +569,7 @@ class SettingsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val resolver = applicationContext.contentResolver
             val postPrefsCallback: (Map<String, Any>) -> Unit = { parsed ->
-                if (!applicationContext.resources.getBoolean(com.github.andreyasadchy.xtra.R.bool.isTv)) {
+                if (!applicationContext.resources.getBoolean(com.endlessbum.twitchpro.R.bool.isTv)) {
                     toggleNotifications(
                         parsed[C.LIVE_NOTIFICATIONS_ENABLED] == true,
                         networkLibrary,
@@ -594,18 +594,18 @@ class SettingsViewModel(
 
                 // ZIP archive (magic bytes PK) — contains all backup components together
                 if (bytes.size >= 4 && bytes[0] == 'P'.code.toByte() && bytes[1] == 'K'.code.toByte()) {
-                    if (com.github.andreyasadchy.xtra.ui.tv.TvBackup.applyBackupBytes(applicationContext, bytes, postPrefsCallback)) {
+                    if (com.endlessbum.twitchpro.ui.tv.TvBackup.applyBackupBytes(applicationContext, bytes, postPrefsCallback)) {
                         return@launch
                     }
                     continue
                 }
 
-                if (com.github.andreyasadchy.xtra.ui.tv.TvBackup.isValidSqliteBytes(bytes)) {
+                if (com.endlessbum.twitchpro.ui.tv.TvBackup.isValidSqliteBytes(bytes)) {
                     dbBytes = bytes
                     continue
                 }
 
-                if (com.github.andreyasadchy.xtra.ui.tv.TvBackup.isSharedPrefsXmlBytes(bytes)) {
+                if (com.endlessbum.twitchpro.ui.tv.TvBackup.isSharedPrefsXmlBytes(bytes)) {
                     val displayName = runCatching {
                         resolver.query(
                             uri,
@@ -625,7 +625,7 @@ class SettingsViewModel(
                 }
             }
 
-            val restored = com.github.andreyasadchy.xtra.ui.tv.TvBackup.applyRestoredParts(
+            val restored = com.endlessbum.twitchpro.ui.tv.TvBackup.applyRestoredParts(
                 context = applicationContext,
                 mainPrefsXml = mainPrefsXml,
                 tvFavoritesXml = tvFavoritesXml,
@@ -636,9 +636,9 @@ class SettingsViewModel(
             )
             if (!restored) {
                 kotlinx.coroutines.withContext(Dispatchers.Main) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(
                         applicationContext,
-                        com.github.andreyasadchy.xtra.R.string.tv_backup_not_found,
+                        com.endlessbum.twitchpro.R.string.tv_backup_not_found,
                         android.widget.Toast.LENGTH_LONG
                     ).show()
                 }
@@ -671,9 +671,9 @@ class SettingsViewModel(
     companion object {
         val SettingsViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                SettingsViewModel(application.applicationContext, xtraModule.playerRepository, xtraModule.offlineVideosRepository, xtraModule.recentSearchesRepository, xtraModule.notificationsRepository, xtraModule.database, xtraModule.httpEngine, xtraModule.cronetEngine, xtraModule.cronetExecutor, xtraModule.okHttpClient, xtraModule.json)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                SettingsViewModel(application.applicationContext, twitchProModule.playerRepository, twitchProModule.offlineVideosRepository, twitchProModule.recentSearchesRepository, twitchProModule.notificationsRepository, twitchProModule.database, twitchProModule.httpEngine, twitchProModule.cronetEngine, twitchProModule.cronetExecutor, twitchProModule.okHttpClient, twitchProModule.json)
             }
         }
     }

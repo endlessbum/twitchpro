@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.ContentUris
 import android.content.ContentValues
@@ -12,13 +12,13 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.edit
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.view.TvUi
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.view.TvUi
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -73,7 +73,7 @@ object TvLauncherChannels {
         val loggedIn = !TwitchApiHelper.getGQLHeaders(appContext, true)[C.HEADER_TOKEN].isNullOrBlank() ||
             !TwitchApiHelper.getHelixHeaders(appContext)[C.HEADER_TOKEN].isNullOrBlank()
         val hasLocalFollows = runCatching {
-            (appContext as XtraApp).xtraModule.localChannelFollowsRepository.getAll().isNotEmpty()
+            (appContext as TwitchProApp).twitchProModule.localChannelFollowsRepository.getAll().isNotEmpty()
         }.getOrDefault(false)
         if (!loggedIn && !hasLocalFollows) {
             runCatching { writeFollowedChannel(appContext, emptyList()) }
@@ -127,7 +127,7 @@ object TvLauncherChannels {
             }
             val providerId = stream.id?.takeIf { it.isNotBlank() }?.let { "live_${login}_$it" } ?: "live_$login"
             val deepLink = Uri.parse("https://www.twitch.tv/$login").buildUpon()
-                .appendQueryParameter("xtratv_play", "1")
+                .appendQueryParameter("twitchpro_play", "1")
                 .apply {
                     stream.id?.let { appendQueryParameter("id", it) }
                     stream.channelId?.let { appendQueryParameter("cid", it) }
@@ -237,7 +237,7 @@ object TvLauncherChannels {
         val items = TvResumeHistory.list(context).take(MAX_WATCH_NEXT)
         val wantedIds = items.map { "vod_${it.id}" }.toSet()
 
-        // Query existing Xtra Watch Next entries so we update/remove cleanly without disturbing user dismissals
+        // Query existing TwitchPro Watch Next entries so we update/remove cleanly without disturbing user dismissals
         val existing = mutableMapOf<String, Long>()
         resolver.query(
             TvContract.WatchNextPrograms.CONTENT_URI,

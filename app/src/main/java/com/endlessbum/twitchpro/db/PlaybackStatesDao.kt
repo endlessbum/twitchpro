@@ -1,10 +1,10 @@
-package com.github.andreyasadchy.xtra.db
+package com.endlessbum.twitchpro.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import com.github.andreyasadchy.xtra.model.PlaybackState
+import com.endlessbum.twitchpro.model.PlaybackState
 
 @Dao
 interface PlaybackStatesDao {

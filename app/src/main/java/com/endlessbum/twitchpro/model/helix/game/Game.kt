@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.model.helix.game
+package com.endlessbum.twitchpro.model.helix.game
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

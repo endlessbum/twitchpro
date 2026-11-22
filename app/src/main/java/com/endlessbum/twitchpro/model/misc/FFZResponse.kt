@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.model.misc
+package com.endlessbum.twitchpro.model.misc
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

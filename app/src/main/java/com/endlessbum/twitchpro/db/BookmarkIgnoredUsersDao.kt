@@ -1,10 +1,10 @@
-package com.github.andreyasadchy.xtra.db
+package com.endlessbum.twitchpro.db
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.github.andreyasadchy.xtra.model.ui.BookmarkIgnoredUser
+import com.endlessbum.twitchpro.model.ui.BookmarkIgnoredUser
 import kotlinx.coroutines.flow.Flow
 
 @Dao

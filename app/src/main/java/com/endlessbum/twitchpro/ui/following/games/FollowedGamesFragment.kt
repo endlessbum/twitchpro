@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.following.games
+package com.endlessbum.twitchpro.ui.following.games
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,13 +16,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.CommonRecyclerViewLayoutBinding
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.ui.common.PagedListFragment
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.following.games.FollowedGamesViewModel.Companion.FollowedGamesViewModelFactory
-import com.github.andreyasadchy.xtra.ui.games.GamesFragmentDirections
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.CommonRecyclerViewLayoutBinding
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.ui.common.PagedListFragment
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.following.games.FollowedGamesViewModel.Companion.FollowedGamesViewModelFactory
+import com.endlessbum.twitchpro.ui.games.GamesFragmentDirections
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -66,9 +66,9 @@ class FollowedGamesFragment : PagedListFragment(), Scrollable {
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
-            var seenGen = com.github.andreyasadchy.xtra.ui.tv.TvFollow.gameChanges.value
+            var seenGen = com.endlessbum.twitchpro.ui.tv.TvFollow.gameChanges.value
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                com.github.andreyasadchy.xtra.ui.tv.TvFollow.gameChanges.collectLatest { gen ->
+                com.endlessbum.twitchpro.ui.tv.TvFollow.gameChanges.collectLatest { gen ->
                     if (gen != seenGen) {
                         seenGen = gen
                         pagingAdapter.refresh()

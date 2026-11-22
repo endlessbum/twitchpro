@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.andreyasadchy.xtra.player.lowlatency;
+package com.endlessbum.twitchpro.player.lowlatency;
 
 import static androidx.media3.common.util.Util.castNonNull;
 import static androidx.media3.datasource.HttpUtil.buildRangeRequestHeader;
@@ -43,7 +43,7 @@ import androidx.media3.datasource.HttpDataSource;
 import androidx.media3.datasource.HttpUtil;
 import androidx.media3.datasource.TransferListener;
 
-import com.github.andreyasadchy.xtra.ui.player.ExoPlayerService;
+import com.endlessbum.twitchpro.ui.player.ExoPlayerService;
 import com.google.common.base.Ascii;
 import com.google.common.base.Predicate;
 import com.google.common.io.ByteStreams;
@@ -127,7 +127,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
     private boolean handleSetCookieRequests;
     private boolean keepPostFor302Redirects;
 
-    @Nullable private final String customProxyUrl; // xtra: proxy
+    @Nullable private final String customProxyUrl; // twitchpro: proxy
     private final int proxyTimeout;
     private final boolean proxyMultivariantPlaylist;
     private final boolean proxyMediaPlaylist;
@@ -151,7 +151,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
     public Factory(CronetEngine cronetEngine, Executor executor, @Nullable String customProxyUrl, int proxyTimeout, boolean proxyMultivariantPlaylist, boolean proxyMediaPlaylist, @Nullable CronetEngine proxyClient, @Nullable Call.Factory multivariantPlaylistProxyOkHttpClient, @Nullable Call.Factory mediaPlaylistProxyOkHttpClient, Function0<Boolean> getProxyMediaPlaylist) {
       this.cronetEngine = checkNotNull(cronetEngine);
       this.executor = executor;
-      this.customProxyUrl = customProxyUrl; // xtra: proxy
+      this.customProxyUrl = customProxyUrl; // twitchpro: proxy
       this.proxyTimeout = proxyTimeout;
       this.proxyMultivariantPlaylist = proxyMultivariantPlaylist;
       this.proxyMediaPlaylist = proxyMediaPlaylist;
@@ -350,7 +350,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
           new CronetDataSource(
               cronetEngine,
               executor,
-              customProxyUrl, // xtra: proxy
+              customProxyUrl, // twitchpro: proxy
               proxyTimeout,
               proxyMultivariantPlaylist,
               proxyMediaPlaylist,
@@ -477,7 +477,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
 
   private volatile long currentConnectTimeoutMs;
 
-  @Nullable private final String customProxyUrl; // xtra: proxy
+  @Nullable private final String customProxyUrl; // twitchpro: proxy
   private final int proxyTimeout;
   private final boolean proxyMultivariantPlaylist;
   private final boolean proxyMediaPlaylist;
@@ -493,7 +493,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
   protected CronetDataSource(
       CronetEngine cronetEngine,
       Executor executor,
-      @Nullable String customProxyUrl, // xtra: proxy
+      @Nullable String customProxyUrl, // twitchpro: proxy
       int proxyTimeout,
       boolean proxyMultivariantPlaylist,
       boolean proxyMediaPlaylist,
@@ -514,7 +514,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
     super(/* isNetwork= */ true);
     this.cronetEngine = checkNotNull(cronetEngine);
     this.executor = checkNotNull(executor);
-    this.customProxyUrl = customProxyUrl; // xtra: proxy
+    this.customProxyUrl = customProxyUrl; // twitchpro: proxy
     this.proxyTimeout = proxyTimeout;
     this.proxyMultivariantPlaylist = proxyMultivariantPlaylist;
     this.proxyMediaPlaylist = proxyMediaPlaylist;
@@ -591,7 +591,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
     checkState(!transferStarted);
 
     operation.close();
-    String host = dataSpec.uri.getHost(); // xtra: proxy
+    String host = dataSpec.uri.getHost(); // twitchpro: proxy
     useProxyTimeout = (customProxyUrl != null && dataSpec.uri.toString().equals(customProxyUrl)) ||
             (proxyClient != null && host != null &&
                     ((proxyMultivariantPlaylist && host.matches(ExoPlayerService.MULTIVARIANT_PLAYLIST_REGEX)) ||
@@ -616,7 +616,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
             e, dataSpec, PlaybackException.ERROR_CODE_IO_UNSPECIFIED, Status.IDLE);
       }
     }
-    if (multivariantPlaylistProxyOkHttpClient != null && host != null && host.matches(ExoPlayerService.MULTIVARIANT_PLAYLIST_REGEX)) { // xtra: proxy
+    if (multivariantPlaylistProxyOkHttpClient != null && host != null && host.matches(ExoPlayerService.MULTIVARIANT_PLAYLIST_REGEX)) { // twitchpro: proxy
       return openOkHttp(dataSpec, multivariantPlaylistProxyOkHttpClient);
     }
     if (mediaPlaylistProxyOkHttpClient != null && host != null && host.matches(ExoPlayerService.MEDIA_PLAYLIST_REGEX) && getProxyMediaPlaylist.invoke()) {
@@ -864,9 +864,9 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
     if (transferStarted) {
       transferStarted = false;
       transferEnded();
-      closeConnectionQuietly(); // xtra: proxy
+      closeConnectionQuietly(); // twitchpro: proxy
     }
-    response = null; // xtra: proxy
+    response = null; // twitchpro: proxy
   }
 
   private void closeCurrentUrlRequestAndCallback() {
@@ -909,7 +909,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
    */
   @UnstableApi
   protected UrlRequest.Builder buildRequestBuilder(DataSpec dataSpec) throws IOException {
-    CronetEngine cronetEngine; // xtra: proxy
+    CronetEngine cronetEngine; // twitchpro: proxy
     String host = dataSpec.uri.getHost();
     if (proxyClient != null && host != null &&
             ((proxyMultivariantPlaylist && host.matches(ExoPlayerService.MULTIVARIANT_PLAYLIST_REGEX)) ||
@@ -980,7 +980,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
     return opened;
   }
 
-  private void resetConnectTimeout(int timeout) { // xtra: proxy
+  private void resetConnectTimeout(int timeout) { // twitchpro: proxy
     currentConnectTimeoutMs = clock.elapsedRealtime() + timeout;
   }
 
@@ -1074,7 +1074,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
    */
   @SuppressWarnings("ReferenceEquality")
   private void readInternal(ByteBuffer buffer, DataSpec dataSpec) throws HttpDataSourceException {
-    if (responseByteStream != null) { // xtra: proxy
+    if (responseByteStream != null) { // twitchpro: proxy
       try {
         int read = Channels.newChannel(responseByteStream).read(buffer);
         if (read == -1) {
@@ -1088,7 +1088,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
     }
     castNonNull(currentUrlRequest).read(buffer);
     try {
-      int timeout; // xtra: proxy
+      int timeout; // twitchpro: proxy
       if (useProxyTimeout) {
         timeout = proxyTimeout;
       } else {
@@ -1178,7 +1178,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
     return remaining;
   }
 
-  // xtra: proxy
+  // twitchpro: proxy
   private long openOkHttp(DataSpec dataSpec, Call.Factory callFactory) throws HttpDataSourceException {
     transferInitializing(dataSpec);
 
@@ -1381,7 +1381,7 @@ public class CronetDataSource extends BaseDataSource implements HttpDataSource {
         }
       }
       if (resetTimeoutOnRedirects) {
-        int timeout; // xtra: proxy
+        int timeout; // twitchpro: proxy
         if (useProxyTimeout) {
           timeout = proxyTimeout;
         } else {

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.following.streams
+package com.endlessbum.twitchpro.ui.following.streams
 
 import android.content.Context
 import androidx.core.content.edit
@@ -10,15 +10,15 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.LocalChannelFollowsRepository
-import com.github.andreyasadchy.xtra.repository.datasource.FollowedStreamsDataSource
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.LocalChannelFollowsRepository
+import com.endlessbum.twitchpro.repository.datasource.FollowedStreamsDataSource
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -69,9 +69,9 @@ class FollowedStreamsViewModel(
     companion object {
         val FollowedStreamsViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                FollowedStreamsViewModel(application.applicationContext, xtraModule.localChannelFollowsRepository, xtraModule.graphQLRepository, xtraModule.helixRepository)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                FollowedStreamsViewModel(application.applicationContext, twitchProModule.localChannelFollowsRepository, twitchProModule.graphQLRepository, twitchProModule.helixRepository)
             }
         }
     }

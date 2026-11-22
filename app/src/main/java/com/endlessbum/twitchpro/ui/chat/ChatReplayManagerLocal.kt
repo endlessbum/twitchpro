@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.ui.chat
+package com.endlessbum.twitchpro.ui.chat
 
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.chat.VideoChatMessage
+import com.endlessbum.twitchpro.model.chat.ChatMessage
+import com.endlessbum.twitchpro.model.chat.VideoChatMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

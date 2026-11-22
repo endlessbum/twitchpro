@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.game.clips
+package com.endlessbum.twitchpro.ui.game.clips
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
@@ -11,19 +11,19 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.graphql.type.ClipsPeriod
-import com.github.andreyasadchy.xtra.graphql.type.Language
-import com.github.andreyasadchy.xtra.model.ui.GameSort
-import com.github.andreyasadchy.xtra.repository.GameSortRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.datasource.GameClipsDataSource
-import com.github.andreyasadchy.xtra.ui.common.VideosSortDialog
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentArgs
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.graphql.type.ClipsPeriod
+import com.endlessbum.twitchpro.graphql.type.Language
+import com.endlessbum.twitchpro.model.ui.GameSort
+import com.endlessbum.twitchpro.repository.GameSortRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.datasource.GameClipsDataSource
+import com.endlessbum.twitchpro.ui.common.VideosSortDialog
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentArgs
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -130,9 +130,9 @@ class GameClipsViewModel(
         val GameClipsViewModelFactory = viewModelFactory {
             initializer {
                 val savedStateHandle = createSavedStateHandle()
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                GameClipsViewModel(application.applicationContext, xtraModule.gameSortRepository, xtraModule.graphQLRepository, xtraModule.helixRepository, savedStateHandle)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                GameClipsViewModel(application.applicationContext, twitchProModule.gameSortRepository, twitchProModule.graphQLRepository, twitchProModule.helixRepository, savedStateHandle)
             }
         }
     }

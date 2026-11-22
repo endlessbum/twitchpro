@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
@@ -6,7 +6,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceGroup
 import androidx.preference.TwoStatePreference
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.R
 
 /**
  * TV: an icon in front of each setting of the right column, to find one at a glance. Chosen by its key (the setting
@@ -24,7 +24,7 @@ object TvSettingIcons {
         "ui_language" to R.drawable.tv_ic_globe,
         "ui_settings" to R.drawable.tv_ic_view_quilt,
         "chat_settings" to R.drawable.tv_ic_chat,
-        "xtratv_settings" to R.drawable.tv_ic_tv_small,
+        "twitchpro_settings" to R.drawable.tv_ic_tv_small,
         "adblock_settings" to R.drawable.tv_ic_shield,
         "player_adblock" to R.drawable.tv_ic_shield,
         "tv_experimental_adblock" to R.drawable.tv_ic_shield,
@@ -47,7 +47,7 @@ object TvSettingIcons {
         "about_github" to R.drawable.tv_ic_share,
         "about_discord" to R.drawable.tv_ic_discord,
         "about_device" to R.drawable.tv_ic_tv_small,
-        // Xtra TV
+        // TwitchPro
         "player_frame_rate_matching" to R.drawable.tv_ic_hd,
         "tv_player_clock" to R.drawable.tv_ic_schedule,
         "tv_back_action" to R.drawable.tv_ic_replay,

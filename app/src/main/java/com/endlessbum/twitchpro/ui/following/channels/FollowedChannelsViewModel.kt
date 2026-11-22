@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.following.channels
+package com.endlessbum.twitchpro.ui.following.channels
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -9,19 +9,19 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.ChannelSort
-import com.github.andreyasadchy.xtra.repository.BookmarksRepository
-import com.github.andreyasadchy.xtra.repository.ChannelSortRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.LocalChannelFollowsRepository
-import com.github.andreyasadchy.xtra.repository.OfflineVideosRepository
-import com.github.andreyasadchy.xtra.repository.datasource.FollowedChannelsDataSource
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.ChannelSort
+import com.endlessbum.twitchpro.repository.BookmarksRepository
+import com.endlessbum.twitchpro.repository.ChannelSortRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.LocalChannelFollowsRepository
+import com.endlessbum.twitchpro.repository.OfflineVideosRepository
+import com.endlessbum.twitchpro.repository.datasource.FollowedChannelsDataSource
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -71,8 +71,8 @@ class FollowedChannelsViewModel(
                 helixRepository = helixRepository,
                 enableIntegrity = applicationContext.prefs().getBoolean(C.ENABLE_INTEGRITY, false),
                 networkLibrary = applicationContext.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
-                liveFirst = com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(applicationContext),
-                favorites = com.github.andreyasadchy.xtra.ui.tv.TvFavorites.run {
+                liveFirst = com.endlessbum.twitchpro.ui.view.TvUi.isTv(applicationContext),
+                favorites = com.endlessbum.twitchpro.ui.tv.TvFavorites.run {
                     load(applicationContext)
                     items.value.map { it.login }
                 },
@@ -100,9 +100,9 @@ class FollowedChannelsViewModel(
     companion object {
         val FollowedChannelsViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                FollowedChannelsViewModel(application.applicationContext, xtraModule.channelSortRepository, xtraModule.localChannelFollowsRepository, xtraModule.offlineVideosRepository, xtraModule.bookmarksRepository, xtraModule.graphQLRepository, xtraModule.helixRepository)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                FollowedChannelsViewModel(application.applicationContext, twitchProModule.channelSortRepository, twitchProModule.localChannelFollowsRepository, twitchProModule.offlineVideosRepository, twitchProModule.bookmarksRepository, twitchProModule.graphQLRepository, twitchProModule.helixRepository)
             }
         }
     }

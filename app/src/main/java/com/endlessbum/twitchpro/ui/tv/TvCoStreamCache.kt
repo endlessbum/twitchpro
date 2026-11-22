@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.graphics.Canvas
@@ -16,11 +16,11 @@ import android.text.Spanned
 import android.text.style.ReplacementSpan
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -176,8 +176,8 @@ object TvCoStreamCache {
     }
 
     private suspend fun resolveBatch(appContext: Context, batch: List<PendingChannel>) {
-        val app = appContext as? XtraApp ?: return
-        val repo = app.xtraModule.graphQLRepository
+        val app = appContext as? TwitchProApp ?: return
+        val repo = app.twitchProModule.graphQLRepository
         val netLib = appContext.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
         val headers = TwitchApiHelper.getGQLHeaders(appContext)
 
@@ -316,8 +316,8 @@ object TvCoStreamCache {
         channelLogin: String?,
         title: String? = null,
     ): List<Stream> = withContext(Dispatchers.IO) {
-        val app = context.applicationContext as? XtraApp ?: return@withContext emptyList()
-        val repo = app.xtraModule.graphQLRepository
+        val app = context.applicationContext as? TwitchProApp ?: return@withContext emptyList()
+        val repo = app.twitchProModule.graphQLRepository
         val netLib = context.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
         val headers = TwitchApiHelper.getGQLHeaders(context)
 

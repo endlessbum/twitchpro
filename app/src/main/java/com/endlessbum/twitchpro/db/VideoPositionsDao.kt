@@ -1,10 +1,10 @@
-package com.github.andreyasadchy.xtra.db
+package com.endlessbum.twitchpro.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.github.andreyasadchy.xtra.model.VideoPosition
+import com.endlessbum.twitchpro.model.VideoPosition
 import kotlinx.coroutines.flow.Flow
 
 @Dao

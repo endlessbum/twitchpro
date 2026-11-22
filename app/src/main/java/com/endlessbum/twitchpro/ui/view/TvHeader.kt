@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.view
+package com.endlessbum.twitchpro.ui.view
 
 import android.content.ContextWrapper
 import android.view.View
@@ -67,12 +67,12 @@ import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.tv.TvAmbient
-import com.github.andreyasadchy.xtra.ui.tv.TvColors
-import com.github.andreyasadchy.xtra.ui.tv.TvDialogs
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.tv.TvAmbient
+import com.endlessbum.twitchpro.ui.tv.TvColors
+import com.endlessbum.twitchpro.ui.tv.TvDialogs
+import com.endlessbum.twitchpro.util.prefs
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.tabs.TabLayout
@@ -513,7 +513,7 @@ object TvHeader {
                 Row(Modifier.heightIn(min = 40.dp), verticalAlignment = Alignment.CenterVertically) {
                     if (snapshot.isSearch) {
                         val searchView = remember(appBar) { appBar.findViewById<androidx.appcompat.widget.SearchView>(R.id.searchView) }
-                        com.github.andreyasadchy.xtra.ui.tv.TvSearchBar(
+                        com.endlessbum.twitchpro.ui.tv.TvSearchBar(
                             initialQuery = snapshot.searchQuery,
                             hint = appBar.context.getString(R.string.search),
                             modifier = Modifier.weight(1f),
@@ -737,10 +737,10 @@ object TvHeader {
     private fun Pill(action: Action, isTab: Boolean, modifier: Modifier) {
         val interaction = remember { MutableInteractionSource() }
         val focused by interaction.collectIsFocusedAsState()
-        // option of the Xtra TV settings: a tab shows its page after a short stop on it, without OK
+        // option of the TwitchPro settings: a tab shows its page after a short stop on it, without OK
         if (isTab && !action.selected) {
             val context = LocalContext.current
-            val focusSwitch = remember { context.prefs().getBoolean(com.github.andreyasadchy.xtra.util.C.TV_FOCUS_SWITCH, false) }
+            val focusSwitch = remember { context.prefs().getBoolean(com.endlessbum.twitchpro.util.C.TV_FOCUS_SWITCH, false) }
             if (focusSwitch) {
                 LaunchedEffect(focused) {
                     if (focused) {

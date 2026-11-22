@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.download
+package com.endlessbum.twitchpro.ui.download
 
 import android.Manifest
 import android.app.Activity
@@ -29,16 +29,16 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.DialogVideoDownloadBinding
-import com.github.andreyasadchy.xtra.model.VideoQuality
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.download.DownloadViewModel.Companion.DownloadViewModelFactory
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.DialogVideoDownloadBinding
+import com.endlessbum.twitchpro.model.VideoQuality
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.download.DownloadViewModel.Companion.DownloadViewModelFactory
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -185,7 +185,7 @@ class DownloadDialog : DialogFragment(), IntegrityDialog.Listener {
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.data?.let {
                     when {
-                        it.authority?.startsWith("com.android.providers") == true -> com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireActivity(), R.string.invalid_directory, Toast.LENGTH_LONG).show()
+                        it.authority?.startsWith("com.android.providers") == true -> com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireActivity(), R.string.invalid_directory, Toast.LENGTH_LONG).show()
                         else -> {
                             requireContext().contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                             sharedPath = it.toString()
@@ -253,7 +253,7 @@ class DownloadDialog : DialogFragment(), IntegrityDialog.Listener {
                     repeatOnLifecycle(Lifecycle.State.STARTED) {
                         viewModel.dismiss.collectLatest {
                             if (it) {
-                                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireActivity(), R.string.video_subscribers_only, Toast.LENGTH_LONG).show()
+                                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireActivity(), R.string.video_subscribers_only, Toast.LENGTH_LONG).show()
                                 dismiss()
                             }
                         }

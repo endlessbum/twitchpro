@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.app.Activity
 import android.app.Application
@@ -27,10 +27,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.player.PlayerFragment
-import com.github.andreyasadchy.xtra.ui.view.TvUi
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.player.PlayerFragment
+import com.endlessbum.twitchpro.ui.view.TvUi
 import java.lang.ref.WeakReference
 import java.util.WeakHashMap
 

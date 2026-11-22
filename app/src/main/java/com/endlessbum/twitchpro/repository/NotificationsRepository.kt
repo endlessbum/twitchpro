@@ -1,11 +1,11 @@
-package com.github.andreyasadchy.xtra.repository
+package com.endlessbum.twitchpro.repository
 
-import com.github.andreyasadchy.xtra.db.NotificationUsersDao
-import com.github.andreyasadchy.xtra.db.ShownNotificationsDao
-import com.github.andreyasadchy.xtra.model.NotificationUser
-import com.github.andreyasadchy.xtra.model.ShownNotification
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.util.C
+import com.endlessbum.twitchpro.db.NotificationUsersDao
+import com.endlessbum.twitchpro.db.ShownNotificationsDao
+import com.endlessbum.twitchpro.model.NotificationUser
+import com.endlessbum.twitchpro.model.ShownNotification
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.util.C
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.time.Instant

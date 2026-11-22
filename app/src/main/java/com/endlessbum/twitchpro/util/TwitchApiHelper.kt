@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.util
+package com.endlessbum.twitchpro.util
 
 import android.content.Context
 import android.icu.number.Notation
@@ -7,7 +7,7 @@ import android.icu.number.Precision
 import android.icu.text.CompactDecimalFormat
 import android.os.Build
 import android.text.format.DateUtils
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.R
 import org.json.JSONObject
 import java.math.RoundingMode
 import java.text.NumberFormat

@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.model.ui
+package com.endlessbum.twitchpro.model.ui
 
 import android.os.Parcelable
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.TwitchApiHelper
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

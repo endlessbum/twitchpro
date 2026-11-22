@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -96,7 +96,7 @@ class TvMenuState {
     var accountName by mutableStateOf<String?>(null)
     var accountImage by mutableStateOf<String?>(null)
     internal val requesters = mutableMapOf<Int, FocusRequester>()
-    /** An entry got the focus (to show its page without OK, an option of the Xtra TV settings). */
+    /** An entry got the focus (to show its page without OK, an option of the TwitchPro settings). */
     var onFocusItem: (Int) -> Unit = {}
 
     /**
@@ -162,7 +162,7 @@ private class LastPillBoundsHolder(var value: MenuPillBounds? = null)
 /**
  * Leanback side menu: the account at the top, search, the sections, then the settings.
  * It scrolls with the focus, up and down stop at its ends, right goes back to the screen (handled by the activity).
- * With the icon rail of the Xtra TV settings ([TvMenuState.collapsed]) it folds into a rail of icons: the same entries,
+ * With the icon rail of the TwitchPro settings ([TvMenuState.collapsed]) it folds into a rail of icons: the same entries,
  * their icons stay where they are and their names slide out when it opens.
  */
 @Composable
@@ -601,8 +601,8 @@ fun TvSideMenu(state: TvMenuState, onClick: (Int) -> Unit) {
                         ) {
                             Icon(
                                 painterResource(
-                                    if (playing.audioOnly) com.github.andreyasadchy.xtra.R.drawable.baseline_audiotrack_black_24
-                                    else com.github.andreyasadchy.xtra.R.drawable.tv_ic_live
+                                    if (playing.audioOnly) com.endlessbum.twitchpro.R.drawable.baseline_audiotrack_black_24
+                                    else com.endlessbum.twitchpro.R.drawable.tv_ic_live
                                 ),
                                 contentDescription = null,
                                 tint = Color(0xFFE91916),
@@ -783,7 +783,7 @@ private fun NowPlayingBar(
     val closeInteraction = remember { MutableInteractionSource() }
     val rawCloseFocused by closeInteraction.collectIsFocusedAsState()
     val closeFocused = rawCloseFocused && !suppressVisualFocus
-    val fallbackLabel = androidx.compose.ui.platform.LocalContext.current.getString(com.github.andreyasadchy.xtra.R.string.tv_now_playing)
+    val fallbackLabel = androidx.compose.ui.platform.LocalContext.current.getString(com.endlessbum.twitchpro.R.string.tv_now_playing)
     Row(
         Modifier
             .fillMaxSize()
@@ -838,8 +838,8 @@ private fun NowPlayingBar(
                         ) {
                             Icon(
                                 painterResource(
-                                    if (playing.audioOnly) com.github.andreyasadchy.xtra.R.drawable.baseline_audiotrack_black_24
-                                    else com.github.andreyasadchy.xtra.R.drawable.tv_ic_live
+                                    if (playing.audioOnly) com.endlessbum.twitchpro.R.drawable.baseline_audiotrack_black_24
+                                    else com.endlessbum.twitchpro.R.drawable.tv_ic_live
                                 ),
                                 contentDescription = null,
                                 tint = if (openFocused) TvColors.onFocused else Color(0xFFE91916),
@@ -883,8 +883,8 @@ private fun NowPlayingBar(
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                painterResource(com.github.andreyasadchy.xtra.R.drawable.tv_ic_close),
-                contentDescription = androidx.compose.ui.platform.LocalContext.current.getString(com.github.andreyasadchy.xtra.R.string.tv_close_playback),
+                painterResource(com.endlessbum.twitchpro.R.drawable.tv_ic_close),
+                contentDescription = androidx.compose.ui.platform.LocalContext.current.getString(com.endlessbum.twitchpro.R.string.tv_close_playback),
                 tint = if (closeFocused) TvColors.onFocused else Color(0xD9FFFFFF),
                 modifier = Modifier.size(18.dp),
             )

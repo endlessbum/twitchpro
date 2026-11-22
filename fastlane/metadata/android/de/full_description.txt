@@ -1,4 +1,4 @@
-<i>Xtra für Twitch</i> ist ein <a href='https://en.wikipedia.org/wiki/Twitch_(service)' target='_blank'>Twitch</a>-Client, der ein bestmögliches Streaming- und Chat-Erlebnis auf Mobilgeräten bietet:
+<i>TwitchPro</i> ist ein <a href='https://en.wikipedia.org/wiki/Twitch_(service)' target='_blank'>Twitch</a>-Client, der ein bestmögliches Streaming- und Chat-Erlebnis auf Mobilgeräten bietet:
 
 * Unterstützung beliebter Emotes durch die Plugins BetterTTV und FrankerFaceZ
 * VODs und Clips mit Chat-Wiederholung ansehen

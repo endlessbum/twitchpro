@@ -1,4 +1,4 @@
-# Xtra TV — notes for Claude
+# TwitchPro — notes for Claude
 
 ## Done
 - Version number in the settings (1.2.0): under the screen name in the left panel of the TV settings, from

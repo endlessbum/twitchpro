@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.search
+package com.endlessbum.twitchpro.ui.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,20 +21,20 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.DialogUserResultBinding
-import com.github.andreyasadchy.xtra.databinding.FragmentSearchBinding
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.common.BaseNetworkFragment
-import com.github.andreyasadchy.xtra.ui.common.FragmentHost
-import com.github.andreyasadchy.xtra.ui.common.Sortable
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.search.SearchPagerViewModel.Companion.SearchPagerViewModelFactory
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.reduceDragSensitivity
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.DialogUserResultBinding
+import com.endlessbum.twitchpro.databinding.FragmentSearchBinding
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.common.BaseNetworkFragment
+import com.endlessbum.twitchpro.ui.common.FragmentHost
+import com.endlessbum.twitchpro.ui.common.Sortable
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.search.SearchPagerViewModel.Companion.SearchPagerViewModelFactory
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.reduceDragSensitivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Job
@@ -170,7 +170,7 @@ class SearchPagerFragment : BaseNetworkFragment(), FragmentHost {
                 when (menuItem.itemId) {
                     R.id.tvVoiceSearch -> {
                         try {
-                            voiceSearchLauncher.launch(com.github.andreyasadchy.xtra.ui.view.TvVoice.createIntent(getString(R.string.search)))
+                            voiceSearchLauncher.launch(com.endlessbum.twitchpro.ui.view.TvVoice.createIntent(getString(R.string.search)))
                         } catch (e: Exception) {
                         }
                         true
@@ -282,7 +282,7 @@ class SearchPagerFragment : BaseNetworkFragment(), FragmentHost {
     }
 
     private val voiceSearchLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { result ->
-        com.github.andreyasadchy.xtra.ui.view.TvVoice.getText(result)?.let { setQuery(it) }
+        com.endlessbum.twitchpro.ui.view.TvVoice.getText(result)?.let { setQuery(it) }
     }
 
     fun setQuery(query: String?) {

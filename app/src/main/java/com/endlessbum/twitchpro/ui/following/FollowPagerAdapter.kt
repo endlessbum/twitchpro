@@ -1,11 +1,11 @@
-package com.github.andreyasadchy.xtra.ui.following
+package com.endlessbum.twitchpro.ui.following
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.github.andreyasadchy.xtra.ui.following.channels.FollowedChannelsFragment
-import com.github.andreyasadchy.xtra.ui.following.games.FollowedGamesFragment
-import com.github.andreyasadchy.xtra.ui.following.streams.FollowedStreamsFragment
-import com.github.andreyasadchy.xtra.ui.following.videos.FollowedVideosFragment
+import com.endlessbum.twitchpro.ui.following.channels.FollowedChannelsFragment
+import com.endlessbum.twitchpro.ui.following.games.FollowedGamesFragment
+import com.endlessbum.twitchpro.ui.following.streams.FollowedStreamsFragment
+import com.endlessbum.twitchpro.ui.following.videos.FollowedVideosFragment
 import kotlin.math.max
 
 class FollowPagerAdapter(

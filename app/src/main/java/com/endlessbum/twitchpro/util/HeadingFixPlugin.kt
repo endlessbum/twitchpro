@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.util
+package com.endlessbum.twitchpro.util
 
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.core.CorePlugin

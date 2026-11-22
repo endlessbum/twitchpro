@@ -1,4 +1,4 @@
-# Xtra TV 1.4.6.4
+# TwitchPro 1.4.6.4
 
 ### New & Polish
 - **Redesigned tabbed PiP & Chat side panels with icons (zero scroll)**: reorganized the **Chat** (**Placement** · **Appearance** · **Options**) and **PiP** (**Display** · **Audio**) side panels with instant-hover top tabs (switching immediately on D-pad Left/Right without pressing OK), clear vector icons on every option, and a pinned 1-row horizontal action footer so every option fits without vertical scrolling.
@@ -16,4 +16,4 @@
 - **Navigation & focus fixes**: fixed pressing Back inside a game category or channel closing the app instead of returning to the previous screen, fixed overlapping root screens when leaving a category via the side menu, and refined focus retention across Chat and PiP panels.
 
 ### Install
-Download `XtraTV-1.4.6.4-tv.apk` below and install it over the previous version, your settings and account are kept.
+Download `TwitchPro-1.4.6.4-tv.apk` below and install it over the previous version, your settings and account are kept.

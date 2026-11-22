@@ -1,8 +1,8 @@
-# Xtra TV
+# TwitchPro
 
 <img src="docs/icon.png" align="left" width="110"/>
 
-**Xtra TV** is a Twitch player and browser made for **Android TV**, built on top of [Xtra](https://github.com/crackededed/Xtra).
+**TwitchPro** is a Twitch player and browser made for **Android TV**, built on top of [Xtra](https://github.com/crackededed/Xtra).
 It brings a full TV interface designed for the remote, a built-in ad blocker (Proxy & VAFT), streams up to **1440p60**, multi-stream up to 4 channels, a live DVR timeline, and much more.
 
 <br clear="left"/>
@@ -14,11 +14,11 @@ It brings a full TV interface designed for the remote, a built-in ad blocker (Pr
 
 ## Download
 
-Get the latest APK from the [Releases](https://github.com/razeNFR/XtraATV/releases/latest) page.
+Get the latest APK from the [Releases](https://github.com/endlessbum/twitch/releases/latest) page.
 
-On a TV, the easiest way is the **Downloader** app (or any file manager): download the APK and install it (allow the installation of unknown apps for that app). From a computer: `adb install XtraTV.apk`.
+On a TV, the easiest way is the **Downloader** app (or any file manager): download the APK and install it (allow the installation of unknown apps for that app). From a computer: `adb install TwitchPro.apk`.
 
-Xtra TV has its own package name, so it installs next to the original Xtra.
+TwitchPro has its own package name, so it installs next to the original Xtra.
 
 ## Features
 
@@ -57,7 +57,7 @@ Twitch only serves the 1440p - 4K streams to its website client with a logged-in
 
 ## Deep Links & Automation
 
-Xtra TV can open live streams, channel pages, VODs (with timestamps), clips, and categories directly from ADB, Home Assistant, tvQuickActions, or custom launchers. See [**docs/deeplinks.md**](docs/deeplinks.md) for all supported URLs and examples.
+TwitchPro can open live streams, channel pages, VODs (with timestamps), clips, and categories directly from ADB, Home Assistant, tvQuickActions, or custom launchers. See [**docs/deeplinks.md**](docs/deeplinks.md) for all supported URLs and examples.
 
 ## Building
 
@@ -68,9 +68,9 @@ The APK is generated in `app/build/outputs/apk/release/`.
 
 ## Credits
 
-Xtra TV is a fork of [Xtra](https://github.com/crackededed/Xtra) (originally by [AndreyAsadchy](https://github.com/AndreyAsadchy/Xtra)).
+TwitchPro is a fork of [Xtra](https://github.com/crackededed/Xtra) (originally by [AndreyAsadchy](https://github.com/AndreyAsadchy/Xtra)).
 The ad blocker follows the logic of the [VAFT userscript](https://github.com/pixeltris/TwitchAdSolutions).
 
 ## License
 
-Xtra TV is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+TwitchPro is licensed under the [GNU Affero General Public License v3.0](LICENSE).

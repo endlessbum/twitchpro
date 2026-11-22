@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv.home
+package com.endlessbum.twitchpro.ui.tv.home
 
 import android.content.Context
 import android.net.Uri
@@ -49,21 +49,21 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.repository.datasource.GamesDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.SearchGamesDataSource
-import com.github.andreyasadchy.xtra.ui.tv.ButtonRow
-import com.github.andreyasadchy.xtra.ui.tv.FocusRow
-import com.github.andreyasadchy.xtra.ui.tv.SelectorRow
-import com.github.andreyasadchy.xtra.ui.tv.SidePanel
-import com.github.andreyasadchy.xtra.ui.tv.TvColors
-import com.github.andreyasadchy.xtra.ui.tv.TvDialogs
-import com.github.andreyasadchy.xtra.ui.tv.TvSearchBar
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.repository.datasource.GamesDataSource
+import com.endlessbum.twitchpro.repository.datasource.SearchGamesDataSource
+import com.endlessbum.twitchpro.ui.tv.ButtonRow
+import com.endlessbum.twitchpro.ui.tv.FocusRow
+import com.endlessbum.twitchpro.ui.tv.SelectorRow
+import com.endlessbum.twitchpro.ui.tv.SidePanel
+import com.endlessbum.twitchpro.ui.tv.TvColors
+import com.endlessbum.twitchpro.ui.tv.TvDialogs
+import com.endlessbum.twitchpro.ui.tv.TvSearchBar
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -193,7 +193,7 @@ object TvHomeRows {
     }
 
     fun load(context: Context): List<Entry> {
-        val suffix = com.github.andreyasadchy.xtra.ui.tv.TvAccounts.storageSuffix(context)
+        val suffix = com.endlessbum.twitchpro.ui.tv.TvAccounts.storageSuffix(context)
         val isPrimary = suffix.isEmpty()
         val prefs = context.prefs()
         val raw = prefs.getString(C.TV_HOME_ROWS + suffix, null)
@@ -239,7 +239,7 @@ object TvHomeRows {
     }
 
     private fun persist(context: Context, entries: List<Entry>, notify: Boolean) {
-        val suffix = com.github.andreyasadchy.xtra.ui.tv.TvAccounts.storageSuffix(context)
+        val suffix = com.endlessbum.twitchpro.ui.tv.TvAccounts.storageSuffix(context)
         val arr = JSONArray()
         entries.forEach { e ->
             arr.put(JSONObject().put("id", e.id).put("enabled", e.enabled))
@@ -720,8 +720,8 @@ object TvHomeRows {
     }
 
     private fun showAddCategoryDialog(context: Context, onUpdated: (List<Entry>) -> Unit) {
-        val app = context.applicationContext as XtraApp
-        val xtraModule = app.xtraModule
+        val app = context.applicationContext as TwitchProApp
+        val twitchProModule = app.twitchProModule
         val prefs = context.prefs()
         val truncate = prefs.getBoolean(C.UI_TRUNCATE_VIEW_COUNT, true)
         val langOptions = listOf(
@@ -750,9 +750,9 @@ object TvHomeRows {
                     GamesDataSource(
                         tags = null,
                         gqlHeaders = gqlHeaders,
-                        graphQLRepository = xtraModule.graphQLRepository,
+                        graphQLRepository = twitchProModule.graphQLRepository,
                         helixHeaders = helixHeaders,
-                        helixRepository = xtraModule.helixRepository,
+                        helixRepository = twitchProModule.helixRepository,
                         enableIntegrity = enableIntegrity,
                         networkLibrary = networkLibrary,
                     )
@@ -760,9 +760,9 @@ object TvHomeRows {
                     SearchGamesDataSource(
                         query = query.trim(),
                         gqlHeaders = gqlHeaders,
-                        graphQLRepository = xtraModule.graphQLRepository,
+                        graphQLRepository = twitchProModule.graphQLRepository,
                         helixHeaders = helixHeaders,
-                        helixRepository = xtraModule.helixRepository,
+                        helixRepository = twitchProModule.helixRepository,
                         enableIntegrity = enableIntegrity,
                         networkLibrary = networkLibrary,
                     )
@@ -814,7 +814,7 @@ object TvHomeRows {
                                         next.add(insertAt, Entry(catId, true))
                                     }
                                     save(context, next)
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(
                                         context,
                                         context.getString(R.string.tv_home_category_pinned, game.name ?: ""),
                                         Toast.LENGTH_SHORT,

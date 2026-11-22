@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.recyclerview.widget.RecyclerView
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.R
 import com.google.android.material.chip.Chip
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.slider.Slider

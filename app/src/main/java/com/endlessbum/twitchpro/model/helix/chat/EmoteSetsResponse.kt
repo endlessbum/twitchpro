@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.model.helix.chat
+package com.endlessbum.twitchpro.model.helix.chat
 
 import kotlinx.serialization.Serializable
 

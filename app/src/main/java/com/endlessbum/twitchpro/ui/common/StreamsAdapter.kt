@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import android.text.format.DateUtils
 import android.util.TypedValue
@@ -22,16 +22,16 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentStreamsListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentStreamsListItemBinding
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -54,15 +54,15 @@ class StreamsAdapter(
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(recyclerView.context)) {
-            com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.attachToRecyclerView(recyclerView) {
+        if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(recyclerView.context)) {
+            com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.attachToRecyclerView(recyclerView) {
                 if (itemCount > 0) {
-                    notifyItemRangeChanged(0, itemCount, com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM)
+                    notifyItemRangeChanged(0, itemCount, com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM)
                 }
             }
-            com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.attachToRecyclerView(recyclerView) {
+            com.endlessbum.twitchpro.ui.tv.TvPlaybackState.attachToRecyclerView(recyclerView) {
                 if (itemCount > 0) {
-                    notifyItemRangeChanged(0, itemCount, com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK)
+                    notifyItemRangeChanged(0, itemCount, com.endlessbum.twitchpro.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK)
                 }
             }
         }
@@ -79,15 +79,15 @@ class StreamsAdapter(
 
     override fun onBindViewHolder(holder: PagingViewHolder, position: Int, payloads: MutableList<Any>) {
         val validPayloads = setOf(
-            com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM,
-            com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK,
+            com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM,
+            com.endlessbum.twitchpro.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK,
         )
         if (payloads.isNotEmpty() && payloads.all { it in validPayloads }) {
             val item = getItem(position)
-            if (com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM in payloads) {
+            if (com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.PAYLOAD_COSTREAM in payloads) {
                 holder.bindUsernameOnly(item)
             }
-            if (com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK in payloads) {
+            if (com.endlessbum.twitchpro.ui.tv.TvPlaybackState.PAYLOAD_PLAYBACK in payloads) {
                 holder.bindPlaybackBadgeOnly(item)
             }
         } else {
@@ -103,11 +103,11 @@ class StreamsAdapter(
 
         fun bindPlaybackBadgeOnly(item: Stream?) {
             val badgeView = binding.tvPlayingBadge ?: return
-            if (item == null || !com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(badgeView.context)) {
+            if (item == null || !com.endlessbum.twitchpro.ui.view.TvUi.isTv(badgeView.context)) {
                 badgeView.visibility = View.GONE
                 return
             }
-            com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.bindView(badgeView, item.channelLogin)
+            com.endlessbum.twitchpro.ui.tv.TvPlaybackState.bindView(badgeView, item.channelLogin)
         }
 
         fun bindUsernameOnly(item: Stream?) {
@@ -124,17 +124,17 @@ class StreamsAdapter(
                 } else {
                     item.channelName
                 }
-                val isTv = context.resources.getBoolean(com.github.andreyasadchy.xtra.R.bool.isTv)
-                if (isTv && com.github.andreyasadchy.xtra.ui.tv.TvFavorites.isFavorite(item.channelLogin)) {
+                val isTv = context.resources.getBoolean(com.endlessbum.twitchpro.R.bool.isTv)
+                if (isTv && com.endlessbum.twitchpro.ui.tv.TvFavorites.isFavorite(item.channelLogin)) {
                     base = android.text.SpannableStringBuilder("★ ").apply {
                         setSpan(android.text.style.ForegroundColorSpan(0xFFFACC15.toInt()), 0, 1, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                         append(base)
                     }
                 }
                 if (isTv) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.enqueue(context, item)
-                    val coCount = com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.getCount(item.channelId, item.channelLogin)
-                    base = com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.formatUsernameWithBadge(context, base, coCount)
+                    com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.enqueue(context, item)
+                    val coCount = com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.getCount(item.channelId, item.channelLogin)
+                    base = com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.formatUsernameWithBadge(context, base, coCount)
                 }
                 binding.username.text = base
             } else {
@@ -180,13 +180,13 @@ class StreamsAdapter(
                     if (item.channelName != null) {
                         username.setOnClickListener(channelListener)
                     }
-                    if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(context)) {
+                    if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(context)) {
                         root.setOnFocusChangeListener { _, hasFocus ->
-                            com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(title, hasFocus)
-                            com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(gameName, hasFocus)
+                            com.endlessbum.twitchpro.ui.view.TvMarquee.update(title, hasFocus)
+                            com.endlessbum.twitchpro.ui.view.TvMarquee.update(gameName, hasFocus)
                         }
-                        com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(title, root.hasFocus())
-                        com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(gameName, root.hasFocus())
+                        com.endlessbum.twitchpro.ui.view.TvMarquee.update(title, root.hasFocus())
+                        com.endlessbum.twitchpro.ui.view.TvMarquee.update(gameName, root.hasFocus())
                     }
                     val streamTitle = item.title
                     if (!streamTitle.isNullOrBlank()) {
@@ -228,7 +228,7 @@ class StreamsAdapter(
                         fragment.requireContext().imageLoader.enqueue(
                             ImageRequest.Builder(fragment.requireContext()).apply {
                                 // a stream that just started has no thumbnail yet on Twitch: the picture of the channel
-                                data(com.github.andreyasadchy.xtra.ui.tv.TvThumbnails.picture(item, item.thumbnail))
+                                data(com.endlessbum.twitchpro.ui.tv.TvThumbnails.picture(item, item.thumbnail))
                                 memoryCacheKeyExtra("minutes", key.toString())
                                 diskCachePolicy(CachePolicy.DISABLED)
                                 crossfade(true)
@@ -261,8 +261,8 @@ class StreamsAdapter(
                         if (text != null) {
                             uptime.visibility = View.VISIBLE
                             // TV: the same short badge as the cards of the home ("2 h 39")
-                            uptime.text = if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(context)) {
-                                com.github.andreyasadchy.xtra.ui.tv.TvUptime.format(context, item.createdAt) ?: text
+                            uptime.text = if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(context)) {
+                                com.endlessbum.twitchpro.ui.tv.TvUptime.format(context, item.createdAt) ?: text
                             } else {
                                 context.getString(R.string.uptime, text)
                             }

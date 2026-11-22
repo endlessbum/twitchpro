@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.saved.filters
+package com.endlessbum.twitchpro.ui.saved.filters
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,13 +16,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.CommonRecyclerViewLayoutBinding
-import com.github.andreyasadchy.xtra.model.ui.SavedFilter
-import com.github.andreyasadchy.xtra.ui.common.PagedListFragment
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.saved.filters.FiltersViewModel.Companion.FiltersViewModelFactory
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.CommonRecyclerViewLayoutBinding
+import com.endlessbum.twitchpro.model.ui.SavedFilter
+import com.endlessbum.twitchpro.ui.common.PagedListFragment
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.saved.filters.FiltersViewModel.Companion.FiltersViewModelFactory
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

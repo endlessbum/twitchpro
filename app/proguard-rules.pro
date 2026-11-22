@@ -27,7 +27,7 @@
     public static *** v(...);
 }
 
--keep class com.github.andreyasadchy.xtra.util.PlayServicesCronetProvider { *; }
+-keep class com.endlessbum.twitchpro.util.PlayServicesCronetProvider { *; }
 -keep public class org.chromium.net.* {
     !private *;
     *;

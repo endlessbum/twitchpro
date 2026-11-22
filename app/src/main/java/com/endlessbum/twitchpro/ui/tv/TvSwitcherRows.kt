@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.widget.Toast
@@ -47,15 +47,15 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.repository.datasource.GamesDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.SearchGamesDataSource
-import com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.repository.datasource.GamesDataSource
+import com.endlessbum.twitchpro.repository.datasource.SearchGamesDataSource
+import com.endlessbum.twitchpro.ui.tv.home.TvHomeRows
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -552,8 +552,8 @@ object TvSwitcherRows {
     }
 
     private fun showAddCategoryDialog(context: Context, onUpdated: (List<Entry>) -> Unit) {
-        val app = context.applicationContext as XtraApp
-        val xtraModule = app.xtraModule
+        val app = context.applicationContext as TwitchProApp
+        val twitchProModule = app.twitchProModule
         val prefs = context.prefs()
         val truncate = prefs.getBoolean(C.UI_TRUNCATE_VIEW_COUNT, true)
         val langOptions = listOf(
@@ -582,9 +582,9 @@ object TvSwitcherRows {
                     GamesDataSource(
                         tags = null,
                         gqlHeaders = gqlHeaders,
-                        graphQLRepository = xtraModule.graphQLRepository,
+                        graphQLRepository = twitchProModule.graphQLRepository,
                         helixHeaders = helixHeaders,
-                        helixRepository = xtraModule.helixRepository,
+                        helixRepository = twitchProModule.helixRepository,
                         enableIntegrity = enableIntegrity,
                         networkLibrary = networkLibrary,
                     )
@@ -592,9 +592,9 @@ object TvSwitcherRows {
                     SearchGamesDataSource(
                         query = query.trim(),
                         gqlHeaders = gqlHeaders,
-                        graphQLRepository = xtraModule.graphQLRepository,
+                        graphQLRepository = twitchProModule.graphQLRepository,
                         helixHeaders = helixHeaders,
-                        helixRepository = xtraModule.helixRepository,
+                        helixRepository = twitchProModule.helixRepository,
                         enableIntegrity = enableIntegrity,
                         networkLibrary = networkLibrary,
                     )

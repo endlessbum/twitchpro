@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.chat
+package com.endlessbum.twitchpro.ui.chat
 
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
@@ -20,16 +20,16 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.DialogChatImageClickBinding
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.ui.chat.ImageClickedViewModel.Companion.ImageClickedViewModelFactory
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.DialogChatImageClickBinding
+import com.endlessbum.twitchpro.model.chat.Emote
+import com.endlessbum.twitchpro.ui.chat.ImageClickedViewModel.Companion.ImageClickedViewModelFactory
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.flow.collectLatest
@@ -91,7 +91,7 @@ class ImageClickedDialog : BottomSheetDialogFragment(), IntegrityDialog.Listener
                         data(args.getString(IMAGE_URL))
                         if (args.getBoolean(IMAGE_THIRD_PARTY)) {
                             httpHeaders(NetworkHeaders.Builder().apply {
-                                add("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                                add("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                             }.build())
                         }
                         target(
@@ -109,7 +109,7 @@ class ImageClickedDialog : BottomSheetDialogFragment(), IntegrityDialog.Listener
                 Glide.with(this@ImageClickedDialog)
                     .load(args.getString(IMAGE_URL).let {
                         if (args.getBoolean(IMAGE_THIRD_PARTY)) {
-                            GlideUrl(it) { mapOf("User-Agent" to "Xtra/" + BuildConfig.VERSION_NAME) }
+                            GlideUrl(it) { mapOf("User-Agent" to "TwitchPro/" + BuildConfig.VERSION_NAME) }
                         } else it
                     })
                     .diskCacheStrategy(DiskCacheStrategy.DATA)

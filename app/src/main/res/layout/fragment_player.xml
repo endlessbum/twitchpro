@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.github.andreyasadchy.xtra.ui.view.PlayerLayout
+        <com.endlessbum.twitchpro.ui.view.PlayerLayout
             android:id="@+id/playerLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -75,7 +75,7 @@
                 android:id="@+id/playerControls"
                 layout="@layout/player_layout" />
 
-            <com.github.andreyasadchy.xtra.ui.view.PlayerDragView
+            <com.endlessbum.twitchpro.ui.view.PlayerDragView
                 android:id="@+id/dragView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -83,9 +83,9 @@
                 android:focusable="true"
                 tools:ignore="UnusedAttribute" />
 
-        </com.github.andreyasadchy.xtra.ui.view.PlayerLayout>
+        </com.endlessbum.twitchpro.ui.view.PlayerLayout>
 
-        <com.github.andreyasadchy.xtra.ui.view.ChatLayout
+        <com.endlessbum.twitchpro.ui.view.ChatLayout
             android:id="@+id/chatLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -120,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </com.github.andreyasadchy.xtra.ui.view.ChatLayout>
+        </com.endlessbum.twitchpro.ui.view.ChatLayout>
 
     </FrameLayout>
 </LinearLayout>

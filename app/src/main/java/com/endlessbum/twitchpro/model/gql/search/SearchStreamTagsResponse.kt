@@ -1,6 +1,6 @@
-package com.github.andreyasadchy.xtra.model.gql.search
+package com.endlessbum.twitchpro.model.gql.search
 
-import com.github.andreyasadchy.xtra.model.gql.Error
+import com.endlessbum.twitchpro.model.gql.Error
 import kotlinx.serialization.Serializable
 
 @Serializable

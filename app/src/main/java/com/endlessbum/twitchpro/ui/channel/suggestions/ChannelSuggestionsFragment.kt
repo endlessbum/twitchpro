@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.channel.suggestions
+package com.endlessbum.twitchpro.ui.channel.suggestions
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,15 +16,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.CommonRecyclerViewLayoutBinding
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.channel.suggestions.ChannelSuggestionsViewModel.Companion.ChannelSuggestionsViewModelFactory
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.common.PagedListFragment
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.common.StreamsCompactAdapter
-import com.github.andreyasadchy.xtra.ui.top.TopStreamsFragmentDirections
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.CommonRecyclerViewLayoutBinding
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.channel.suggestions.ChannelSuggestionsViewModel.Companion.ChannelSuggestionsViewModelFactory
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.common.PagedListFragment
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.common.StreamsCompactAdapter
+import com.endlessbum.twitchpro.ui.top.TopStreamsFragmentDirections
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

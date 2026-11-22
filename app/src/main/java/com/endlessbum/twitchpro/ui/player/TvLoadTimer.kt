@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.os.SystemClock
-import com.github.andreyasadchy.xtra.BuildConfig
+import com.endlessbum.twitchpro.BuildConfig
 
 /**
  * Debug builds only: the time each step of the start of a stream takes (Twitch access, playlists, first picture),

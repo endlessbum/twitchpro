@@ -1,6 +1,6 @@
-package com.github.andreyasadchy.xtra.model.helix.stream
+package com.endlessbum.twitchpro.model.helix.stream
 
-import com.github.andreyasadchy.xtra.model.helix.Pagination
+import com.endlessbum.twitchpro.model.helix.Pagination
 import kotlinx.serialization.Serializable
 
 @Serializable

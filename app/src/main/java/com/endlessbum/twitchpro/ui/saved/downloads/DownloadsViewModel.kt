@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.saved.downloads
+package com.endlessbum.twitchpro.ui.saved.downloads
 
 import android.content.ContentResolver
 import android.content.Context
@@ -14,12 +14,12 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.DownloadProgress
-import com.github.andreyasadchy.xtra.model.ui.OfflineVideo
-import com.github.andreyasadchy.xtra.repository.OfflineVideosRepository
-import com.github.andreyasadchy.xtra.util.m3u8.PlaylistUtils
-import com.github.andreyasadchy.xtra.util.m3u8.Segment
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.DownloadProgress
+import com.endlessbum.twitchpro.model.ui.OfflineVideo
+import com.endlessbum.twitchpro.repository.OfflineVideosRepository
+import com.endlessbum.twitchpro.util.m3u8.PlaylistUtils
+import com.endlessbum.twitchpro.util.m3u8.Segment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -803,9 +803,9 @@ class DownloadsViewModel(
     companion object {
         val DownloadsViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                DownloadsViewModel(application.applicationContext, xtraModule.offlineVideosRepository)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                DownloadsViewModel(application.applicationContext, twitchProModule.offlineVideosRepository)
             }
         }
     }

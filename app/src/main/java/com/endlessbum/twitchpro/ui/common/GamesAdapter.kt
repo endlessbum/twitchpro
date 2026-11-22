@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -19,15 +19,15 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentGamesListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.model.ui.Tag
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentGamesListItemBinding
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.model.ui.Tag
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 
 class GamesAdapter(
     private val fragment: Fragment,
@@ -78,10 +78,10 @@ class GamesAdapter(
                         )
                     }
                     root.setOnClickListener { openCategory() }
-                    val isTv = com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(context)
+                    val isTv = com.endlessbum.twitchpro.ui.view.TvUi.isTv(context)
                     if (isTv) {
                         root.setOnLongClickListener {
-                            com.github.andreyasadchy.xtra.ui.tv.TvGameActions.show(
+                            com.endlessbum.twitchpro.ui.tv.TvGameActions.show(
                                 context = context,
                                 game = item,
                                 onOpenCategory = openCategory,
@@ -106,7 +106,7 @@ class GamesAdapter(
                                 ImageRequest.Builder(fragment.requireContext()).apply {
                                     data(item.boxArt)
                                     crossfade(false)
-                                    transformations(com.github.andreyasadchy.xtra.ui.view.TvCards.BlurTransformation)
+                                    transformations(com.endlessbum.twitchpro.ui.view.TvCards.BlurTransformation)
                                     target(background)
                                 }.build()
                             )
@@ -116,8 +116,8 @@ class GamesAdapter(
                         gameBackground?.setImageDrawable(null)
                     }
                     if (isTv) {
-                        root.setOnFocusChangeListener { _, hasFocus -> com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(gameName, hasFocus) }
-                        com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(gameName, root.hasFocus())
+                        root.setOnFocusChangeListener { _, hasFocus -> com.endlessbum.twitchpro.ui.view.TvMarquee.update(gameName, hasFocus) }
+                        com.endlessbum.twitchpro.ui.view.TvMarquee.update(gameName, root.hasFocus())
                     }
                     if (item.name != null) {
                         gameName.visibility = View.VISIBLE

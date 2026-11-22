@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.util
+package com.endlessbum.twitchpro.util
 
 import android.app.Activity
 import android.app.AppOpsManager
@@ -12,8 +12,8 @@ import android.os.Process
 import android.os.UserManager
 import androidx.core.content.FileProvider
 import androidx.core.content.edit
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.ui.main.MainActivity
 import java.io.File
 
 /**
@@ -58,7 +58,7 @@ object UpdateInstallHelper {
     private const val ATTEMPTS_WINDOW_MS = 24 * 60 * 60_000L
 
     private const val APK_DIR = "update"
-    private const val APK_NAME = "XtraTV-update.apk"
+    private const val APK_NAME = "TwitchPro-update.apk"
 
     /**
      * "Update" pressed: the dialog when both ways already failed, else the settings "Install unknown apps" when Android

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.search.channels
+package com.endlessbum.twitchpro.ui.search.channels
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,17 +16,17 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.CommonRecyclerViewLayoutBinding
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.ui.common.PagedListFragment
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.search.RecentSearchAdapter
-import com.github.andreyasadchy.xtra.ui.search.SearchPagerFragment
-import com.github.andreyasadchy.xtra.ui.search.Searchable
-import com.github.andreyasadchy.xtra.ui.search.channels.ChannelSearchViewModel.Companion.ChannelSearchViewModelFactory
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.CommonRecyclerViewLayoutBinding
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.ui.common.PagedListFragment
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.search.RecentSearchAdapter
+import com.endlessbum.twitchpro.ui.search.SearchPagerFragment
+import com.endlessbum.twitchpro.ui.search.Searchable
+import com.endlessbum.twitchpro.ui.search.channels.ChannelSearchViewModel.Companion.ChannelSearchViewModelFactory
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

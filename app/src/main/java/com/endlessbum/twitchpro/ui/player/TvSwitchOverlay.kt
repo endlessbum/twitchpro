@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.app.Activity
 import android.graphics.drawable.GradientDrawable
@@ -15,8 +15,8 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.ui.Stream
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.ui.Stream
 
 /**
  * TV: after a switch of streamer with left / right, shows for a few seconds the streamer that left goes to

@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.repository
+package com.endlessbum.twitchpro.repository
 
-import com.github.andreyasadchy.xtra.db.SavedFiltersDao
-import com.github.andreyasadchy.xtra.model.ui.SavedFilter
+import com.endlessbum.twitchpro.db.SavedFiltersDao
+import com.endlessbum.twitchpro.model.ui.SavedFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

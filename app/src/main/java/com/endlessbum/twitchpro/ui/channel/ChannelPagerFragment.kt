@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.channel
+package com.endlessbum.twitchpro.ui.channel
 
 import android.Manifest
 import android.content.Intent
@@ -43,30 +43,30 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentChannelBinding
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerViewModel.Companion.ChannelPagerViewModelFactory
-import com.github.andreyasadchy.xtra.ui.common.BaseNetworkFragment
-import com.github.andreyasadchy.xtra.ui.common.FragmentHost
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.common.Sortable
-import com.github.andreyasadchy.xtra.ui.download.DownloadDialog
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.login.LoginActivity
-import com.github.andreyasadchy.xtra.ui.main.LiveNotificationWorker
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.search.SearchPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.settings.SettingsActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.reduceDragSensitivity
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentChannelBinding
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerViewModel.Companion.ChannelPagerViewModelFactory
+import com.endlessbum.twitchpro.ui.common.BaseNetworkFragment
+import com.endlessbum.twitchpro.ui.common.FragmentHost
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.common.Sortable
+import com.endlessbum.twitchpro.ui.download.DownloadDialog
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.login.LoginActivity
+import com.endlessbum.twitchpro.ui.main.LiveNotificationWorker
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.search.SearchPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.settings.SettingsActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.reduceDragSensitivity
+import com.endlessbum.twitchpro.util.tokenPrefs
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.color.MaterialColors
@@ -112,21 +112,21 @@ class ChannelPagerFragment : BaseNetworkFragment(), Scrollable, FragmentHost, In
                     // already on a video (moved there with the remote): left as it is; the pages of the tabs are a list
                     // too, only the lists of videos count
                     var focused = root.findFocus()
-                    while (focused != null && focused !is com.github.andreyasadchy.xtra.ui.view.GridRecyclerView) {
+                    while (focused != null && focused !is com.endlessbum.twitchpro.ui.view.GridRecyclerView) {
                         focused = focused.parent as? View
                     }
                     if (focused != null && root.findFocus() !== focused) {
                         return@launch
                     }
-                    val grid = com.github.andreyasadchy.xtra.ui.view.TvUi.findVisibleGrid(root)
+                    val grid = com.endlessbum.twitchpro.ui.view.TvUi.findVisibleGrid(root)
                     if (grid != null && (grid.adapter?.itemCount ?: 0) > 0 && grid.childCount > 0 &&
-                        com.github.andreyasadchy.xtra.ui.view.TvUi.focusFirstItem(grid)) {
+                        com.endlessbum.twitchpro.ui.view.TvUi.focusFirstItem(grid)) {
                         return@launch
                     }
                 }
                 val root = this@ChannelPagerFragment.view ?: return@launch
                 if (!root.hasFocus()) {
-                    com.github.andreyasadchy.xtra.ui.view.TvHeader.focusHeaderOf(root)
+                    com.endlessbum.twitchpro.ui.view.TvHeader.focusHeaderOf(root)
                 }
             }
         }
@@ -187,7 +187,7 @@ class ChannelPagerFragment : BaseNetworkFragment(), Scrollable, FragmentHost, In
                         }.build()
                     )
                     if (resources.getBoolean(R.bool.isTv)) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvAmbient.applyChannelOverride(
+                        com.endlessbum.twitchpro.ui.tv.TvAmbient.applyChannelOverride(
                             requireContext(),
                             viewLifecycleOwner.lifecycleScope,
                             listOf(it),
@@ -384,12 +384,12 @@ class ChannelPagerFragment : BaseNetworkFragment(), Scrollable, FragmentHost, In
                             val enabled = pair.first
                             val errorMessage = pair.second
                             if (!errorMessage.isNullOrBlank()) {
-                                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
                             } else {
                                 if (enabled) {
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.enabled_notifications, Toast.LENGTH_SHORT).show()
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.enabled_notifications, Toast.LENGTH_SHORT).show()
                                 } else {
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.disabled_notifications, Toast.LENGTH_SHORT).show()
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.disabled_notifications, Toast.LENGTH_SHORT).show()
                                 }
                             }
                             viewModel.notifications.value = null
@@ -429,10 +429,10 @@ class ChannelPagerFragment : BaseNetworkFragment(), Scrollable, FragmentHost, In
                                     } else {
                                         errorMessage
                                     }
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
                                 } else {
                                     if (following) {
-                                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(),
+                                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(),
                                             getString(
                                                 R.string.now_following,
                                                 if (args.channelLogin != null && !args.channelLogin.equals(args.channelName, true)) {
@@ -448,7 +448,7 @@ class ChannelPagerFragment : BaseNetworkFragment(), Scrollable, FragmentHost, In
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     } else {
-                                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(),
+                                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(),
                                             getString(
                                                 R.string.unfollowed,
                                                 if (args.channelLogin != null && !args.channelLogin.equals(args.channelName, true)) {
@@ -779,7 +779,7 @@ class ChannelPagerFragment : BaseNetworkFragment(), Scrollable, FragmentHost, In
                 bannerImage.visibility = View.GONE
             }
             if (resources.getBoolean(R.bool.isTv)) {
-                com.github.andreyasadchy.xtra.ui.tv.TvAmbient.applyChannelOverride(
+                com.endlessbum.twitchpro.ui.tv.TvAmbient.applyChannelOverride(
                     requireContext(),
                     viewLifecycleOwner.lifecycleScope,
                     listOf(user.bannerImageURL, user.profileImage, args.channelImage),

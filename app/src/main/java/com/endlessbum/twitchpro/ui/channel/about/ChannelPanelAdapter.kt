@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.channel.about
+package com.endlessbum.twitchpro.ui.channel.about
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -15,10 +15,10 @@ import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.request.target
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentChannelPanelListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.ChannelPanel
-import com.github.andreyasadchy.xtra.util.HeadingFixPlugin
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentChannelPanelListItemBinding
+import com.endlessbum.twitchpro.model.ui.ChannelPanel
+import com.endlessbum.twitchpro.util.HeadingFixPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.linkify.LinkifyPlugin
@@ -83,7 +83,7 @@ class ChannelPanelAdapter(
                                     }
                                     context.startActivity(intent)
                                 } catch (e: ActivityNotFoundException) {
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, R.string.no_browser_found, Toast.LENGTH_LONG).show()
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, R.string.no_browser_found, Toast.LENGTH_LONG).show()
                                 }
                             }
                         }

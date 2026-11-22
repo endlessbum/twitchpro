@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.login
+package com.endlessbum.twitchpro.ui.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,9 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.ui.tv.ButtonRow
-import com.github.andreyasadchy.xtra.ui.tv.TvColors
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.ui.tv.ButtonRow
+import com.endlessbum.twitchpro.ui.tv.TvColors
 import androidx.compose.ui.graphics.Color as ComposeColor
 
 /** What is saved for each way of logging in ([shown] changes each time the page comes back, to put the focus again). */

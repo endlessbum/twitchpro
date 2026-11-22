@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -112,55 +112,55 @@ import androidx.preference.SwitchPreferenceCompat
 import androidx.preference.TwoStatePreference
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.databinding.DialogCustomProxyEditBinding
-import com.github.andreyasadchy.xtra.databinding.DialogStreamProxyEditBinding
-import com.github.andreyasadchy.xtra.databinding.DialogUpdateDownloadBinding
-import com.github.andreyasadchy.xtra.databinding.DialogVideoSwapEditBinding
-import com.github.andreyasadchy.xtra.model.ui.CustomProxy
-import com.github.andreyasadchy.xtra.model.ui.SettingsDragListItem
-import com.github.andreyasadchy.xtra.model.ui.StreamProxy
-import com.github.andreyasadchy.xtra.model.ui.VideoSwap
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.databinding.DialogCustomProxyEditBinding
+import com.endlessbum.twitchpro.databinding.DialogStreamProxyEditBinding
+import com.endlessbum.twitchpro.databinding.DialogUpdateDownloadBinding
+import com.endlessbum.twitchpro.databinding.DialogVideoSwapEditBinding
+import com.endlessbum.twitchpro.model.ui.CustomProxy
+import com.endlessbum.twitchpro.model.ui.SettingsDragListItem
+import com.endlessbum.twitchpro.model.ui.StreamProxy
+import com.endlessbum.twitchpro.model.ui.VideoSwap
 import android.app.admin.DeviceAdminReceiver
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.settings.CustomProxySettingsViewModel.Companion.CustomProxySettingsViewModelFactory
-import com.github.andreyasadchy.xtra.ui.settings.SettingsViewModel.Companion.SettingsViewModelFactory
-import com.github.andreyasadchy.xtra.ui.settings.StreamProxySettingsViewModel.Companion.StreamProxySettingsViewModelFactory
-import com.github.andreyasadchy.xtra.ui.settings.VideoSwapSettingsViewModel.Companion.VideoSwapSettingsViewModelFactory
-import com.github.andreyasadchy.xtra.ui.tv.ButtonRow
-import com.github.andreyasadchy.xtra.ui.tv.FocusRow
-import com.github.andreyasadchy.xtra.ui.tv.SidePanel
-import com.github.andreyasadchy.xtra.ui.tv.TvAbout
-import com.github.andreyasadchy.xtra.ui.tv.TvActionPanel
-import com.github.andreyasadchy.xtra.ui.tv.TvAmbient
-import com.github.andreyasadchy.xtra.ui.tv.TvBackup
-import com.github.andreyasadchy.xtra.ui.tv.TvBlacklist
-import com.github.andreyasadchy.xtra.ui.tv.TvClockSettings
-import com.github.andreyasadchy.xtra.ui.tv.TvColors
-import com.github.andreyasadchy.xtra.ui.tv.TvDialogs
-import com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock
-import com.github.andreyasadchy.xtra.ui.tv.TvFavorites
-import com.github.andreyasadchy.xtra.ui.tv.TvListPanel
-import com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamQuality
-import com.github.andreyasadchy.xtra.ui.tv.TvProxyPanel
-import com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys
-import com.github.andreyasadchy.xtra.ui.tv.TvSwitcherRows
-import com.github.andreyasadchy.xtra.ui.tv.TvTheme
-import com.github.andreyasadchy.xtra.ui.tv.TvUpdateDialog
-import com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows
-import com.github.andreyasadchy.xtra.ui.view.TvVoice
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.UpdateInstallHelper
-import com.github.andreyasadchy.xtra.util.canInstallUnknownAppsCompat
-import com.github.andreyasadchy.xtra.util.chat.ChatBlocklist
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.openUnknownAppSourcesSettings
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.settings.CustomProxySettingsViewModel.Companion.CustomProxySettingsViewModelFactory
+import com.endlessbum.twitchpro.ui.settings.SettingsViewModel.Companion.SettingsViewModelFactory
+import com.endlessbum.twitchpro.ui.settings.StreamProxySettingsViewModel.Companion.StreamProxySettingsViewModelFactory
+import com.endlessbum.twitchpro.ui.settings.VideoSwapSettingsViewModel.Companion.VideoSwapSettingsViewModelFactory
+import com.endlessbum.twitchpro.ui.tv.ButtonRow
+import com.endlessbum.twitchpro.ui.tv.FocusRow
+import com.endlessbum.twitchpro.ui.tv.SidePanel
+import com.endlessbum.twitchpro.ui.tv.TvAbout
+import com.endlessbum.twitchpro.ui.tv.TvActionPanel
+import com.endlessbum.twitchpro.ui.tv.TvAmbient
+import com.endlessbum.twitchpro.ui.tv.TvBackup
+import com.endlessbum.twitchpro.ui.tv.TvBlacklist
+import com.endlessbum.twitchpro.ui.tv.TvClockSettings
+import com.endlessbum.twitchpro.ui.tv.TvColors
+import com.endlessbum.twitchpro.ui.tv.TvDialogs
+import com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock
+import com.endlessbum.twitchpro.ui.tv.TvFavorites
+import com.endlessbum.twitchpro.ui.tv.TvListPanel
+import com.endlessbum.twitchpro.ui.tv.TvMultiStreamQuality
+import com.endlessbum.twitchpro.ui.tv.TvProxyPanel
+import com.endlessbum.twitchpro.ui.tv.TvRemoteKeys
+import com.endlessbum.twitchpro.ui.tv.TvSwitcherRows
+import com.endlessbum.twitchpro.ui.tv.TvTheme
+import com.endlessbum.twitchpro.ui.tv.TvUpdateDialog
+import com.endlessbum.twitchpro.ui.tv.home.TvHomeRows
+import com.endlessbum.twitchpro.ui.view.TvVoice
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.UpdateInstallHelper
+import com.endlessbum.twitchpro.util.canInstallUnknownAppsCompat
+import com.endlessbum.twitchpro.util.chat.ChatBlocklist
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.openUnknownAppSourcesSettings
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import com.google.android.material.color.MaterialColors
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
@@ -402,7 +402,7 @@ class TvSettingsFragment : Fragment() {
                                         putLong(C.UPDATE_LAST_CHECKED, System.currentTimeMillis())
                                     }
                                 } catch (_: ActivityNotFoundException) {
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.no_updates_found, Toast.LENGTH_LONG).show()
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.no_updates_found, Toast.LENGTH_LONG).show()
                                 }
                             } else {
                                 UpdateInstallHelper.startUpdate(requireActivity(), url) { u -> startUpdateDownload(u) }
@@ -410,7 +410,7 @@ class TvSettingsFragment : Fragment() {
                         }
                         TvUpdateDialog.show(requireActivity(), settingsViewModel.updateVersion, settingsViewModel.updateNotes, startUpdate) {}
                     } else {
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.no_updates_found, Toast.LENGTH_LONG).show()
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.no_updates_found, Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -492,7 +492,7 @@ class TvSettingsFragment : Fragment() {
 
     private fun reloadProxyCount() {
         val act = activity ?: return
-        val repo = (act.application as XtraApp).xtraModule.playerRepository
+        val repo = (act.application as TwitchProApp).twitchProModule.playerRepository
         viewLifecycleOwner.lifecycleScope.launch {
             customProxyCountState.intValue = runCatching { repo.getCustomProxies().size }.getOrDefault(0)
         }
@@ -1236,7 +1236,7 @@ class TvSettingsFragment : Fragment() {
                 .clickable(interactionSource = interaction, indication = null) {
                     if (!item.enabled) {
                         item.disabledHint?.invoke()?.let { msg ->
-                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, msg, Toast.LENGTH_LONG).show()
                         }
                         return@clickable
                     }
@@ -2001,7 +2001,7 @@ class TvSettingsFragment : Fragment() {
         val results = mutableListOf<PrefNode>()
 
         val sources: List<Triple<Int, String, SubScreen?>> = listOf(
-            Triple(R.xml.xtratv_preferences, context.getString(R.string.xtratv_settings), null),
+            Triple(R.xml.twitchpro_preferences, context.getString(R.string.twitchpro_settings), null),
             Triple(R.xml.tv_settings_player, context.getString(R.string.player_settings), null),
             Triple(R.xml.player_preferences, context.getString(R.string.player_settings), SubScreen.Xml(R.xml.player_preferences, context.getString(R.string.player_settings))),
             Triple(R.xml.playback_preferences, context.getString(R.string.playback_settings), SubScreen.Xml(R.xml.playback_preferences, context.getString(R.string.playback_settings))),
@@ -2295,7 +2295,7 @@ class TvSettingsFragment : Fragment() {
                 when (key) {
                     C.TV_EXPERIMENTAL_ADBLOCK -> {
                         if (next && TvExperimentalAdblock.isAnyProxyEnabled(context)) {
-                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, R.string.tv_adblock_exp_disabled_by_proxy, Toast.LENGTH_LONG).show()
+                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, R.string.tv_adblock_exp_disabled_by_proxy, Toast.LENGTH_LONG).show()
                             return
                         }
                         context.prefs().edit { putBoolean(C.TV_EXPERIMENTAL_ADBLOCK, next) }
@@ -2303,7 +2303,7 @@ class TvSettingsFragment : Fragment() {
                     }
                     C.PLAYER_USE_STREAM_PROXY -> {
                         if (next && context.prefs().getBoolean(C.TV_EXPERIMENTAL_ADBLOCK, false)) {
-                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, R.string.tv_adblock_exp_proxies_disabled, Toast.LENGTH_LONG).show()
+                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, R.string.tv_adblock_exp_proxies_disabled, Toast.LENGTH_LONG).show()
                             return
                         }
                         context.prefs().edit { putBoolean(C.PLAYER_USE_STREAM_PROXY, next) }
@@ -2316,7 +2316,7 @@ class TvSettingsFragment : Fragment() {
                             } else {
                                 R.string.tv_adblock_swap_locked_hint
                             }
-                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, hintRes, Toast.LENGTH_LONG).show()
+                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, hintRes, Toast.LENGTH_LONG).show()
                             return
                         }
                         context.prefs().edit { putBoolean(C.PLAYER_ADBLOCK, next) }
@@ -2469,7 +2469,7 @@ class TvSettingsFragment : Fragment() {
             }
             "stream_proxy_settings" -> {
                 if (context.prefs().getBoolean(C.TV_EXPERIMENTAL_ADBLOCK, false)) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, R.string.tv_adblock_exp_proxies_disabled, Toast.LENGTH_LONG).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, R.string.tv_adblock_exp_proxies_disabled, Toast.LENGTH_LONG).show()
                     return
                 }
                 streamProxyViewModel.getProxies()
@@ -2480,11 +2480,11 @@ class TvSettingsFragment : Fragment() {
             }
             "custom_proxy_settings" -> {
                 if (context.prefs().getBoolean(C.TV_EXPERIMENTAL_ADBLOCK, false)) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, R.string.tv_adblock_exp_proxies_disabled, Toast.LENGTH_LONG).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, R.string.tv_adblock_exp_proxies_disabled, Toast.LENGTH_LONG).show()
                     return
                 }
                 val activity = requireActivity()
-                val repository = (activity.application as XtraApp).xtraModule.playerRepository
+                val repository = (activity.application as TwitchProApp).twitchProModule.playerRepository
                 viewLifecycleOwner.lifecycleScope.launch {
                     val proxies = repository.getCustomProxies()
                     TvProxyPanel.show(
@@ -2515,12 +2515,12 @@ class TvSettingsFragment : Fragment() {
                 }
             }
 
-            // Xtra TV Panels
+            // TwitchPro Panels
             "tv_favorites" -> {
                 TvFavorites.load(context)
                 val favorites = TvFavorites.items.value
                 if (favorites.isEmpty()) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, R.string.tv_favorites_how, Toast.LENGTH_LONG).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, R.string.tv_favorites_how, Toast.LENGTH_LONG).show()
                 } else {
                     val items = favorites.map {
                         SettingsDragListItem(key = it.login, text = it.name ?: it.login, default = false, enabled = true)
@@ -2671,7 +2671,7 @@ class TvSettingsFragment : Fragment() {
             }
             "import_app_downloads" -> {
                 settingsViewModel.importDownloads()
-                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, android.R.string.ok, Toast.LENGTH_SHORT).show()
+                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, android.R.string.ok, Toast.LENGTH_SHORT).show()
             }
             "admin_settings" -> {
                 runCatching {
@@ -2681,7 +2681,7 @@ class TvSettingsFragment : Fragment() {
             "check_updates" -> {
                 settingsViewModel.checkUpdates(
                     context.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
-                    context.prefs().getString(C.UPDATE_URL, null) ?: "https://api.github.com/repos/razeNFR/XtraATV/releases/latest",
+                    context.prefs().getString(C.UPDATE_URL, null) ?: "https://api.github.com/repos/endlessbum/twitch/releases/latest",
                     context.tokenPrefs().getLong(C.UPDATE_LAST_CHECKED, 0),
                 )
             }
@@ -2713,7 +2713,7 @@ class TvSettingsFragment : Fragment() {
                                         putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                                     })
                                 } catch (_: ActivityNotFoundException) {
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, R.string.tv_backup_not_found, Toast.LENGTH_LONG).show()
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, R.string.tv_backup_not_found, Toast.LENGTH_LONG).show()
                                 }
                             }
                         },
@@ -3121,7 +3121,7 @@ class TvSettingsFragment : Fragment() {
         var pendingOpenSubScreen: String? = null
 
         private val CATEGORIES = listOf(
-            CategorySpec(R.xml.xtratv_preferences, R.string.app_name, R.drawable.tv_ic_tv_small),
+            CategorySpec(R.xml.twitchpro_preferences, R.string.app_name, R.drawable.tv_ic_tv_small),
             CategorySpec(R.xml.tv_settings_player, R.string.player_settings, R.drawable.tv_ic_play),
             CategorySpec(R.xml.chat_preferences, R.string.chat_settings, R.drawable.tv_ic_chat),
             CategorySpec(R.xml.tv_settings_interface, R.string.ui_settings, R.drawable.tv_ic_view_quilt),
@@ -3182,7 +3182,7 @@ class TvSettingsFragment : Fragment() {
         )
 
         private val ALL_PREWARM_XMLS = listOf(
-            R.xml.xtratv_preferences,
+            R.xml.twitchpro_preferences,
             R.xml.tv_settings_player,
             R.xml.player_preferences,
             R.xml.playback_preferences,

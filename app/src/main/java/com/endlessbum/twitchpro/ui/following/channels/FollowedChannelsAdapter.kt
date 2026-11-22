@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.following.channels
+package com.endlessbum.twitchpro.ui.following.channels
 
 import android.view.LayoutInflater
 import android.view.View
@@ -14,13 +14,13 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentFollowedChannelsListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentFollowedChannelsListItemBinding
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlin.time.Instant
 
 class FollowedChannelsAdapter(
@@ -57,7 +57,7 @@ class FollowedChannelsAdapter(
                 val live = item.liveViewers != null
                 userRing?.visibility = if (live) View.VISIBLE else View.INVISIBLE
                 liveBadge?.visibility = if (live) View.VISIBLE else View.GONE
-                favoriteStar?.visibility = if (com.github.andreyasadchy.xtra.ui.tv.TvFavorites.isFavorite(item.login)) View.VISIBLE else View.GONE
+                favoriteStar?.visibility = if (com.endlessbum.twitchpro.ui.tv.TvFavorites.isFavorite(item.login)) View.VISIBLE else View.GONE
                 localIcon?.visibility = if (item.localFollow && !item.accountFollow) View.VISIBLE else View.GONE
                 accountText.visibility = View.GONE
                 localText.visibility = View.GONE
@@ -107,11 +107,11 @@ class FollowedChannelsAdapter(
                             )
                         )
                     }
-                    if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(context)) {
+                    if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(context)) {
                         root.setOnLongClickListener {
-                            val activity = fragment.activity as? com.github.andreyasadchy.xtra.ui.main.MainActivity ?: return@setOnLongClickListener false
+                            val activity = fragment.activity as? com.endlessbum.twitchpro.ui.main.MainActivity ?: return@setOnLongClickListener false
                             activity.showTvStreamActions(
-                                com.github.andreyasadchy.xtra.model.ui.Stream(
+                                com.endlessbum.twitchpro.model.ui.Stream(
                                     channelId = item.id,
                                     channelLogin = item.login,
                                     channelName = item.name,

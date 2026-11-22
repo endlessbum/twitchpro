@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.game
+package com.endlessbum.twitchpro.ui.game
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -35,26 +35,26 @@ import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.request.target
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentGamePagerBinding
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.ui.common.BaseNetworkFragment
-import com.github.andreyasadchy.xtra.ui.common.FragmentHost
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.common.Sortable
-import com.github.andreyasadchy.xtra.ui.game.GamePagerViewModel.Companion.GamePagerViewModelFactory
-import com.github.andreyasadchy.xtra.ui.games.GamesFragmentDirections
-import com.github.andreyasadchy.xtra.ui.login.LoginActivity
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.search.SearchPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.settings.SettingsActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.reduceDragSensitivity
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentGamePagerBinding
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.ui.common.BaseNetworkFragment
+import com.endlessbum.twitchpro.ui.common.FragmentHost
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.common.Sortable
+import com.endlessbum.twitchpro.ui.game.GamePagerViewModel.Companion.GamePagerViewModelFactory
+import com.endlessbum.twitchpro.ui.games.GamesFragmentDirections
+import com.endlessbum.twitchpro.ui.login.LoginActivity
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.search.SearchPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.settings.SettingsActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.reduceDragSensitivity
+import com.endlessbum.twitchpro.util.tokenPrefs
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.tabs.TabLayout
@@ -209,12 +209,12 @@ class GamePagerFragment : BaseNetworkFragment(), Scrollable, FragmentHost, Integ
                                 val following = pair.first
                                 val errorMessage = pair.second
                                 if (!errorMessage.isNullOrBlank()) {
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
                                 } else {
                                     if (following) {
-                                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), getString(R.string.now_following, args.gameName), Toast.LENGTH_SHORT).show()
+                                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), getString(R.string.now_following, args.gameName), Toast.LENGTH_SHORT).show()
                                     } else {
-                                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), getString(R.string.unfollowed, args.gameName), Toast.LENGTH_SHORT).show()
+                                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), getString(R.string.unfollowed, args.gameName), Toast.LENGTH_SHORT).show()
                                     }
                                 }
                                 viewModel.follow.value = null

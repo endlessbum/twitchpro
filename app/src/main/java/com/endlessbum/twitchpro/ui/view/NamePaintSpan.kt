@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.view
+package com.endlessbum.twitchpro.ui.view
 
 import android.graphics.Canvas
 import android.graphics.LinearGradient
@@ -7,7 +7,7 @@ import android.graphics.Paint
 import android.graphics.RadialGradient
 import android.graphics.Shader
 import android.text.style.ReplacementSpan
-import com.github.andreyasadchy.xtra.model.chat.NamePaint
+import com.endlessbum.twitchpro.model.chat.NamePaint
 import kotlin.math.max
 import kotlin.math.min
 

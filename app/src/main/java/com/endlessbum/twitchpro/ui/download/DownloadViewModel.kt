@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.download
+package com.endlessbum.twitchpro.ui.download
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,13 +9,13 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.VideoQuality
-import com.github.andreyasadchy.xtra.repository.PlayerRepository
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.VideoQuality
+import com.endlessbum.twitchpro.repository.PlayerRepository
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.util.TwitchApiHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -401,9 +401,9 @@ class DownloadViewModel(
     companion object {
         val DownloadViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                DownloadViewModel(application.applicationContext, xtraModule.httpEngine, xtraModule.cronetEngine, xtraModule.cronetExecutor, xtraModule.okHttpClient, xtraModule.playerRepository)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                DownloadViewModel(application.applicationContext, twitchProModule.httpEngine, twitchProModule.cronetEngine, twitchProModule.cronetExecutor, twitchProModule.okHttpClient, twitchProModule.playerRepository)
             }
         }
     }

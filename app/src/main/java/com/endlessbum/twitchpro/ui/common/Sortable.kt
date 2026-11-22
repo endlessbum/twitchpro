@@ -1,6 +1,6 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
-import com.github.andreyasadchy.xtra.databinding.SortBarBinding
+import com.endlessbum.twitchpro.databinding.SortBarBinding
 
 interface Sortable {
     fun setupSortBar(sortBar: SortBarBinding)

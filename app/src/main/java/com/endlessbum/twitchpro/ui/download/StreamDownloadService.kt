@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.download
+package com.endlessbum.twitchpro.ui.download
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -25,26 +25,26 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.XtraModule
-import com.github.andreyasadchy.xtra.model.VideoQuality
-import com.github.andreyasadchy.xtra.model.chat.CheerEmote
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.model.chat.TwitchBadge
-import com.github.andreyasadchy.xtra.model.chat.TwitchEmote
-import com.github.andreyasadchy.xtra.model.ui.DownloadProgress
-import com.github.andreyasadchy.xtra.model.ui.OfflineVideo
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.chat.ChatReadWebSocket
-import com.github.andreyasadchy.xtra.util.chat.ChatUtils
-import com.github.andreyasadchy.xtra.util.m3u8.PlaylistUtils
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.TwitchProModule
+import com.endlessbum.twitchpro.model.VideoQuality
+import com.endlessbum.twitchpro.model.chat.CheerEmote
+import com.endlessbum.twitchpro.model.chat.Emote
+import com.endlessbum.twitchpro.model.chat.TwitchBadge
+import com.endlessbum.twitchpro.model.chat.TwitchEmote
+import com.endlessbum.twitchpro.model.ui.DownloadProgress
+import com.endlessbum.twitchpro.model.ui.OfflineVideo
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.chat.ChatReadWebSocket
+import com.endlessbum.twitchpro.util.chat.ChatUtils
+import com.endlessbum.twitchpro.util.m3u8.PlaylistUtils
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
@@ -82,9 +82,9 @@ import kotlin.time.Instant
 
 class StreamDownloadService : LifecycleService() {
 
-    lateinit var xtraModule: XtraModule
+    lateinit var twitchProModule: TwitchProModule
     private val okHttpClient = lazy {
-        xtraModule.okHttpClient.value.newBuilder().apply {
+        twitchProModule.okHttpClient.value.newBuilder().apply {
             connectTimeout(5, TimeUnit.MINUTES)
             writeTimeout(5, TimeUnit.MINUTES)
             readTimeout(5, TimeUnit.MINUTES)
@@ -109,14 +109,14 @@ class StreamDownloadService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-        xtraModule = (application as XtraApp).xtraModule
+        twitchProModule = (application as TwitchProApp).twitchProModule
     }
 
     private fun start(videoId: Int) {
         if (activeDownloads.find { it.id == videoId } == null) {
             val downloadJob = DownloadJob(videoId)
             lifecycleScope.launch(Dispatchers.IO) {
-                val offlineVideo = xtraModule.offlineVideosRepository.getById(videoId)
+                val offlineVideo = twitchProModule.offlineVideosRepository.getById(videoId)
                 if (offlineVideo != null) {
                     val downloadProgress = DownloadProgress(
                         id = videoId,
@@ -127,7 +127,7 @@ class StreamDownloadService : LifecycleService() {
                     )
                     offlineVideos.add(offlineVideo)
                     activeDownloads.add(downloadProgress)
-                    xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+                    twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                         status = OfflineVideo.STATUS_WAITING_FOR_STREAM
                     })
                     notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -157,7 +157,7 @@ class StreamDownloadService : LifecycleService() {
                     }
                     offlineVideos.remove(offlineVideo)
                     activeDownloads.remove(downloadProgress)
-                    xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+                    twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                         status = if (done) {
                             OfflineVideo.STATUS_DOWNLOADED
                         } else {
@@ -208,14 +208,14 @@ class StreamDownloadService : LifecycleService() {
         val supportedCodecs = prefs().getString(C.TOKEN_SUPPORTED_CODECS, "av1,h265,h264")
         val useCustomProxy = prefs().getBoolean(C.PLAYER_USE_CUSTOM_PROXY, false)
         val customProxyList = if (useCustomProxy) {
-            xtraModule.playerRepository.getCustomProxies().filter {
+            twitchProModule.playerRepository.getCustomProxies().filter {
                 it.enabled && !it.url.isNullOrBlank()
             }.sortedBy { it.position }
         } else null
         var currentCustomProxy = 0
         val useStreamProxy = prefs().getBoolean(C.PLAYER_USE_STREAM_PROXY, false)
         val streamProxyList = if (useStreamProxy) {
-            xtraModule.playerRepository.getStreamProxies().filter {
+            twitchProModule.playerRepository.getStreamProxies().filter {
                 it.enabled && !it.host.isNullOrBlank() && it.port != null
                         && (it.proxyPlaybackAccessToken || it.proxyMultivariantPlaylist)
             }.sortedBy { it.position }
@@ -227,15 +227,15 @@ class StreamDownloadService : LifecycleService() {
         val quality = offlineVideo.quality
         var startTime = System.currentTimeMillis()
         var endTime = startWait?.let { System.currentTimeMillis() + it }
-        var playlistUrl = xtraModule.playerRepository.loadStreamPlaylistUrl(this@StreamDownloadService, networkLibrary, gqlHeaders, channelLogin, platform, playerType, supportedCodecs, false, null, null, null, null, null, false)
+        var playlistUrl = twitchProModule.playerRepository.loadStreamPlaylistUrl(this@StreamDownloadService, networkLibrary, gqlHeaders, channelLogin, platform, playerType, supportedCodecs, false, null, null, null, null, null, false)
         while (true) {
             val playlist = when {
-                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                     val response = suspendCancellableCoroutine { continuation ->
                         val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                        val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                        val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                             playlistUrl,
-                            xtraModule.cronetExecutor.value,
+                            twitchProModule.cronetExecutor.value,
                             NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                         ).build()
                         timeout.start(request, continuation)
@@ -249,13 +249,13 @@ class StreamDownloadService : LifecycleService() {
                         response.body.decodeToString()
                     } else null
                 }
-                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                     val response = suspendCancellableCoroutine { continuation ->
                         val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                        val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                        val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                             playlistUrl,
                             NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                            xtraModule.cronetExecutor.value
+                            twitchProModule.cronetExecutor.value
                         ).build()
                         timeout.start(request, continuation)
                         request.start()
@@ -374,7 +374,7 @@ class StreamDownloadService : LifecycleService() {
                             var result: String
                             while (true) {
                                 val newPlaylistUrl = try {
-                                    xtraModule.playerRepository.loadStreamPlaylistUrl(this@StreamDownloadService, networkLibrary, gqlHeaders, channelLogin, platform, playerType, supportedCodecs, true, proxyHost, proxyPort, proxyUser, proxyPassword, proxyTimeout, false)
+                                    twitchProModule.playerRepository.loadStreamPlaylistUrl(this@StreamDownloadService, networkLibrary, gqlHeaders, channelLogin, platform, playerType, supportedCodecs, true, proxyHost, proxyPort, proxyUser, proxyPassword, proxyTimeout, false)
                                 } catch (e: Exception) {
                                     null
                                 }
@@ -449,7 +449,7 @@ class StreamDownloadService : LifecycleService() {
                             } ?: qualities.first()
                         }
                     } else qualities.first()
-                    xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+                    twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                         status = OfflineVideo.STATUS_DOWNLOADING
                     })
                     downloadProgress.isLive = true
@@ -506,11 +506,11 @@ class StreamDownloadService : LifecycleService() {
                         if (continueDownloading) {
                             offlineVideos.remove(offlineVideo)
                             activeDownloads.remove(downloadProgress)
-                            xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+                            twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                                 status = OfflineVideo.STATUS_DOWNLOADED
                             })
                             val oldId = offlineVideo.id
-                            val newId = xtraModule.offlineVideosRepository.save(OfflineVideo(
+                            val newId = twitchProModule.offlineVideosRepository.save(OfflineVideo(
                                 channelId = offlineVideo.channelId,
                                 channelLogin = offlineVideo.channelLogin,
                                 channelName = offlineVideo.channelName,
@@ -522,7 +522,7 @@ class StreamDownloadService : LifecycleService() {
                                 downloadChatEmotes = offlineVideo.downloadChatEmotes,
                                 live = true
                             )).toInt()
-                            val newVideo = xtraModule.offlineVideosRepository.getById(newId)!!
+                            val newVideo = twitchProModule.offlineVideosRepository.getById(newId)!!
                             val newDownloadProgress = DownloadProgress(
                                 id = newId,
                                 bytes = offlineVideo.bytes,
@@ -540,14 +540,14 @@ class StreamDownloadService : LifecycleService() {
                         }
                     } else {
                         if (continueDownloading) {
-                            xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+                            twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                                 status = OfflineVideo.STATUS_WAITING_FOR_STREAM
                             })
                         }
                     }
                     endTime = endWait?.let { System.currentTimeMillis() + it }
                     if (continueDownloading) {
-                        playlistUrl = xtraModule.playerRepository.loadStreamPlaylistUrl(this@StreamDownloadService, networkLibrary, gqlHeaders, channelLogin, platform, playerType, supportedCodecs, false, null, null, null, null, null, false)
+                        playlistUrl = twitchProModule.playerRepository.loadStreamPlaylistUrl(this@StreamDownloadService, networkLibrary, gqlHeaders, channelLogin, platform, playerType, supportedCodecs, false, null, null, null, null, null, false)
                     }
                 }
             }
@@ -568,7 +568,7 @@ class StreamDownloadService : LifecycleService() {
         val useProxy = useProxy && !proxyHost.isNullOrBlank() && proxyPort != null
         try {
             when {
-                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                     val httpEngine = if (useProxy) {
                         val proxyHeaders = if (!proxyUser.isNullOrBlank() && !proxyPassword.isNullOrBlank()) {
                             listOf(android.util.Pair("Proxy-Authorization", Base64.encodeToString("$proxyUser:$proxyPassword".toByteArray(), Base64.NO_WRAP)))
@@ -581,7 +581,7 @@ class StreamDownloadService : LifecycleService() {
                                         android.net.http.Proxy.SCHEME_HTTP,
                                         proxyHost,
                                         proxyPort,
-                                        xtraModule.cronetExecutor.value,
+                                        twitchProModule.cronetExecutor.value,
                                         object : android.net.http.Proxy.HttpConnectCallback {
                                             override fun onBeforeRequest(request: android.net.http.Proxy.HttpConnectCallback.Request) {
                                                 request.proceed(proxyHeaders)
@@ -599,14 +599,14 @@ class StreamDownloadService : LifecycleService() {
                             null
                         }?.build()
                     } else {
-                        xtraModule.httpEngine.value!!
+                        twitchProModule.httpEngine.value!!
                     }
                     if (httpEngine != null) {
                         val response = suspendCancellableCoroutine { continuation ->
                             val timeout = NetworkUtils.HttpEngineTimeout(proxyTimeout?.toLong() ?: CRONET_TIMEOUT)
                             val request = httpEngine.newUrlRequestBuilder(
                                 playlistUrl,
-                                xtraModule.cronetExecutor.value,
+                                twitchProModule.cronetExecutor.value,
                                 NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                             ).build()
                             timeout.start(request, continuation)
@@ -640,7 +640,7 @@ class StreamDownloadService : LifecycleService() {
                         }
                     }
                 }
-                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                     val cronetEngine = if (useProxy) {
                         if (CronetProvider.getAllProviders(application).any { it.isEnabled }) {
                             val proxyHeaders = if (!proxyUser.isNullOrBlank() && !proxyPassword.isNullOrBlank()) {
@@ -660,7 +660,7 @@ class StreamDownloadService : LifecycleService() {
                                             org.chromium.net.Proxy.HTTP,
                                             proxyHost,
                                             proxyPort,
-                                            xtraModule.cronetExecutor.value,
+                                            twitchProModule.cronetExecutor.value,
                                             object : org.chromium.net.Proxy.Callback() {
                                                 override fun onBeforeTunnelRequest(request: Request) {
                                                     request.proceed(proxyHeaders)
@@ -678,7 +678,7 @@ class StreamDownloadService : LifecycleService() {
                             }?.build()
                         } else null
                     } else {
-                        xtraModule.cronetEngine.value!!
+                        twitchProModule.cronetEngine.value!!
                     }
                     if (cronetEngine != null) {
                         val response = suspendCancellableCoroutine { continuation ->
@@ -686,7 +686,7 @@ class StreamDownloadService : LifecycleService() {
                             val request = cronetEngine.newUrlRequestBuilder(
                                 playlistUrl,
                                 NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                xtraModule.cronetExecutor.value
+                                twitchProModule.cronetExecutor.value
                             ).build()
                             timeout.start(request, continuation)
                             request.start()
@@ -788,12 +788,12 @@ class StreamDownloadService : LifecycleService() {
         var lastUrl = downloadProgress.lastSegmentUrl
         var initSegmentUri: String?
         val playlist = when {
-            networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+            networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                 val response = suspendCancellableCoroutine { continuation ->
                     val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                    val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                    val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                         sourceUrl,
-                        xtraModule.cronetExecutor.value,
+                        twitchProModule.cronetExecutor.value,
                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                     ).build()
                     timeout.start(request, continuation)
@@ -811,13 +811,13 @@ class StreamDownloadService : LifecycleService() {
                     return@withContext
                 }
             }
-            networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+            networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                 val response = suspendCancellableCoroutine { continuation ->
                     val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                    val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                    val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                         sourceUrl,
                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                        xtraModule.cronetExecutor.value
+                        twitchProModule.cronetExecutor.value
                     ).build()
                     timeout.start(request, continuation)
                     request.start()
@@ -891,12 +891,12 @@ class StreamDownloadService : LifecycleService() {
             }
             val initSegmentBytes = initSegmentUri?.let { url ->
                 when {
-                    networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                    networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                         val response = suspendCancellableCoroutine { continuation ->
                             val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                            val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                            val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                 url,
-                                xtraModule.cronetExecutor.value,
+                                twitchProModule.cronetExecutor.value,
                                 NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                             ).build()
                             timeout.start(request, continuation)
@@ -915,13 +915,13 @@ class StreamDownloadService : LifecycleService() {
                         }
                         response.body.size.toLong()
                     }
-                    networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                    networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                         val response = suspendCancellableCoroutine { continuation ->
                             val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                            val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                            val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                 url,
                                 NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                xtraModule.cronetExecutor.value
+                                twitchProModule.cronetExecutor.value
                             ).build()
                             timeout.start(request, continuation)
                             request.start()
@@ -955,7 +955,7 @@ class StreamDownloadService : LifecycleService() {
                     }
                 }
             }
-            xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+            twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                 url = fileUri
                 initSegmentBytes?.let {
                     bytes += it
@@ -977,12 +977,12 @@ class StreamDownloadService : LifecycleService() {
             requestSemaphore.acquire()
             launch(Dispatchers.IO) {
                 when {
-                    networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                    networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                         val response = suspendCancellableCoroutine { continuation ->
                             val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                            val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                            val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                 url,
-                                xtraModule.cronetExecutor.value,
+                                twitchProModule.cronetExecutor.value,
                                 NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                             ).build()
                             timeout.start(request, continuation)
@@ -1009,13 +1009,13 @@ class StreamDownloadService : LifecycleService() {
                             downloadProgress.lastSegmentUrl = lastUrl
                         }
                     }
-                    networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                    networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                         val response = suspendCancellableCoroutine { continuation ->
                             val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                            val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                            val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                 url,
                                 NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                xtraModule.cronetExecutor.value
+                                twitchProModule.cronetExecutor.value
                             ).build()
                             timeout.start(request, continuation)
                             request.start()
@@ -1067,7 +1067,7 @@ class StreamDownloadService : LifecycleService() {
                 val currentTime = System.currentTimeMillis()
                 if (currentTime - downloadProgress.lastSaved >= 5000L) {
                     downloadProgress.lastSaved = currentTime
-                    xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+                    twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                         bytes = downloadProgress.bytes
                         chatBytes = downloadProgress.chatBytes
                         lastSegmentUrl = downloadProgress.lastSegmentUrl
@@ -1085,12 +1085,12 @@ class StreamDownloadService : LifecycleService() {
         firstJobs.joinAll()
         while (true) {
             val playlist = when {
-                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                     val response = suspendCancellableCoroutine { continuation ->
                         val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                        val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                        val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                             sourceUrl,
-                            xtraModule.cronetExecutor.value,
+                            twitchProModule.cronetExecutor.value,
                             NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                         ).build()
                         timeout.start(request, continuation)
@@ -1108,13 +1108,13 @@ class StreamDownloadService : LifecycleService() {
                         return@withContext
                     }
                 }
-                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                     val response = suspendCancellableCoroutine { continuation ->
                         val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                        val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                        val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                             sourceUrl,
                             NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                            xtraModule.cronetExecutor.value
+                            twitchProModule.cronetExecutor.value
                         ).build()
                         timeout.start(request, continuation)
                         request.start()
@@ -1152,12 +1152,12 @@ class StreamDownloadService : LifecycleService() {
                     requestSemaphore.acquire()
                     launch(Dispatchers.IO) {
                         when {
-                            networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                            networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                 val response = suspendCancellableCoroutine { continuation ->
                                     val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                                    val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                                    val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                         url,
-                                        xtraModule.cronetExecutor.value,
+                                        twitchProModule.cronetExecutor.value,
                                         NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                                     ).build()
                                     timeout.start(request, continuation)
@@ -1184,13 +1184,13 @@ class StreamDownloadService : LifecycleService() {
                                     downloadProgress.lastSegmentUrl = lastUrl
                                 }
                             }
-                            networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                            networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                 val response = suspendCancellableCoroutine { continuation ->
                                     val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                                    val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                                    val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                         url,
                                         NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                        xtraModule.cronetExecutor.value
+                                        twitchProModule.cronetExecutor.value
                                     ).build()
                                     timeout.start(request, continuation)
                                     request.start()
@@ -1242,7 +1242,7 @@ class StreamDownloadService : LifecycleService() {
                         val currentTime = System.currentTimeMillis()
                         if (currentTime - downloadProgress.lastSaved >= 5000L) {
                             downloadProgress.lastSaved = currentTime
-                            xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+                            twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                                 bytes = downloadProgress.bytes
                                 chatBytes = downloadProgress.chatBytes
                                 lastSegmentUrl = downloadProgress.lastSegmentUrl
@@ -1278,7 +1278,7 @@ class StreamDownloadService : LifecycleService() {
             delay(10.seconds)
             val channelId = offlineVideo.channelId
             val stream = try {
-                xtraModule.graphQLRepository.loadQueryUsersStream(
+                twitchProModule.graphQLRepository.loadQueryUsersStream(
                     networkLibrary = networkLibrary,
                     headers = TwitchApiHelper.getGQLHeaders(this@StreamDownloadService),
                     ids = channelId?.let { listOf(it) },
@@ -1304,7 +1304,7 @@ class StreamDownloadService : LifecycleService() {
                 val helixHeaders = TwitchApiHelper.getHelixHeaders(this@StreamDownloadService)
                 if (helixHeaders[C.HEADER_TOKEN].isNullOrBlank()) throw Exception()
                 try {
-                    xtraModule.helixRepository.getStreams(
+                    twitchProModule.helixRepository.getStreams(
                         networkLibrary = networkLibrary,
                         headers = helixHeaders,
                         ids = channelId?.let { listOf(it) },
@@ -1337,12 +1337,12 @@ class StreamDownloadService : LifecycleService() {
                         launch(Dispatchers.IO) {
                             try {
                                 when {
-                                    networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                    networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                         val response = suspendCancellableCoroutine { continuation ->
                                             val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                                            val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                                            val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                                 url,
-                                                xtraModule.cronetExecutor.value,
+                                                twitchProModule.cronetExecutor.value,
                                                 NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                                             ).build()
                                             timeout.start(request, continuation)
@@ -1358,13 +1358,13 @@ class StreamDownloadService : LifecycleService() {
                                             }
                                         }
                                     }
-                                    networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                                    networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                         val response = suspendCancellableCoroutine { continuation ->
                                             val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                                            val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                                            val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                                 url,
                                                 NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                                xtraModule.cronetExecutor.value
+                                                twitchProModule.cronetExecutor.value
                                             ).build()
                                             timeout.start(request, continuation)
                                             request.start()
@@ -1398,7 +1398,7 @@ class StreamDownloadService : LifecycleService() {
                         filePath
                     }
                 }
-                xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+                twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                     name = stream.title
                     thumbnail = downloadedThumbnail
                     gameId = stream.gameId
@@ -1432,7 +1432,7 @@ class StreamDownloadService : LifecycleService() {
             } else {
                 "$path${File.separator}$fileName"
             }
-            xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+            twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                 chatUrl = fileUri
             })
             fileUri
@@ -1451,7 +1451,7 @@ class StreamDownloadService : LifecycleService() {
             val jobs = mutableListOf<Job>().apply {
                 add(launch(Dispatchers.IO) {
                     try {
-                        val badges = xtraModule.playerRepository.loadGlobalBadges(networkLibrary, helixHeaders, gqlHeaders, emoteQuality, false)
+                        val badges = twitchProModule.playerRepository.loadGlobalBadges(networkLibrary, helixHeaders, gqlHeaders, emoteQuality, false)
                         globalBadgeList.addAll(badges)
                     } catch (e: Exception) {
 
@@ -1459,8 +1459,8 @@ class StreamDownloadService : LifecycleService() {
                 })
                 add(launch(Dispatchers.IO) {
                     try {
-                        val response = xtraModule.playerRepository.loadGlobalSTVEmoteSetResponse(networkLibrary)
-                        val emotes = xtraModule.playerRepository.loadSTVEmoteSet(response, useWebp, true).second
+                        val response = twitchProModule.playerRepository.loadGlobalSTVEmoteSetResponse(networkLibrary)
+                        val emotes = twitchProModule.playerRepository.loadSTVEmoteSet(response, useWebp, true).second
                         emoteList.addAll(emotes)
                         emoteList.sortBy { it.source }
                     } catch (e: Exception) {
@@ -1469,8 +1469,8 @@ class StreamDownloadService : LifecycleService() {
                 })
                 add(launch(Dispatchers.IO) {
                     try {
-                        val response = xtraModule.playerRepository.loadGlobalBTTVEmotesResponse(networkLibrary)
-                        val emotes = xtraModule.playerRepository.loadGlobalBTTVEmotes(response, useWebp)
+                        val response = twitchProModule.playerRepository.loadGlobalBTTVEmotesResponse(networkLibrary)
+                        val emotes = twitchProModule.playerRepository.loadGlobalBTTVEmotes(response, useWebp)
                         emoteList.addAll(emotes)
                         emoteList.sortBy { it.source }
                     } catch (e: Exception) {
@@ -1479,8 +1479,8 @@ class StreamDownloadService : LifecycleService() {
                 })
                 add(launch(Dispatchers.IO) {
                     try {
-                        val response = xtraModule.playerRepository.loadGlobalFFZEmotesResponse(networkLibrary)
-                        val emotes = xtraModule.playerRepository.loadGlobalFFZEmotes(response, useWebp)
+                        val response = twitchProModule.playerRepository.loadGlobalFFZEmotesResponse(networkLibrary)
+                        val emotes = twitchProModule.playerRepository.loadGlobalFFZEmotes(response, useWebp)
                         emoteList.addAll(emotes)
                         emoteList.sortBy { it.source }
                     } catch (e: Exception) {
@@ -1490,16 +1490,16 @@ class StreamDownloadService : LifecycleService() {
                 if (channelId != null) {
                     add(launch(Dispatchers.IO) {
                         try {
-                            val userResponse = xtraModule.playerRepository.loadSTVUserResponse(networkLibrary, channelId)
-                            val user = xtraModule.playerRepository.loadSTVUser(userResponse, useWebp)
+                            val userResponse = twitchProModule.playerRepository.loadSTVUserResponse(networkLibrary, channelId)
+                            val user = twitchProModule.playerRepository.loadSTVUser(userResponse, useWebp)
                             val userSetId = user.first
                             val userEmotes = user.second
                             val emotes = if (!userEmotes.isNullOrEmpty()) {
                                 userEmotes
                             } else {
                                 if (!userSetId.isNullOrBlank()) {
-                                    val emoteSetResponse = xtraModule.playerRepository.loadSTVEmoteSetResponse(networkLibrary, userSetId)
-                                    val emoteSet = xtraModule.playerRepository.loadSTVEmoteSet(emoteSetResponse, useWebp, false)
+                                    val emoteSetResponse = twitchProModule.playerRepository.loadSTVEmoteSetResponse(networkLibrary, userSetId)
+                                    val emoteSet = twitchProModule.playerRepository.loadSTVEmoteSet(emoteSetResponse, useWebp, false)
                                     emoteSet.second
                                 } else emptyList()
                             }
@@ -1511,8 +1511,8 @@ class StreamDownloadService : LifecycleService() {
                     })
                     add(launch(Dispatchers.IO) {
                         try {
-                            val response = xtraModule.playerRepository.loadBTTVEmotesResponse(networkLibrary, channelId)
-                            val emotes = xtraModule.playerRepository.loadBTTVEmotes(response, useWebp)
+                            val response = twitchProModule.playerRepository.loadBTTVEmotesResponse(networkLibrary, channelId)
+                            val emotes = twitchProModule.playerRepository.loadBTTVEmotes(response, useWebp)
                             emoteList.addAll(emotes)
                             emoteList.sortBy { it.source }
                         } catch (e: Exception) {
@@ -1521,8 +1521,8 @@ class StreamDownloadService : LifecycleService() {
                     })
                     add(launch(Dispatchers.IO) {
                         try {
-                            val response = xtraModule.playerRepository.loadFFZEmotesResponse(networkLibrary, channelId)
-                            val emotes = xtraModule.playerRepository.loadFFZEmotes(response, useWebp)
+                            val response = twitchProModule.playerRepository.loadFFZEmotesResponse(networkLibrary, channelId)
+                            val emotes = twitchProModule.playerRepository.loadFFZEmotes(response, useWebp)
                             emoteList.addAll(emotes)
                             emoteList.sortBy { it.source }
                         } catch (e: Exception) {
@@ -1531,7 +1531,7 @@ class StreamDownloadService : LifecycleService() {
                     })
                     add(launch(Dispatchers.IO) {
                         try {
-                            val badges = xtraModule.playerRepository.loadChannelBadges(networkLibrary, helixHeaders, gqlHeaders, channelId, channelLogin, emoteQuality, false)
+                            val badges = twitchProModule.playerRepository.loadChannelBadges(networkLibrary, helixHeaders, gqlHeaders, channelId, channelLogin, emoteQuality, false)
                             channelBadgeList.addAll(badges)
                         } catch (e: Exception) {
 
@@ -1539,7 +1539,7 @@ class StreamDownloadService : LifecycleService() {
                     })
                     add(launch(Dispatchers.IO) {
                         try {
-                            val emotes = xtraModule.playerRepository.loadCheerEmotes(networkLibrary, helixHeaders, gqlHeaders, channelId, channelLogin, animateGifs = true, enableIntegrity = false)
+                            val emotes = twitchProModule.playerRepository.loadCheerEmotes(networkLibrary, helixHeaders, gqlHeaders, channelId, channelLogin, animateGifs = true, enableIntegrity = false)
                             cheerEmoteList.addAll(emotes)
                         } catch (e: Exception) {
 
@@ -1830,12 +1830,12 @@ class StreamDownloadService : LifecycleService() {
                                 else -> emote.url1x
                             }!!
                             val response = when {
-                                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                                        val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                             url,
-                                            xtraModule.cronetExecutor.value,
+                                            twitchProModule.cronetExecutor.value,
                                             NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                                         ).build()
                                         timeout.start(request, continuation)
@@ -1847,13 +1847,13 @@ class StreamDownloadService : LifecycleService() {
                                     }
                                     response.body
                                 }
-                                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                                networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                                        val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                             url,
                                             NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                            xtraModule.cronetExecutor.value
+                                            twitchProModule.cronetExecutor.value
                                         ).build()
                                         timeout.start(request, continuation)
                                         request.start()
@@ -1919,12 +1919,12 @@ class StreamDownloadService : LifecycleService() {
                                 else -> badge.url1x
                             }!!
                             val response = when {
-                                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                                        val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                             url,
-                                            xtraModule.cronetExecutor.value,
+                                            twitchProModule.cronetExecutor.value,
                                             NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                                         ).build()
                                         timeout.start(request, continuation)
@@ -1936,13 +1936,13 @@ class StreamDownloadService : LifecycleService() {
                                     }
                                     response.body
                                 }
-                                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                                networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                                        val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                             url,
                                             NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                            xtraModule.cronetExecutor.value
+                                            twitchProModule.cronetExecutor.value
                                         ).build()
                                         timeout.start(request, continuation)
                                         request.start()
@@ -2010,12 +2010,12 @@ class StreamDownloadService : LifecycleService() {
                                 else -> cheerEmote.url1x
                             }!!
                             val response = when {
-                                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                                        val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                             url,
-                                            xtraModule.cronetExecutor.value,
+                                            twitchProModule.cronetExecutor.value,
                                             NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                                         ).build()
                                         timeout.start(request, continuation)
@@ -2027,13 +2027,13 @@ class StreamDownloadService : LifecycleService() {
                                     }
                                     response.body
                                 }
-                                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                                networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                                        val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                             url,
                                             NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                            xtraModule.cronetExecutor.value
+                                            twitchProModule.cronetExecutor.value
                                         ).build()
                                         timeout.start(request, continuation)
                                         request.start()
@@ -2102,12 +2102,12 @@ class StreamDownloadService : LifecycleService() {
                                 else -> emote.url1x
                             }!!
                             val response = when {
-                                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.HttpEngineTimeout(CRONET_TIMEOUT)
-                                        val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                             url,
-                                            xtraModule.cronetExecutor.value,
+                                            twitchProModule.cronetExecutor.value,
                                             NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                                         ).build()
                                         timeout.start(request, continuation)
@@ -2119,13 +2119,13 @@ class StreamDownloadService : LifecycleService() {
                                     }
                                     response.body
                                 }
-                                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                                networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.CronetTimeout(CRONET_TIMEOUT)
-                                        val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                             url,
                                             NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                            xtraModule.cronetExecutor.value
+                                            twitchProModule.cronetExecutor.value
                                         ).build()
                                         timeout.start(request, continuation)
                                         request.start()
@@ -2191,7 +2191,7 @@ class StreamDownloadService : LifecycleService() {
         val currentTime = System.currentTimeMillis()
         if (currentTime - downloadProgress.lastSaved >= 5000L) {
             downloadProgress.lastSaved = currentTime
-            xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+            twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                 bytes = downloadProgress.bytes
                 chatBytes = downloadProgress.chatBytes
                 lastSegmentUrl = downloadProgress.lastSegmentUrl
@@ -2268,7 +2268,7 @@ class StreamDownloadService : LifecycleService() {
                     activeDownloads.remove(downloadProgress)
                     if (intent.action == INTENT_STOP) {
                         lifecycleScope.launch(Dispatchers.IO) {
-                            xtraModule.offlineVideosRepository.update(offlineVideo.apply {
+                            twitchProModule.offlineVideosRepository.update(offlineVideo.apply {
                                 status = OfflineVideo.STATUS_PENDING
                                 bytes = downloadProgress.bytes
                                 chatBytes = downloadProgress.chatBytes
@@ -2313,14 +2313,14 @@ class StreamDownloadService : LifecycleService() {
 
     companion object {
         private const val CRONET_TIMEOUT = 300_000L
-        private const val GROUP_KEY = "com.github.andreyasadchy.xtra.DOWNLOADS"
+        private const val GROUP_KEY = "com.endlessbum.twitchpro.DOWNLOADS"
 
         private const val REQUEST_CODE_STOP = 0
 
         const val KEY_VIDEO_ID = "videoId"
 
-        const val INTENT_STOP = "com.github.andreyasadchy.xtra.STOP"
-        const val INTENT_CANCEL = "com.github.andreyasadchy.xtra.CANCEL"
-        const val INTENT_START = "com.github.andreyasadchy.xtra.START_VIDEO_DOWNLOAD_SERVICE"
+        const val INTENT_STOP = "com.endlessbum.twitchpro.STOP"
+        const val INTENT_CANCEL = "com.endlessbum.twitchpro.CANCEL"
+        const val INTENT_START = "com.endlessbum.twitchpro.START_VIDEO_DOWNLOAD_SERVICE"
     }
 }

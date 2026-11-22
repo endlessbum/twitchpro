@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.following
+package com.endlessbum.twitchpro.ui.following
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,21 +15,21 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentMediaPagerBinding
-import com.github.andreyasadchy.xtra.ui.common.FragmentHost
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.common.Sortable
-import com.github.andreyasadchy.xtra.ui.login.LoginActivity
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.search.SearchPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.settings.SettingsActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.reduceDragSensitivity
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentMediaPagerBinding
+import com.endlessbum.twitchpro.ui.common.FragmentHost
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.common.Sortable
+import com.endlessbum.twitchpro.ui.login.LoginActivity
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.search.SearchPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.settings.SettingsActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.reduceDragSensitivity
+import com.endlessbum.twitchpro.util.tokenPrefs
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -138,7 +138,7 @@ class FollowPagerFragment : Fragment(), Scrollable, FragmentHost {
                 syncSortBarForPosition(b.viewPager.currentItem)
             }
             scheduleActiveTabStaleRefresh(160L)
-            com.github.andreyasadchy.xtra.ui.view.TvHeader.refresh(b.root)
+            com.endlessbum.twitchpro.ui.view.TvHeader.refresh(b.root)
             return true
         }
 
@@ -181,7 +181,7 @@ class FollowPagerFragment : Fragment(), Scrollable, FragmentHost {
                     _binding?.root?.postDelayed(this, 320L)
                     return
                 }
-                (currentFragment as? com.github.andreyasadchy.xtra.ui.common.PagedListFragment)?.refreshIfStale(20_000L)
+                (currentFragment as? com.endlessbum.twitchpro.ui.common.PagedListFragment)?.refreshIfStale(20_000L)
             }
         }, delayMs)
     }
@@ -310,7 +310,7 @@ class FollowPagerFragment : Fragment(), Scrollable, FragmentHost {
                     b.sortBar.root.visibility = View.GONE
                 }
                 if (isTv()) {
-                    com.github.andreyasadchy.xtra.ui.view.TvHeader.refresh(b.root)
+                    com.endlessbum.twitchpro.ui.view.TvHeader.refresh(b.root)
                 }
             }
         }
@@ -480,7 +480,7 @@ class FollowPagerFragment : Fragment(), Scrollable, FragmentHost {
                     }
                     syncTvHeaderTabs(enabledTabsList, activeKey)
                 }
-                com.github.andreyasadchy.xtra.ui.view.TvHeader.refresh(binding.root)
+                com.endlessbum.twitchpro.ui.view.TvHeader.refresh(binding.root)
             } else if (shownTabs != enabledTabsList) {
                 bindMobileTabs(enabledTabsList, defaultTabKey)
             }

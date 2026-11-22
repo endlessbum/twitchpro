@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.repository
+package com.endlessbum.twitchpro.repository
 
 import android.annotation.SuppressLint
 import android.net.http.HttpEngine
@@ -10,100 +10,100 @@ import com.apollographql.apollo.api.json.buildJsonString
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.json.writeObject
 import com.apollographql.apollo.api.parseResponse
-import com.github.andreyasadchy.xtra.graphql.BadgesQuery
-import com.github.andreyasadchy.xtra.graphql.ClipQuery
-import com.github.andreyasadchy.xtra.graphql.ClipUrlsQuery
-import com.github.andreyasadchy.xtra.graphql.EmoteQuery
-import com.github.andreyasadchy.xtra.graphql.GameBoxArtQuery
-import com.github.andreyasadchy.xtra.graphql.GameClipsQuery
-import com.github.andreyasadchy.xtra.graphql.GameQuery
-import com.github.andreyasadchy.xtra.graphql.GameStreamsQuery
-import com.github.andreyasadchy.xtra.graphql.GameVideosQuery
-import com.github.andreyasadchy.xtra.graphql.SearchChannelsQuery
-import com.github.andreyasadchy.xtra.graphql.SearchFreeformTagsQuery
-import com.github.andreyasadchy.xtra.graphql.SearchGameTagsQuery
-import com.github.andreyasadchy.xtra.graphql.SearchGamesQuery
-import com.github.andreyasadchy.xtra.graphql.SearchStreamsQuery
-import com.github.andreyasadchy.xtra.graphql.SearchVideosQuery
-import com.github.andreyasadchy.xtra.graphql.SelfFollowingGameQuery
-import com.github.andreyasadchy.xtra.graphql.SelfFollowingUserQuery
-import com.github.andreyasadchy.xtra.graphql.StreamPlaybackAccessTokenQuery
-import com.github.andreyasadchy.xtra.graphql.TagQuery
-import com.github.andreyasadchy.xtra.graphql.TeamLiveMembersQuery
-import com.github.andreyasadchy.xtra.graphql.TeamMembersQuery
-import com.github.andreyasadchy.xtra.graphql.TeamQuery
-import com.github.andreyasadchy.xtra.graphql.TopGamesQuery
-import com.github.andreyasadchy.xtra.graphql.TopStreamsQuery
-import com.github.andreyasadchy.xtra.graphql.UserAboutQuery
-import com.github.andreyasadchy.xtra.graphql.UserBadgesQuery
-import com.github.andreyasadchy.xtra.graphql.UserChannelPageQuery
-import com.github.andreyasadchy.xtra.graphql.UserChattersQuery
-import com.github.andreyasadchy.xtra.graphql.UserCheerEmotesQuery
-import com.github.andreyasadchy.xtra.graphql.UserClipsQuery
-import com.github.andreyasadchy.xtra.graphql.UserEmotesQuery
-import com.github.andreyasadchy.xtra.graphql.UserFollowedGamesQuery
-import com.github.andreyasadchy.xtra.graphql.UserFollowedStreamsQuery
-import com.github.andreyasadchy.xtra.graphql.UserFollowedUsersQuery
-import com.github.andreyasadchy.xtra.graphql.UserFollowedVideosQuery
-import com.github.andreyasadchy.xtra.graphql.UserMessageClickedQuery
-import com.github.andreyasadchy.xtra.graphql.UserQuery
-import com.github.andreyasadchy.xtra.graphql.UserResultIDQuery
-import com.github.andreyasadchy.xtra.graphql.UserResultLoginQuery
-import com.github.andreyasadchy.xtra.graphql.UserVideosQuery
-import com.github.andreyasadchy.xtra.graphql.UsersLastBroadcastQuery
-import com.github.andreyasadchy.xtra.graphql.UsersStreamQuery
-import com.github.andreyasadchy.xtra.graphql.UsersTypeQuery
-import com.github.andreyasadchy.xtra.graphql.VideoCommentsQuery
-import com.github.andreyasadchy.xtra.graphql.VideoMomentsQuery
-import com.github.andreyasadchy.xtra.graphql.VideoPlaybackAccessTokenQuery
-import com.github.andreyasadchy.xtra.graphql.VideoQuery
-import com.github.andreyasadchy.xtra.graphql.type.BadgeImageSize
-import com.github.andreyasadchy.xtra.graphql.type.BroadcastType
-import com.github.andreyasadchy.xtra.graphql.type.ClipsPeriod
-import com.github.andreyasadchy.xtra.graphql.type.GameSort
-import com.github.andreyasadchy.xtra.graphql.type.Language
-import com.github.andreyasadchy.xtra.graphql.type.StreamSort
-import com.github.andreyasadchy.xtra.graphql.type.VideoSort
-import com.github.andreyasadchy.xtra.model.gql.ErrorResponse
-import com.github.andreyasadchy.xtra.model.gql.channel.ChannelClipsResponse
-import com.github.andreyasadchy.xtra.model.gql.channel.ChannelSuggestionsResponse
-import com.github.andreyasadchy.xtra.model.gql.channel.ChannelVideosResponse
-import com.github.andreyasadchy.xtra.model.gql.channel.ChannelViewerListResponse
-import com.github.andreyasadchy.xtra.model.gql.channel.FollowUserResponse
-import com.github.andreyasadchy.xtra.model.gql.chat.BadgesResponse
-import com.github.andreyasadchy.xtra.model.gql.chat.ChannelCheerEmotesResponse
-import com.github.andreyasadchy.xtra.model.gql.chat.ChannelPointContextResponse
-import com.github.andreyasadchy.xtra.model.gql.chat.EmoteCardResponse
-import com.github.andreyasadchy.xtra.model.gql.chat.GlobalCheerEmotesResponse
-import com.github.andreyasadchy.xtra.model.gql.chat.ModeratorsResponse
-import com.github.andreyasadchy.xtra.model.gql.chat.SendChatMessageResponse
-import com.github.andreyasadchy.xtra.model.gql.chat.UserEmotesResponse
-import com.github.andreyasadchy.xtra.model.gql.chat.VipsResponse
-import com.github.andreyasadchy.xtra.model.gql.clip.ClipDataResponse
-import com.github.andreyasadchy.xtra.model.gql.clip.ClipUrlsResponse
-import com.github.andreyasadchy.xtra.model.gql.clip.ClipVideoResponse
-import com.github.andreyasadchy.xtra.model.gql.followed.FollowedChannelsResponse
-import com.github.andreyasadchy.xtra.model.gql.followed.FollowedGamesResponse
-import com.github.andreyasadchy.xtra.model.gql.followed.FollowedStreamsResponse
-import com.github.andreyasadchy.xtra.model.gql.followed.FollowedVideosResponse
-import com.github.andreyasadchy.xtra.model.gql.game.GameClipsResponse
-import com.github.andreyasadchy.xtra.model.gql.game.GameStreamsResponse
-import com.github.andreyasadchy.xtra.model.gql.game.GameVideosResponse
-import com.github.andreyasadchy.xtra.model.gql.game.GamesResponse
-import com.github.andreyasadchy.xtra.model.gql.playlist.PlaybackAccessTokenResponse
-import com.github.andreyasadchy.xtra.model.gql.search.SearchChannelsResponse
-import com.github.andreyasadchy.xtra.model.gql.search.SearchGameTagsResponse
-import com.github.andreyasadchy.xtra.model.gql.search.SearchGamesResponse
-import com.github.andreyasadchy.xtra.model.gql.search.SearchStreamTagsResponse
-import com.github.andreyasadchy.xtra.model.gql.search.SearchVideosResponse
-import com.github.andreyasadchy.xtra.model.gql.stream.StreamsResponse
-import com.github.andreyasadchy.xtra.model.gql.stream.ViewerCountResponse
-import com.github.andreyasadchy.xtra.model.gql.tag.TagResponse
-import com.github.andreyasadchy.xtra.model.gql.video.VideoGamesResponse
-import com.github.andreyasadchy.xtra.model.gql.video.VideoMessagesResponse
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.graphql.BadgesQuery
+import com.endlessbum.twitchpro.graphql.ClipQuery
+import com.endlessbum.twitchpro.graphql.ClipUrlsQuery
+import com.endlessbum.twitchpro.graphql.EmoteQuery
+import com.endlessbum.twitchpro.graphql.GameBoxArtQuery
+import com.endlessbum.twitchpro.graphql.GameClipsQuery
+import com.endlessbum.twitchpro.graphql.GameQuery
+import com.endlessbum.twitchpro.graphql.GameStreamsQuery
+import com.endlessbum.twitchpro.graphql.GameVideosQuery
+import com.endlessbum.twitchpro.graphql.SearchChannelsQuery
+import com.endlessbum.twitchpro.graphql.SearchFreeformTagsQuery
+import com.endlessbum.twitchpro.graphql.SearchGameTagsQuery
+import com.endlessbum.twitchpro.graphql.SearchGamesQuery
+import com.endlessbum.twitchpro.graphql.SearchStreamsQuery
+import com.endlessbum.twitchpro.graphql.SearchVideosQuery
+import com.endlessbum.twitchpro.graphql.SelfFollowingGameQuery
+import com.endlessbum.twitchpro.graphql.SelfFollowingUserQuery
+import com.endlessbum.twitchpro.graphql.StreamPlaybackAccessTokenQuery
+import com.endlessbum.twitchpro.graphql.TagQuery
+import com.endlessbum.twitchpro.graphql.TeamLiveMembersQuery
+import com.endlessbum.twitchpro.graphql.TeamMembersQuery
+import com.endlessbum.twitchpro.graphql.TeamQuery
+import com.endlessbum.twitchpro.graphql.TopGamesQuery
+import com.endlessbum.twitchpro.graphql.TopStreamsQuery
+import com.endlessbum.twitchpro.graphql.UserAboutQuery
+import com.endlessbum.twitchpro.graphql.UserBadgesQuery
+import com.endlessbum.twitchpro.graphql.UserChannelPageQuery
+import com.endlessbum.twitchpro.graphql.UserChattersQuery
+import com.endlessbum.twitchpro.graphql.UserCheerEmotesQuery
+import com.endlessbum.twitchpro.graphql.UserClipsQuery
+import com.endlessbum.twitchpro.graphql.UserEmotesQuery
+import com.endlessbum.twitchpro.graphql.UserFollowedGamesQuery
+import com.endlessbum.twitchpro.graphql.UserFollowedStreamsQuery
+import com.endlessbum.twitchpro.graphql.UserFollowedUsersQuery
+import com.endlessbum.twitchpro.graphql.UserFollowedVideosQuery
+import com.endlessbum.twitchpro.graphql.UserMessageClickedQuery
+import com.endlessbum.twitchpro.graphql.UserQuery
+import com.endlessbum.twitchpro.graphql.UserResultIDQuery
+import com.endlessbum.twitchpro.graphql.UserResultLoginQuery
+import com.endlessbum.twitchpro.graphql.UserVideosQuery
+import com.endlessbum.twitchpro.graphql.UsersLastBroadcastQuery
+import com.endlessbum.twitchpro.graphql.UsersStreamQuery
+import com.endlessbum.twitchpro.graphql.UsersTypeQuery
+import com.endlessbum.twitchpro.graphql.VideoCommentsQuery
+import com.endlessbum.twitchpro.graphql.VideoMomentsQuery
+import com.endlessbum.twitchpro.graphql.VideoPlaybackAccessTokenQuery
+import com.endlessbum.twitchpro.graphql.VideoQuery
+import com.endlessbum.twitchpro.graphql.type.BadgeImageSize
+import com.endlessbum.twitchpro.graphql.type.BroadcastType
+import com.endlessbum.twitchpro.graphql.type.ClipsPeriod
+import com.endlessbum.twitchpro.graphql.type.GameSort
+import com.endlessbum.twitchpro.graphql.type.Language
+import com.endlessbum.twitchpro.graphql.type.StreamSort
+import com.endlessbum.twitchpro.graphql.type.VideoSort
+import com.endlessbum.twitchpro.model.gql.ErrorResponse
+import com.endlessbum.twitchpro.model.gql.channel.ChannelClipsResponse
+import com.endlessbum.twitchpro.model.gql.channel.ChannelSuggestionsResponse
+import com.endlessbum.twitchpro.model.gql.channel.ChannelVideosResponse
+import com.endlessbum.twitchpro.model.gql.channel.ChannelViewerListResponse
+import com.endlessbum.twitchpro.model.gql.channel.FollowUserResponse
+import com.endlessbum.twitchpro.model.gql.chat.BadgesResponse
+import com.endlessbum.twitchpro.model.gql.chat.ChannelCheerEmotesResponse
+import com.endlessbum.twitchpro.model.gql.chat.ChannelPointContextResponse
+import com.endlessbum.twitchpro.model.gql.chat.EmoteCardResponse
+import com.endlessbum.twitchpro.model.gql.chat.GlobalCheerEmotesResponse
+import com.endlessbum.twitchpro.model.gql.chat.ModeratorsResponse
+import com.endlessbum.twitchpro.model.gql.chat.SendChatMessageResponse
+import com.endlessbum.twitchpro.model.gql.chat.UserEmotesResponse
+import com.endlessbum.twitchpro.model.gql.chat.VipsResponse
+import com.endlessbum.twitchpro.model.gql.clip.ClipDataResponse
+import com.endlessbum.twitchpro.model.gql.clip.ClipUrlsResponse
+import com.endlessbum.twitchpro.model.gql.clip.ClipVideoResponse
+import com.endlessbum.twitchpro.model.gql.followed.FollowedChannelsResponse
+import com.endlessbum.twitchpro.model.gql.followed.FollowedGamesResponse
+import com.endlessbum.twitchpro.model.gql.followed.FollowedStreamsResponse
+import com.endlessbum.twitchpro.model.gql.followed.FollowedVideosResponse
+import com.endlessbum.twitchpro.model.gql.game.GameClipsResponse
+import com.endlessbum.twitchpro.model.gql.game.GameStreamsResponse
+import com.endlessbum.twitchpro.model.gql.game.GameVideosResponse
+import com.endlessbum.twitchpro.model.gql.game.GamesResponse
+import com.endlessbum.twitchpro.model.gql.playlist.PlaybackAccessTokenResponse
+import com.endlessbum.twitchpro.model.gql.search.SearchChannelsResponse
+import com.endlessbum.twitchpro.model.gql.search.SearchGameTagsResponse
+import com.endlessbum.twitchpro.model.gql.search.SearchGamesResponse
+import com.endlessbum.twitchpro.model.gql.search.SearchStreamTagsResponse
+import com.endlessbum.twitchpro.model.gql.search.SearchVideosResponse
+import com.endlessbum.twitchpro.model.gql.stream.StreamsResponse
+import com.endlessbum.twitchpro.model.gql.stream.ViewerCountResponse
+import com.endlessbum.twitchpro.model.gql.tag.TagResponse
+import com.endlessbum.twitchpro.model.gql.video.VideoGamesResponse
+import com.endlessbum.twitchpro.model.gql.video.VideoMessagesResponse
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -2834,8 +2834,8 @@ class GraphQLRepository(
     }
 
     data class ActiveLiveEventsData(
-        val poll: com.github.andreyasadchy.xtra.model.chat.Poll? = null,
-        val prediction: com.github.andreyasadchy.xtra.model.chat.Prediction? = null,
+        val poll: com.endlessbum.twitchpro.model.chat.Poll? = null,
+        val prediction: com.endlessbum.twitchpro.model.chat.Prediction? = null,
         val selfBetOutcomeId: String? = null,
         val selfBetPoints: Int = 0,
     )
@@ -2910,7 +2910,7 @@ class GraphQLRepository(
                         val cId = c["id"].str()?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
                         val cTitle = c["title"].str()?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
                         val votes = c["votes"].obj()?.get("total").int() ?: c["totalVoters"].int() ?: 0
-                        com.github.andreyasadchy.xtra.model.chat.Poll.PollChoice(
+                        com.endlessbum.twitchpro.model.chat.Poll.PollChoice(
                             id = cId,
                             title = cTitle,
                             totalVotes = votes,
@@ -2922,7 +2922,7 @@ class GraphQLRepository(
                     val cpEnabled = cpv?.get("isEnabled").bool() ?: false
                     val cpCost = cpv?.get("cost").int() ?: 0
 
-                    com.github.andreyasadchy.xtra.model.chat.Poll(
+                    com.endlessbum.twitchpro.model.chat.Poll(
                         id = pollId,
                         title = p["title"].str() ?: "",
                         status = "ACTIVE",
@@ -2990,7 +2990,7 @@ class GraphQLRepository(
                         val o = oEl.obj() ?: return@mapNotNull null
                         val oId = o["id"].str()?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
                         val oTitle = o["title"].str()?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                        com.github.andreyasadchy.xtra.model.chat.Prediction.PredictionOutcome(
+                        com.endlessbum.twitchpro.model.chat.Prediction.PredictionOutcome(
                             id = oId,
                             title = oTitle,
                             totalPoints = o["totalPoints"].int() ?: 0,
@@ -3028,7 +3028,7 @@ class GraphQLRepository(
                         }
                     }
 
-                    val prediction = com.github.andreyasadchy.xtra.model.chat.Prediction(
+                    val prediction = com.endlessbum.twitchpro.model.chat.Prediction(
                         id = predId,
                         createdAt = createdAtMs,
                         outcomes = outcomes,

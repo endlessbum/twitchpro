@@ -1,12 +1,12 @@
-package com.github.andreyasadchy.xtra.repository.datasource
+package com.endlessbum.twitchpro.repository.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.andreyasadchy.xtra.graphql.type.BroadcastType
-import com.github.andreyasadchy.xtra.graphql.type.VideoSort
-import com.github.andreyasadchy.xtra.model.ui.Video
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.util.C
+import com.endlessbum.twitchpro.graphql.type.BroadcastType
+import com.endlessbum.twitchpro.graphql.type.VideoSort
+import com.endlessbum.twitchpro.model.ui.Video
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.util.C
 
 class FollowedVideosDataSource(
     private val gqlQueryType: BroadcastType?,

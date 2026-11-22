@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.util
+package com.endlessbum.twitchpro.util
 
 import android.os.SystemClock
 import java.text.SimpleDateFormat

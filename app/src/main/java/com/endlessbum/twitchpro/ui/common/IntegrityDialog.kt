@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -13,13 +13,13 @@ import android.webkit.WebView
 import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
 import androidx.webkit.WebViewClientCompat
-import com.github.andreyasadchy.xtra.databinding.DialogIntegrityBinding
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.databinding.DialogIntegrityBinding
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import org.json.JSONObject
 
 class IntegrityDialog : DialogFragment() {

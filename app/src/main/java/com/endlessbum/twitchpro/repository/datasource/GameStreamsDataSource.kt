@@ -1,13 +1,13 @@
-package com.github.andreyasadchy.xtra.repository.datasource
+package com.endlessbum.twitchpro.repository.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.andreyasadchy.xtra.graphql.type.Language
-import com.github.andreyasadchy.xtra.graphql.type.StreamSort
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.util.C
+import com.endlessbum.twitchpro.graphql.type.Language
+import com.endlessbum.twitchpro.graphql.type.StreamSort
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.util.C
 
 class GameStreamsDataSource(
     val gameId: String?,
@@ -120,7 +120,7 @@ class GameStreamsDataSource(
         offset = items.lastOrNull()?.cursor?.toString()
         val nextPage = data.pageInfo?.hasNextPage != false
         return LoadResult.Page(
-            data = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(list, ignoreCategory = true),
+            data = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(list, ignoreCategory = true),
             prevKey = null,
             nextKey = if (!offset.isNullOrBlank() && nextPage) {
                 (params.key ?: 1) + 1
@@ -159,7 +159,7 @@ class GameStreamsDataSource(
         offset = items.lastOrNull()?.cursor
         val nextPage = data.pageInfo?.hasNextPage != false
         return LoadResult.Page(
-            data = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(list, ignoreCategory = true),
+            data = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(list, ignoreCategory = true),
             prevKey = null,
             nextKey = if (!offset.isNullOrBlank() && nextPage) {
                 (params.key ?: 1) + 1
@@ -204,7 +204,7 @@ class GameStreamsDataSource(
         }
         offset = response.pagination?.cursor
         return LoadResult.Page(
-            data = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(list, ignoreCategory = true),
+            data = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(list, ignoreCategory = true),
             prevKey = null,
             nextKey = if (!offset.isNullOrBlank()) {
                 (params.key ?: 1) + 1

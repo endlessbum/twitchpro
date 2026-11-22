@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.SettingsDragListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.SettingsDragListItem
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.SettingsDragListItemBinding
+import com.endlessbum.twitchpro.model.ui.SettingsDragListItem
 
 class SettingsDragListAdapter : ListAdapter<SettingsDragListItem, SettingsDragListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<SettingsDragListItem>() {

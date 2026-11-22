@@ -1,13 +1,13 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.NotificationUser
-import com.github.andreyasadchy.xtra.model.ui.LocalChannelFollow
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.NotificationUser
+import com.endlessbum.twitchpro.model.ui.LocalChannelFollow
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 
 /**
  * TV: follow a channel from the actions of a card, like the follow button of the channel page:
@@ -25,7 +25,7 @@ object TvFollow {
     fun isEnabled(context: Context) = (context.prefs().getString(C.UI_FOLLOW_BUTTON, "0")?.toIntOrNull() ?: 0) != 2
 
     suspend fun isFollowing(context: Context, channelId: String): Boolean? {
-        val module = (context.applicationContext as XtraApp).xtraModule
+        val module = (context.applicationContext as TwitchProApp).twitchProModule
         val networkLibrary = context.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
         val helixHeaders = TwitchApiHelper.getHelixHeaders(context)
         val userId = context.tokenPrefs().getString(C.USER_ID, null)
@@ -63,7 +63,7 @@ object TvFollow {
 
     /** Follows or unfollows; returns null on success, or a localized error message when it failed. */
     suspend fun setFollowingWithMessage(context: Context, channelId: String, channelLogin: String?, channelName: String?, follow: Boolean): String? {
-        val module = (context.applicationContext as XtraApp).xtraModule
+        val module = (context.applicationContext as TwitchProApp).twitchProModule
         val prefs = context.prefs()
         return try {
             if (useAccount(context, channelId)) {
@@ -81,7 +81,7 @@ object TvFollow {
                 }
                 when {
                     err.isNullOrBlank() -> null
-                    err.startsWith(C.FOLLOW_REJECTED_PREFIX) -> context.getString(com.github.andreyasadchy.xtra.R.string.tv_follow_rejected_verification)
+                    err.startsWith(C.FOLLOW_REJECTED_PREFIX) -> context.getString(com.endlessbum.twitchpro.R.string.tv_follow_rejected_verification)
                     else -> err
                 }
             } else {
@@ -97,7 +97,7 @@ object TvFollow {
                 null
             }
         } catch (e: Exception) {
-            context.getString(com.github.andreyasadchy.xtra.R.string.tv_follow_failed)
+            context.getString(com.endlessbum.twitchpro.R.string.tv_follow_failed)
         }
     }
 
@@ -113,11 +113,11 @@ object TvFollow {
         return setting == 0 && !TwitchApiHelper.getGQLHeaders(context, true)[C.HEADER_TOKEN].isNullOrBlank()
     }
 
-    private suspend fun resolveGameId(context: Context, game: com.github.andreyasadchy.xtra.model.ui.Game): String? {
+    private suspend fun resolveGameId(context: Context, game: com.endlessbum.twitchpro.model.ui.Game): String? {
         game.id?.takeIf { it.isNotBlank() }?.let { return it }
         if (game.slug.isNullOrBlank() && game.name.isNullOrBlank()) return null
         return try {
-            val module = (context.applicationContext as XtraApp).xtraModule
+            val module = (context.applicationContext as TwitchProApp).twitchProModule
             val networkLibrary = context.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
             module.graphQLRepository.loadQueryGame(
                 networkLibrary = networkLibrary,
@@ -131,9 +131,9 @@ object TvFollow {
         }
     }
 
-    suspend fun isFollowingGame(context: Context, game: com.github.andreyasadchy.xtra.model.ui.Game): Boolean? {
+    suspend fun isFollowingGame(context: Context, game: com.endlessbum.twitchpro.model.ui.Game): Boolean? {
         val gameId = resolveGameId(context, game) ?: return if (game.accountFollow || game.localFollow) true else null
-        val module = (context.applicationContext as XtraApp).xtraModule
+        val module = (context.applicationContext as TwitchProApp).twitchProModule
         val localFollowed = try {
             module.localGameFollowsRepository.getById(gameId) != null
         } catch (_: Exception) {
@@ -160,20 +160,20 @@ object TvFollow {
 
     /**
      * Follows or unfollows a category: uses the Twitch account when logged in with GQL token and [C.UI_FOLLOW_BUTTON] == 0,
-     * otherwise stores/removes a local category follow in [com.github.andreyasadchy.xtra.repository.LocalGameFollowsRepository]
+     * otherwise stores/removes a local category follow in [com.endlessbum.twitchpro.repository.LocalGameFollowsRepository]
      * (with cached box art on disk) so logged-out and browser-token users can always follow categories too.
      */
     suspend fun setFollowingGameWithMessage(
         context: Context,
-        game: com.github.andreyasadchy.xtra.model.ui.Game,
+        game: com.endlessbum.twitchpro.model.ui.Game,
         follow: Boolean,
     ): String? {
         val appContext = context.applicationContext
-        val module = (appContext as XtraApp).xtraModule
+        val module = (appContext as TwitchProApp).twitchProModule
         val prefs = appContext.prefs()
         val networkLibrary = prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP)
         val gameId = resolveGameId(appContext, game)
-            ?: return appContext.getString(com.github.andreyasadchy.xtra.R.string.tv_follow_failed)
+            ?: return appContext.getString(com.endlessbum.twitchpro.R.string.tv_follow_failed)
         return try {
             if (follow) {
                 if (useAccountForGame(appContext)) {
@@ -182,7 +182,7 @@ object TvFollow {
                         .errors?.firstOrNull()?.message
                     if (!err.isNullOrBlank()) {
                         return if (err.startsWith(C.FOLLOW_REJECTED_PREFIX)) {
-                            appContext.getString(com.github.andreyasadchy.xtra.R.string.tv_follow_rejected_verification)
+                            appContext.getString(com.endlessbum.twitchpro.R.string.tv_follow_rejected_verification)
                         } else {
                             err
                         }
@@ -224,7 +224,7 @@ object TvFollow {
                             else -> file.path
                         }
                         module.localGameFollowsRepository.save(
-                            com.github.andreyasadchy.xtra.model.ui.LocalGameFollow(
+                            com.endlessbum.twitchpro.model.ui.LocalGameFollow(
                                 gameId = gameId,
                                 gameSlug = game.slug,
                                 gameName = game.name,
@@ -251,7 +251,7 @@ object TvFollow {
             _gameChanges.value++
             null
         } catch (_: Exception) {
-            appContext.getString(com.github.andreyasadchy.xtra.R.string.tv_follow_failed)
+            appContext.getString(com.endlessbum.twitchpro.R.string.tv_follow_failed)
         }
     }
 }

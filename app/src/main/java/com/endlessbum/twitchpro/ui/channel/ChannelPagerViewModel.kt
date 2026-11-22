@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.channel
+package com.endlessbum.twitchpro.ui.channel
 
 import android.annotation.SuppressLint
 import android.net.http.HttpEngine
@@ -9,21 +9,21 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.NotificationUser
-import com.github.andreyasadchy.xtra.model.ShownNotification
-import com.github.andreyasadchy.xtra.model.ui.LocalChannelFollow
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.repository.BookmarksRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.LocalChannelFollowsRepository
-import com.github.andreyasadchy.xtra.repository.NotificationsRepository
-import com.github.andreyasadchy.xtra.repository.OfflineVideosRepository
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.NotificationUser
+import com.endlessbum.twitchpro.model.ShownNotification
+import com.endlessbum.twitchpro.model.ui.LocalChannelFollow
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.repository.BookmarksRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.LocalChannelFollowsRepository
+import com.endlessbum.twitchpro.repository.NotificationsRepository
+import com.endlessbum.twitchpro.repository.OfflineVideosRepository
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -476,9 +476,9 @@ class ChannelPagerViewModel(
         val ChannelPagerViewModelFactory = viewModelFactory {
             initializer {
                 val savedStateHandle = createSavedStateHandle()
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                ChannelPagerViewModel(xtraModule.localChannelFollowsRepository, xtraModule.offlineVideosRepository, xtraModule.bookmarksRepository, xtraModule.notificationsRepository, xtraModule.graphQLRepository, xtraModule.helixRepository, xtraModule.httpEngine, xtraModule.cronetEngine, xtraModule.cronetExecutor, xtraModule.okHttpClient, savedStateHandle)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                ChannelPagerViewModel(twitchProModule.localChannelFollowsRepository, twitchProModule.offlineVideosRepository, twitchProModule.bookmarksRepository, twitchProModule.notificationsRepository, twitchProModule.graphQLRepository, twitchProModule.helixRepository, twitchProModule.httpEngine, twitchProModule.cronetEngine, twitchProModule.cronetExecutor, twitchProModule.okHttpClient, savedStateHandle)
             }
         }
     }

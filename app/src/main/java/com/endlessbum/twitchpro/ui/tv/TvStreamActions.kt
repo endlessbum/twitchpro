@@ -1,10 +1,10 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.main.MainActivity
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ object TvStreamActions {
     fun show(activity: MainActivity, stream: Stream, first: Extra? = null, last: List<Extra> = emptyList()) {
         val channelId = stream.channelId
         activity.lifecycleScope.launch {
-            val playerFrag = activity.playerFragment as? com.github.andreyasadchy.xtra.ui.player.PlayerFragment
+            val playerFrag = activity.playerFragment as? com.endlessbum.twitchpro.ui.player.PlayerFragment
             val isPlayingThis = playerFrag != null && !stream.channelLogin.isNullOrBlank() &&
                 stream.channelLogin.equals(activity.currentPlayingStream()?.channelLogin, ignoreCase = true)
 
@@ -59,9 +59,9 @@ object TvStreamActions {
                 val coStreamers = resolvedPartners
                     .filter { !it.channelLogin.isNullOrBlank() && !it.channelLogin.equals(stream.channelLogin, ignoreCase = true) }
                     .distinctBy { it.channelLogin?.lowercase() }
-                    .take(com.github.andreyasadchy.xtra.ui.player.TvMultiStreamPicker.MAX - 1)
+                    .take(com.endlessbum.twitchpro.ui.player.TvMultiStreamPicker.MAX - 1)
                 if (coStreamers.isNotEmpty()) {
-                    val allCoStreams = (listOf(stream) + coStreamers).take(com.github.andreyasadchy.xtra.ui.player.TvMultiStreamPicker.MAX)
+                    val allCoStreams = (listOf(stream) + coStreamers).take(com.endlessbum.twitchpro.ui.player.TvMultiStreamPicker.MAX)
                     entries += Extra(
                         activity.getString(R.string.tv_costream_watch_multistream, allCoStreams.size),
                         R.drawable.tv_ic_streamers,

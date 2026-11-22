@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.content.ComponentName
 import android.content.Context
@@ -17,13 +17,13 @@ import androidx.annotation.OptIn
 import androidx.core.view.isVisible
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.fragment.findNavController
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.VideoQuality
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.VideoQuality
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 
 @OptIn(UnstableApi::class)
 class MediaPlayerFragment : PlayerFragment() {
@@ -120,13 +120,13 @@ class MediaPlayerFragment : PlayerFragment() {
 
             override fun toast(resId: Int, duration: Int) {
                 if (view != null) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), resId, duration).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), resId, duration).show()
                 }
             }
 
             override fun toast(text: CharSequence, duration: Int) {
                 if (view != null) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), text, duration).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), text, duration).show()
                 }
             }
 

@@ -1,14 +1,14 @@
-package com.github.andreyasadchy.xtra.util.chat
+package com.endlessbum.twitchpro.util.chat
 
 import android.content.Context
 import androidx.core.content.ContextCompat
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.chat.Badge
-import com.github.andreyasadchy.xtra.model.chat.ChannelPointReward
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.chat.Reply
-import com.github.andreyasadchy.xtra.model.chat.TwitchEmote
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.chat.Badge
+import com.endlessbum.twitchpro.model.chat.ChannelPointReward
+import com.endlessbum.twitchpro.model.chat.ChatMessage
+import com.endlessbum.twitchpro.model.chat.Reply
+import com.endlessbum.twitchpro.model.chat.TwitchEmote
+import com.endlessbum.twitchpro.util.TwitchApiHelper
 
 object ChatUtils {
 

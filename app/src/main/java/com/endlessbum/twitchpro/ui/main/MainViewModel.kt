@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.main
+package com.endlessbum.twitchpro.ui.main
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -16,32 +16,32 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.PlaybackState
-import com.github.andreyasadchy.xtra.model.VideoPosition
-import com.github.andreyasadchy.xtra.model.ui.Clip
-import com.github.andreyasadchy.xtra.model.ui.CustomProxy
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.model.ui.OfflineVideo
-import com.github.andreyasadchy.xtra.model.ui.StreamProxy
-import com.github.andreyasadchy.xtra.model.ui.Tag
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.model.ui.Video
-import com.github.andreyasadchy.xtra.model.ui.VideoSwap
-import com.github.andreyasadchy.xtra.repository.AuthRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.LocalChannelFollowsRepository
-import com.github.andreyasadchy.xtra.repository.OfflineVideosRepository
-import com.github.andreyasadchy.xtra.repository.PlayerRepository
-import com.github.andreyasadchy.xtra.ui.login.LoginActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.UpdateInstallHelper
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.PlaybackState
+import com.endlessbum.twitchpro.model.VideoPosition
+import com.endlessbum.twitchpro.model.ui.Clip
+import com.endlessbum.twitchpro.model.ui.CustomProxy
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.model.ui.OfflineVideo
+import com.endlessbum.twitchpro.model.ui.StreamProxy
+import com.endlessbum.twitchpro.model.ui.Tag
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.model.ui.Video
+import com.endlessbum.twitchpro.model.ui.VideoSwap
+import com.endlessbum.twitchpro.repository.AuthRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.LocalChannelFollowsRepository
+import com.endlessbum.twitchpro.repository.OfflineVideosRepository
+import com.endlessbum.twitchpro.repository.PlayerRepository
+import com.endlessbum.twitchpro.ui.login.LoginActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.UpdateInstallHelper
+import com.endlessbum.twitchpro.util.tokenPrefs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -1030,7 +1030,7 @@ class MainViewModel(
                 }
             } catch (e: Exception) {
                 if (e is IllegalStateException && e.message == "401") {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, R.string.token_expired, Toast.LENGTH_LONG).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, R.string.token_expired, Toast.LENGTH_LONG).show()
                     (activity as? MainActivity)?.logoutResultLauncher?.launch(Intent(activity, LoginActivity::class.java).putExtra(LoginActivity.EXTRA_EXPIRED, true))
                 }
             }
@@ -1274,7 +1274,7 @@ class MainViewModel(
         const val NADEKO_PROXY = "twitch-al.nadeko.net/live/\$channel"
 
         /** True when the release [remoteVersion] on GitHub is newer than the installed [installedVersion]. */
-        fun isNewerVersion(remoteVersion: String?, installedVersion: String = com.github.andreyasadchy.xtra.BuildConfig.VERSION_NAME): Boolean {
+        fun isNewerVersion(remoteVersion: String?, installedVersion: String = com.endlessbum.twitchpro.BuildConfig.VERSION_NAME): Boolean {
             if (remoteVersion.isNullOrBlank()) return false
             val regex = Regex("""\d+(?:\.\d+)+""")
             val remote = regex.find(remoteVersion)?.value?.split('.')?.mapNotNull { it.toIntOrNull() }
@@ -1288,7 +1288,7 @@ class MainViewModel(
                 }
                 return false
             }
-            val cleanRemote = remoteVersion.trim().removePrefix("Xtra TV").trim().removePrefix("v").removeSuffix("-DEBUG")
+            val cleanRemote = remoteVersion.trim().removePrefix("TwitchPro").trim().removePrefix("v").removeSuffix("-DEBUG")
             val cleanLocal = installedVersion.trim().removePrefix("v").removeSuffix("-DEBUG")
             return cleanRemote != cleanLocal
         }
@@ -1309,7 +1309,7 @@ class MainViewModel(
             json: Json,
             rawBody: String,
             lastChecked: Long,
-            installedVersion: String = com.github.andreyasadchy.xtra.BuildConfig.VERSION_NAME,
+            installedVersion: String = com.endlessbum.twitchpro.BuildConfig.VERSION_NAME,
         ): ParsedUpdate? {
             val element = json.parseToJsonElement(rawBody)
             val releases: List<JsonObject> = when (element) {
@@ -1382,9 +1382,9 @@ class MainViewModel(
 
         val MainViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                MainViewModel(application.applicationContext, xtraModule.graphQLRepository, xtraModule.helixRepository, xtraModule.playerRepository, xtraModule.offlineVideosRepository, xtraModule.localChannelFollowsRepository, xtraModule.authRepository, xtraModule.httpEngine, xtraModule.cronetEngine, xtraModule.cronetExecutor, xtraModule.okHttpClient, xtraModule.json)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                MainViewModel(application.applicationContext, twitchProModule.graphQLRepository, twitchProModule.helixRepository, twitchProModule.playerRepository, twitchProModule.offlineVideosRepository, twitchProModule.localChannelFollowsRepository, twitchProModule.authRepository, twitchProModule.httpEngine, twitchProModule.cronetEngine, twitchProModule.cronetExecutor, twitchProModule.okHttpClient, twitchProModule.json)
             }
         }
     }

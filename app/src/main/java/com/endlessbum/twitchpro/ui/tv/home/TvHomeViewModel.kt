@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv.home
+package com.endlessbum.twitchpro.ui.tv.home
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -7,39 +7,39 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.PagingSource
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.graphql.type.BroadcastType
-import com.github.andreyasadchy.xtra.graphql.type.ClipsPeriod
-import com.github.andreyasadchy.xtra.graphql.type.Language
-import com.github.andreyasadchy.xtra.graphql.type.StreamSort
-import com.github.andreyasadchy.xtra.graphql.type.VideoSort
-import com.github.andreyasadchy.xtra.model.ui.Clip
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.model.ui.Video
-import com.github.andreyasadchy.xtra.repository.BookmarksRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.LocalChannelFollowsRepository
-import com.github.andreyasadchy.xtra.repository.LocalGameFollowsRepository
-import com.github.andreyasadchy.xtra.repository.OfflineVideosRepository
-import com.github.andreyasadchy.xtra.repository.datasource.ChannelClipsDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.ChannelSuggestionsDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.FollowedChannelsDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.FollowedGamesDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.FollowedStreamsDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.FollowedVideosDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.GameStreamsDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.GamesDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.StreamsDataSource
-import com.github.andreyasadchy.xtra.ui.tv.TvFavorites
-import com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamGroups
-import com.github.andreyasadchy.xtra.ui.tv.TvStats
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.graphql.type.BroadcastType
+import com.endlessbum.twitchpro.graphql.type.ClipsPeriod
+import com.endlessbum.twitchpro.graphql.type.Language
+import com.endlessbum.twitchpro.graphql.type.StreamSort
+import com.endlessbum.twitchpro.graphql.type.VideoSort
+import com.endlessbum.twitchpro.model.ui.Clip
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.model.ui.Video
+import com.endlessbum.twitchpro.repository.BookmarksRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.LocalChannelFollowsRepository
+import com.endlessbum.twitchpro.repository.LocalGameFollowsRepository
+import com.endlessbum.twitchpro.repository.OfflineVideosRepository
+import com.endlessbum.twitchpro.repository.datasource.ChannelClipsDataSource
+import com.endlessbum.twitchpro.repository.datasource.ChannelSuggestionsDataSource
+import com.endlessbum.twitchpro.repository.datasource.FollowedChannelsDataSource
+import com.endlessbum.twitchpro.repository.datasource.FollowedGamesDataSource
+import com.endlessbum.twitchpro.repository.datasource.FollowedStreamsDataSource
+import com.endlessbum.twitchpro.repository.datasource.FollowedVideosDataSource
+import com.endlessbum.twitchpro.repository.datasource.GameStreamsDataSource
+import com.endlessbum.twitchpro.repository.datasource.GamesDataSource
+import com.endlessbum.twitchpro.repository.datasource.StreamsDataSource
+import com.endlessbum.twitchpro.ui.tv.TvFavorites
+import com.endlessbum.twitchpro.ui.tv.TvMultiStreamGroups
+import com.endlessbum.twitchpro.ui.tv.TvStats
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -139,46 +139,46 @@ class TvHomeViewModel(
 
     private fun applyBlacklistToMemory() {
         followed.value?.let { list ->
-            val filtered = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(list)
+            val filtered = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(list)
             followed.value = filtered
             favorites.value = computeFavorites(filtered)
         }
-        popular.value?.let { popular.value = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(it) }
-        recommended.value?.let { recommended.value = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(it) }
-        followedGames.value?.let { followedGames.value = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterGames(it) }
-        games.value?.let { games.value = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterGames(it) }
+        popular.value?.let { popular.value = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(it) }
+        recommended.value?.let { recommended.value = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(it) }
+        followedGames.value?.let { followedGames.value = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterGames(it) }
+        games.value?.let { games.value = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterGames(it) }
         followedVideos.value?.let { list ->
             followedVideos.value = list.filterNot { v ->
-                com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isChannelBlocked(v.channelId, v.channelLogin) ||
-                    com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isCategoryBlocked(v.gameId, v.gameSlug, v.gameName)
+                com.endlessbum.twitchpro.ui.tv.TvBlacklist.isChannelBlocked(v.channelId, v.channelLogin) ||
+                    com.endlessbum.twitchpro.ui.tv.TvBlacklist.isCategoryBlocked(v.gameId, v.gameSlug, v.gameName)
             }
         }
         followedClips.value?.let { list ->
             followedClips.value = list.filterNot { c ->
-                com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isChannelBlocked(c.channelId, c.channelLogin) ||
-                    com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isCategoryBlocked(c.gameId, c.gameSlug, c.gameName)
+                com.endlessbum.twitchpro.ui.tv.TvBlacklist.isChannelBlocked(c.channelId, c.channelLogin) ||
+                    com.endlessbum.twitchpro.ui.tv.TvBlacklist.isCategoryBlocked(c.gameId, c.gameSlug, c.gameName)
             }
         }
         offlineChannels.value?.let { list ->
             offlineChannels.value = list.filterNot { u ->
-                com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isChannelBlocked(u.id, u.login)
+                com.endlessbum.twitchpro.ui.tv.TvBlacklist.isChannelBlocked(u.id, u.login)
             }
         }
         if (languageRows.value.isNotEmpty()) {
             languageRows.value = languageRows.value.mapValues { (_, list) ->
-                com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(list)
+                com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(list)
             }.filterValues { it.isNotEmpty() }
         }
         if (categoryRows.value.isNotEmpty()) {
             categoryRows.value = categoryRows.value.mapValues { (_, list) ->
-                com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(list, ignoreCategory = true)
+                com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(list, ignoreCategory = true)
             }.filterValues { it.isNotEmpty() }
         }
     }
 
     init {
         TvFavorites.load(applicationContext)
-        com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.load(applicationContext)
+        com.endlessbum.twitchpro.ui.tv.TvBlacklist.load(applicationContext)
         // a channel added to the favorites or removed: the followed row and favorites row update at once
         viewModelScope.launch {
             TvFavorites.items.collect {
@@ -194,9 +194,9 @@ class TvHomeViewModel(
         }
         viewModelScope.launch {
             var first = true
-            var lastTotal = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.totalCount(applicationContext)
-            com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.changes.collect {
-                val nowTotal = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.totalCount(applicationContext)
+            var lastTotal = com.endlessbum.twitchpro.ui.tv.TvBlacklist.totalCount(applicationContext)
+            com.endlessbum.twitchpro.ui.tv.TvBlacklist.changes.collect {
+                val nowTotal = com.endlessbum.twitchpro.ui.tv.TvBlacklist.totalCount(applicationContext)
                 if (first) {
                     first = false
                     lastTotal = nowTotal
@@ -232,14 +232,14 @@ class TvHomeViewModel(
             }
         }
         viewModelScope.launch {
-            var seenGen = com.github.andreyasadchy.xtra.ui.tv.TvFollow.gameChanges.value
-            com.github.andreyasadchy.xtra.ui.tv.TvFollow.gameChanges.collect { gen ->
+            var seenGen = com.endlessbum.twitchpro.ui.tv.TvFollow.gameChanges.value
+            com.endlessbum.twitchpro.ui.tv.TvFollow.gameChanges.collect { gen ->
                 if (gen != seenGen) {
                     seenGen = gen
                     val activeEntries = TvHomeRows.load(applicationContext).filter { it.enabled }
                     if (activeEntries.any { it.id == TvHomeRows.ROW_FOLLOWED_GAMES }) {
                         val prefs = applicationContext.prefs()
-                        followedGames.value = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterGames(
+                        followedGames.value = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterGames(
                             loadPage(
                                 FollowedGamesDataSource(
                                     localGameFollowsRepository = localGameFollowsRepository,
@@ -341,8 +341,8 @@ class TvHomeViewModel(
                         networkLibrary = networkLibrary,
                     )
                 ).filterNot { v ->
-                    com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isChannelBlocked(v.channelId, v.channelLogin) ||
-                        com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isCategoryBlocked(v.gameId, v.gameSlug, v.gameName)
+                    com.endlessbum.twitchpro.ui.tv.TvBlacklist.isChannelBlocked(v.channelId, v.channelLogin) ||
+                        com.endlessbum.twitchpro.ui.tv.TvBlacklist.isCategoryBlocked(v.gameId, v.gameSlug, v.gameName)
                 }
             }
         } else {
@@ -380,7 +380,7 @@ class TvHomeViewModel(
 
         if (TvHomeRows.ROW_FOLLOWED_GAMES in activeSet) {
             jobs += viewModelScope.launch {
-                followedGames.value = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterGames(
+                followedGames.value = com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterGames(
                     loadPage(
                         FollowedGamesDataSource(
                             localGameFollowsRepository = localGameFollowsRepository,
@@ -429,7 +429,7 @@ class TvHomeViewModel(
                         u.liveViewers == null &&
                             (u.id == null || u.id !in liveIds) &&
                             (u.login == null || u.login.lowercase() !in liveLogins) &&
-                            !com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isChannelBlocked(u.id, u.login)
+                            !com.endlessbum.twitchpro.ui.tv.TvBlacklist.isChannelBlocked(u.id, u.login)
                     }
                     .distinctBy { it.id ?: it.login }
                 offlineChannels.value = sortOfflineChannels(offline)
@@ -510,7 +510,7 @@ class TvHomeViewModel(
                 }
             }
         }
-        return seeds.filterNot { com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isChannelBlocked(null, it) }.take(maxSeeds)
+        return seeds.filterNot { com.endlessbum.twitchpro.ui.tv.TvBlacklist.isChannelBlocked(null, it) }.take(maxSeeds)
     }
 
     private suspend fun loadRecommendedStreams(
@@ -533,7 +533,7 @@ class TvHomeViewModel(
                     }
                 }
             }
-        }.distinct().filterNot { com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isChannelBlocked(null, it) }.take(2)
+        }.distinct().filterNot { com.endlessbum.twitchpro.ui.tv.TvBlacklist.isChannelBlocked(null, it) }.take(2)
         if (seeds.isEmpty()) return emptyList()
 
         val followedLogins = followedStreams.mapNotNull { it.channelLogin?.lowercase() }.toSet()
@@ -554,7 +554,7 @@ class TvHomeViewModel(
         for (s in rawSuggestions) {
             val login = s.channelLogin?.takeIf { it.isNotBlank() }?.lowercase() ?: continue
             if (login in followedLogins) continue
-            if (com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isChannelBlocked(s.channelId, login)) continue
+            if (com.endlessbum.twitchpro.ui.tv.TvBlacklist.isChannelBlocked(s.channelId, login)) continue
             if (login !in deduped) {
                 deduped[login] = s
             }
@@ -585,7 +585,7 @@ class TvHomeViewModel(
                     )
                 }
         }
-        return com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.filterStreams(
+        return com.endlessbum.twitchpro.ui.tv.TvBlacklist.filterStreams(
             deduped.map { (login, fallback) ->
                 enrichedByLogin[login] ?: Stream(
                     id = fallback.id,
@@ -643,8 +643,8 @@ class TvHomeViewModel(
         return fetched
             .filter { clip ->
                 val key = clip.id ?: clip.thumbnailURL ?: return@filter false
-                !com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isChannelBlocked(clip.channelId, clip.channelLogin) &&
-                    !com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.isCategoryBlocked(clip.gameId, clip.gameSlug, clip.gameName) &&
+                !com.endlessbum.twitchpro.ui.tv.TvBlacklist.isChannelBlocked(clip.channelId, clip.channelLogin) &&
+                    !com.endlessbum.twitchpro.ui.tv.TvBlacklist.isCategoryBlocked(clip.gameId, clip.gameSlug, clip.gameName) &&
                     seen.add(key)
             }
             .sortedByDescending { it.viewCount ?: 0 }
@@ -856,16 +856,16 @@ class TvHomeViewModel(
     companion object {
         val TvHomeViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
                 TvHomeViewModel(
                     application.applicationContext,
-                    xtraModule.localChannelFollowsRepository,
-                    xtraModule.localGameFollowsRepository,
-                    xtraModule.offlineVideosRepository,
-                    xtraModule.bookmarksRepository,
-                    xtraModule.graphQLRepository,
-                    xtraModule.helixRepository,
+                    twitchProModule.localChannelFollowsRepository,
+                    twitchProModule.localGameFollowsRepository,
+                    twitchProModule.offlineVideosRepository,
+                    twitchProModule.bookmarksRepository,
+                    twitchProModule.graphQLRepository,
+                    twitchProModule.helixRepository,
                 )
             }
         }

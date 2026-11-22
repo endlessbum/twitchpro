@@ -1,13 +1,13 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.content.ContextWrapper
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.tv.home.TvHomeRows
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 

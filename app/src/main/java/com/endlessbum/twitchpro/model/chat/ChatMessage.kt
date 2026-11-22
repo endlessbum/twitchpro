@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.model.chat
+package com.endlessbum.twitchpro.model.chat
 
 class ChatMessage(
     val type: Int = SYSTEM_MESSAGE,

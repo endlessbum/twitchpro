@@ -1,18 +1,18 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import androidx.paging.PagingSource
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.graphql.type.Language
-import com.github.andreyasadchy.xtra.graphql.type.StreamSort
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.repository.datasource.FollowedStreamsDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.GameStreamsDataSource
-import com.github.andreyasadchy.xtra.repository.datasource.StreamsDataSource
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.graphql.type.Language
+import com.endlessbum.twitchpro.graphql.type.StreamSort
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.repository.datasource.FollowedStreamsDataSource
+import com.endlessbum.twitchpro.repository.datasource.GameStreamsDataSource
+import com.endlessbum.twitchpro.repository.datasource.StreamsDataSource
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 
 /**
  * TV: lists of live streams the row of the other streams of the player can switch to (followed, popular, a language,
@@ -60,15 +60,15 @@ object TvStreamSources {
     }
 
     fun followed(context: Context): PagingSource<Int, Stream> {
-        val app = context.applicationContext as XtraApp
+        val app = context.applicationContext as TwitchProApp
         val prefs = context.prefs()
         return FollowedStreamsDataSource(
             userId = context.tokenPrefs().getString(C.USER_ID, null),
-            localChannelFollowsRepository = app.xtraModule.localChannelFollowsRepository,
+            localChannelFollowsRepository = app.twitchProModule.localChannelFollowsRepository,
             gqlHeaders = TwitchApiHelper.getGQLHeaders(context, true),
-            graphQLRepository = app.xtraModule.graphQLRepository,
+            graphQLRepository = app.twitchProModule.graphQLRepository,
             helixHeaders = TwitchApiHelper.getHelixHeaders(context),
-            helixRepository = app.xtraModule.helixRepository,
+            helixRepository = app.twitchProModule.helixRepository,
             enableIntegrity = prefs.getBoolean(C.ENABLE_INTEGRITY, false),
             networkLibrary = prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP),
         )
@@ -105,7 +105,7 @@ object TvStreamSources {
 
     /** "Recommended for you" streams (Twitch RELEVANCE sort with account token and persistent X-Device-Id). */
     fun recommended(context: Context, languages: List<String>? = null): PagingSource<Int, Stream> {
-        val app = context.applicationContext as XtraApp
+        val app = context.applicationContext as TwitchProApp
         val prefs = context.prefs()
         val list = languages ?: prefs.getStringSet(C.TV_HOME_LANGUAGES, null)?.filter { it.isNotBlank() }?.ifEmpty { null }
         return StreamsDataSource(
@@ -115,9 +115,9 @@ object TvStreamSources {
             gqlSort = "RELEVANCE",
             tags = null,
             gqlHeaders = TwitchApiHelper.getGQLRecommendationHeaders(context),
-            graphQLRepository = app.xtraModule.graphQLRepository,
+            graphQLRepository = app.twitchProModule.graphQLRepository,
             helixHeaders = TwitchApiHelper.getHelixHeaders(context),
-            helixRepository = app.xtraModule.helixRepository,
+            helixRepository = app.twitchProModule.helixRepository,
             enableIntegrity = prefs.getBoolean(C.ENABLE_INTEGRITY, false),
             networkLibrary = prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP),
         )
@@ -125,7 +125,7 @@ object TvStreamSources {
 
     /** Popular streams, in [languages] (null: the languages of Popular chosen in the settings, all when none). */
     fun popular(context: Context, languages: List<String>? = null): PagingSource<Int, Stream> {
-        val app = context.applicationContext as XtraApp
+        val app = context.applicationContext as TwitchProApp
         val prefs = context.prefs()
         val list = languages ?: prefs.getStringSet(C.TV_HOME_LANGUAGES, null)?.filter { it.isNotBlank() }?.ifEmpty { null }
         return StreamsDataSource(
@@ -135,9 +135,9 @@ object TvStreamSources {
             gqlSort = "VIEWER_COUNT",
             tags = null,
             gqlHeaders = TwitchApiHelper.getGQLHeaders(context),
-            graphQLRepository = app.xtraModule.graphQLRepository,
+            graphQLRepository = app.twitchProModule.graphQLRepository,
             helixHeaders = TwitchApiHelper.getHelixHeaders(context),
-            helixRepository = app.xtraModule.helixRepository,
+            helixRepository = app.twitchProModule.helixRepository,
             enableIntegrity = prefs.getBoolean(C.ENABLE_INTEGRITY, false),
             networkLibrary = prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP),
         )
@@ -145,7 +145,7 @@ object TvStreamSources {
 
     /**
      * Streams of a category, in all languages when [langMode] is `all`, else in the languages chosen on the page of that
-     * category (else the ones of the "default" category, else the default languages of the Xtra TV settings).
+     * category (else the ones of the "default" category, else the default languages of the TwitchPro settings).
      */
     fun game(
         context: Context,
@@ -155,14 +155,14 @@ object TvStreamSources {
         langMode: String? = null,
         fallbackLanguages: List<String>? = null,
     ): PagingSource<Int, Stream> {
-        val app = context.applicationContext as XtraApp
+        val app = context.applicationContext as TwitchProApp
         val prefs = context.prefs()
         return LazySource {
-            val languages = if (langMode == com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows.LANG_MODE_ALL) {
+            val languages = if (langMode == com.endlessbum.twitchpro.ui.tv.home.TvHomeRows.LANG_MODE_ALL) {
                 null
             } else {
-                val sort = gameId?.let { runCatching { app.xtraModule.gameSortRepository.getById(it) }.getOrNull() }
-                    ?: runCatching { app.xtraModule.gameSortRepository.getById("default") }.getOrNull()
+                val sort = gameId?.let { runCatching { app.twitchProModule.gameSortRepository.getById(it) }.getOrNull() }
+                    ?: runCatching { app.twitchProModule.gameSortRepository.getById("default") }.getOrNull()
                 sort?.streamLanguages?.split(',')?.filter { it.isNotBlank() }?.ifEmpty { null }
                     ?: prefs.getStringSet(C.TV_DEFAULT_LANGUAGES, null)?.filter { it.isNotBlank() }?.ifEmpty { null }
                     ?: fallbackLanguages?.filter { it.isNotBlank() }?.ifEmpty { null }
@@ -177,9 +177,9 @@ object TvStreamSources {
                 gqlSort = "VIEWER_COUNT",
                 tags = null,
                 gqlHeaders = TwitchApiHelper.getGQLHeaders(context),
-                graphQLRepository = app.xtraModule.graphQLRepository,
+                graphQLRepository = app.twitchProModule.graphQLRepository,
                 helixHeaders = TwitchApiHelper.getHelixHeaders(context),
-                helixRepository = app.xtraModule.helixRepository,
+                helixRepository = app.twitchProModule.helixRepository,
                 enableIntegrity = prefs.getBoolean(C.ENABLE_INTEGRITY, false),
                 networkLibrary = prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP),
             )
@@ -188,14 +188,14 @@ object TvStreamSources {
 
     /** Live streams matching [query]. */
     fun search(context: Context, query: String): PagingSource<Int, Stream> {
-        val app = context.applicationContext as XtraApp
+        val app = context.applicationContext as TwitchProApp
         val prefs = context.prefs()
-        return com.github.andreyasadchy.xtra.repository.datasource.SearchStreamsDataSource(
+        return com.endlessbum.twitchpro.repository.datasource.SearchStreamsDataSource(
             query = query.trim(),
             gqlHeaders = TwitchApiHelper.getGQLHeaders(context),
-            graphQLRepository = app.xtraModule.graphQLRepository,
+            graphQLRepository = app.twitchProModule.graphQLRepository,
             helixHeaders = TwitchApiHelper.getHelixHeaders(context),
-            helixRepository = app.xtraModule.helixRepository,
+            helixRepository = app.twitchProModule.helixRepository,
             enableIntegrity = prefs.getBoolean(C.ENABLE_INTEGRITY, false),
             networkLibrary = prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP),
         )
@@ -294,9 +294,9 @@ object TvStreamSources {
 
     private suspend fun coStreamPartners(context: Context, current: Stream?): List<Stream> {
         if (current == null || current.channelLogin.isNullOrBlank()) return emptyList()
-        val fromPlayer = (context as? com.github.andreyasadchy.xtra.ui.main.MainActivity)?.let { act ->
+        val fromPlayer = (context as? com.endlessbum.twitchpro.ui.main.MainActivity)?.let { act ->
             if (current.channelLogin.equals(act.currentPlayingStream()?.channelLogin, ignoreCase = true)) {
-                (act.playerFragment as? com.github.andreyasadchy.xtra.ui.player.PlayerFragment)?.getCoStreamers()
+                (act.playerFragment as? com.endlessbum.twitchpro.ui.player.PlayerFragment)?.getCoStreamers()
             } else {
                 null
             }
@@ -324,17 +324,17 @@ object TvStreamSources {
         val coStreams = coStreamPartners(context, current)
         if (coStreams.isNotEmpty() && seenKinds.add(KIND_COSTREAM)) {
             rows += Row(
-                title = context.getString(com.github.andreyasadchy.xtra.R.string.tv_costream_tab),
+                title = context.getString(com.endlessbum.twitchpro.R.string.tv_costream_tab),
                 source = { fixedStreams(coStreams) },
                 kind = KIND_COSTREAM,
-                iconRes = com.github.andreyasadchy.xtra.R.drawable.tv_ic_streamers,
+                iconRes = com.endlessbum.twitchpro.R.drawable.tv_ic_streamers,
                 preloaded = coStreams,
             )
         }
         val gqlLoggedIn = TwitchApiHelper.isLoggedIn(context)
         val loggedIn = gqlLoggedIn || !TwitchApiHelper.getHelixHeaders(context)[C.HEADER_TOKEN].isNullOrBlank()
         val hasFollows = loggedIn || runCatching {
-            (context.applicationContext as XtraApp).xtraModule.localChannelFollowsRepository.getAll().isNotEmpty()
+            (context.applicationContext as TwitchProApp).twitchProModule.localChannelFollowsRepository.getAll().isNotEmpty()
         }.getOrDefault(false)
         TvFavorites.load(context)
         val hasFavorites = hasFollows && TvFavorites.items.value.isNotEmpty()
@@ -344,22 +344,22 @@ object TvStreamSources {
             when {
                 entry.id == TvSwitcherRows.ROW_FOLLOWED -> {
                     if (hasFollows && seenKinds.add("followed")) {
-                        rows += Row(context.getString(com.github.andreyasadchy.xtra.R.string.tv_followed_live), { followed(context) }, "followed")
+                        rows += Row(context.getString(com.endlessbum.twitchpro.R.string.tv_followed_live), { followed(context) }, "followed")
                     }
                 }
                 entry.id == TvSwitcherRows.ROW_FAVORITES -> {
                     if (hasFavorites && seenKinds.add("favorites")) {
-                        rows += Row(context.getString(com.github.andreyasadchy.xtra.R.string.tv_home_row_favorites), { favorites(context) }, "favorites")
+                        rows += Row(context.getString(com.endlessbum.twitchpro.R.string.tv_home_row_favorites), { favorites(context) }, "favorites")
                     }
                 }
                 entry.id == TvSwitcherRows.ROW_RECOMMENDED -> {
                     if (gqlLoggedIn && seenKinds.add("recommended")) {
-                        rows += Row(context.getString(com.github.andreyasadchy.xtra.R.string.tv_sort_recommended), { recommended(context) }, "recommended")
+                        rows += Row(context.getString(com.endlessbum.twitchpro.R.string.tv_sort_recommended), { recommended(context) }, "recommended")
                     }
                 }
                 entry.id == TvSwitcherRows.ROW_POPULAR -> {
                     if (seenKinds.add("popular")) {
-                        rows += Row(context.getString(com.github.andreyasadchy.xtra.R.string.popular), { popular(context) }, "popular")
+                        rows += Row(context.getString(com.endlessbum.twitchpro.R.string.popular), { popular(context) }, "popular")
                     }
                 }
                 entry.id == TvSwitcherRows.ROW_CURRENT_GAME -> {
@@ -371,7 +371,7 @@ object TvStreamSources {
                     }
                 }
                 else -> {
-                    val cat = com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows.parseCategory(entry.id)
+                    val cat = com.endlessbum.twitchpro.ui.tv.home.TvHomeRows.parseCategory(entry.id)
                     if (cat != null) {
                         val kind = "game:${cat.gameId}"
                         if (seenKinds.add(kind)) {
@@ -382,12 +382,12 @@ object TvStreamSources {
                             )
                         }
                     } else {
-                        val language = com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows.parseLanguage(entry.id)
+                        val language = com.endlessbum.twitchpro.ui.tv.home.TvHomeRows.parseLanguage(entry.id)
                         if (language != null) {
                             val kind = "language:$language"
                             if (seenKinds.add(kind)) {
                                 rows += Row(
-                                    context.getString(com.github.andreyasadchy.xtra.R.string.tv_popular_in, languageName(context, language)),
+                                    context.getString(com.endlessbum.twitchpro.R.string.tv_popular_in, languageName(context, language)),
                                     { popular(context, listOf(language)) },
                                     kind,
                                 )

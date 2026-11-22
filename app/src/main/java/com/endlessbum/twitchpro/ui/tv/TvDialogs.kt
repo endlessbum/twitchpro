@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.graphics.Color
@@ -140,7 +140,7 @@ object TvDialogs {
                 onSubmit = { searchView.setQuery(it, true) },
             )
         }
-        view.id = com.github.andreyasadchy.xtra.R.id.tvSearchBar
+        view.id = com.endlessbum.twitchpro.R.id.tvSearchBar
         val index = parent.indexOfChild(searchView)
         searchView.visibility = android.view.View.GONE
         parent.addView(view, index + 1, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
@@ -177,7 +177,7 @@ object TvDialogs {
 fun TvTheme(accent: Int, content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = darkColorScheme(
-            // the ambiance color of the Xtra TV settings when one is chosen
+            // the ambiance color of the TwitchPro settings when one is chosen
             // read here: the theme (and all that uses its primary color) follows the dynamic ambiance
             primary = ComposeColor(if (TvAccent.current != null) TvAccent.onDark else accent),
             onPrimary = ComposeColor(if (TvAccent.current != null) TvAccent.onAccent else android.graphics.Color.WHITE),

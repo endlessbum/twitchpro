@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.channel.suggestions
+package com.endlessbum.twitchpro.ui.channel.suggestions
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
@@ -11,13 +11,13 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.datasource.ChannelSuggestionsDataSource
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentArgs
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.datasource.ChannelSuggestionsDataSource
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentArgs
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 
 class ChannelSuggestionsViewModel(
     applicationContext: Context,
@@ -43,9 +43,9 @@ class ChannelSuggestionsViewModel(
         val ChannelSuggestionsViewModelFactory = viewModelFactory {
             initializer {
                 val savedStateHandle = createSavedStateHandle()
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                ChannelSuggestionsViewModel(application.applicationContext, xtraModule.graphQLRepository, savedStateHandle)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                ChannelSuggestionsViewModel(application.applicationContext, twitchProModule.graphQLRepository, savedStateHandle)
             }
         }
     }

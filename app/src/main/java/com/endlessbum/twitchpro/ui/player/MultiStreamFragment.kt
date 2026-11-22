@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -23,16 +23,16 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.chat.ChatFragment
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.tv.TvActionPanel
-import com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamQuality
-import com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamSound
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.chat.ChatFragment
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.tv.TvActionPanel
+import com.endlessbum.twitchpro.ui.tv.TvMultiStreamQuality
+import com.endlessbum.twitchpro.ui.tv.TvMultiStreamSound
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import kotlinx.coroutines.launch
 
 /**
@@ -94,10 +94,10 @@ class MultiStreamFragment : Fragment() {
     private val tiles = mutableListOf<Tile>()
     private lateinit var root: FrameLayout
     private val followCache = java.util.concurrent.ConcurrentHashMap<String, Pair<Boolean, Long?>>()
-    private val roomStateCache = java.util.concurrent.ConcurrentHashMap<String, com.github.andreyasadchy.xtra.model.chat.RoomState>()
+    private val roomStateCache = java.util.concurrent.ConcurrentHashMap<String, com.endlessbum.twitchpro.model.chat.RoomState>()
     private val userBadgesCache = java.util.concurrent.ConcurrentHashMap<String, Set<String>>()
-    private val twitchEmotesCache = java.util.concurrent.ConcurrentHashMap<String, List<com.github.andreyasadchy.xtra.model.chat.Emote>>()
-    private val thirdPartyEmotesCache = java.util.concurrent.ConcurrentHashMap<String, List<com.github.andreyasadchy.xtra.model.chat.Emote>>()
+    private val twitchEmotesCache = java.util.concurrent.ConcurrentHashMap<String, List<com.endlessbum.twitchpro.model.chat.Emote>>()
+    private val thirdPartyEmotesCache = java.util.concurrent.ConcurrentHashMap<String, List<com.endlessbum.twitchpro.model.chat.Emote>>()
 
     /** 2 streams: logins whose chat is shown with their stream. */
     private val chatsShown = mutableSetOf<String>()
@@ -181,7 +181,7 @@ class MultiStreamFragment : Fragment() {
                 return@launch
             }
             if (!originLive) {
-                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(activity, getString(R.string.tv_multistream_origin_offline, origin.channelName ?: origin.channelLogin), android.widget.Toast.LENGTH_SHORT).show()
+                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(activity, getString(R.string.tv_multistream_origin_offline, origin.channelName ?: origin.channelLogin), android.widget.Toast.LENGTH_SHORT).show()
             }
             activity.closeMultiStream()
             // the next choices if this one ends at once
@@ -214,8 +214,8 @@ class MultiStreamFragment : Fragment() {
         val streams = BundleCompat.getParcelableArrayList(requireArguments(), KEY_STREAMS, Stream::class.java).orEmpty().take(MAX)
         streams.forEach { addTile(it) }
         // the dimming of the streams covers the cells and their chats (the panels are over it, not dimmed)
-        com.github.andreyasadchy.xtra.ui.tv.TvDim.addListener(dimListener)
-        com.github.andreyasadchy.xtra.ui.tv.TvDim.apply(root)
+        com.endlessbum.twitchpro.ui.tv.TvDim.addListener(dimListener)
+        com.endlessbum.twitchpro.ui.tv.TvDim.apply(root)
         // 2 streams: both chats at once, once the screen is laid out
         root.post { if (view != null) showBothChats() }
         root.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> layoutTiles() }
@@ -233,7 +233,7 @@ class MultiStreamFragment : Fragment() {
                     ?: playing.firstOrNull()
                 if (active != null) {
                     val s = active.stream
-                    com.github.andreyasadchy.xtra.ui.tv.TvStats.addWatchTime(
+                    com.endlessbum.twitchpro.ui.tv.TvStats.addWatchTime(
                         requireContext(),
                         s.channelLogin,
                         s.channelName,
@@ -295,11 +295,11 @@ class MultiStreamFragment : Fragment() {
             val padV = (3 * density).toInt()
             setPadding(padH, padV, padH, padV)
             val badgeText = android.text.SpannableStringBuilder()
-            com.github.andreyasadchy.xtra.util.chat.TvChatNotices.appendIcon(
+            com.endlessbum.twitchpro.util.chat.TvChatNotices.appendIcon(
                 requireContext(),
                 badgeText,
                 R.drawable.tv_ic_shield,
-                com.github.andreyasadchy.xtra.ui.tv.TvAccent.color,
+                com.endlessbum.twitchpro.ui.tv.TvAccent.color,
                 this.textSize * 1.1f,
             )
             val titleStart = badgeText.length
@@ -345,7 +345,7 @@ class MultiStreamFragment : Fragment() {
             .setHandleAudioBecomingNoisy(false)
             .build().apply {
                 // the sound of a film, the audio focus held by the multi-stream itself (TvPlaybackSignals)
-                setAudioAttributes(com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.playerAttributes, false)
+                setAudioAttributes(com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.playerAttributes, false)
                 volume = 0f
                 setVideoTextureView(texture)
             }
@@ -393,7 +393,7 @@ class MultiStreamFragment : Fragment() {
             ((v as FrameLayout).foreground as? GradientDrawable)?.setStroke((4 * density).toInt(), if (hasFocus) Color.WHITE else Color.TRANSPARENT)
             label.visibility = if (hasFocus) View.GONE else View.VISIBLE
             infoContainer.visibility = if (hasFocus) View.VISIBLE else View.GONE
-            com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(infoTitle, hasFocus && chromeAlpha > 0f)
+            com.endlessbum.twitchpro.ui.view.TvMarquee.update(infoTitle, hasFocus && chromeAlpha > 0f)
             if (hasFocus) {
                 selectedTile = tile
                 updateTileInfo(tile)
@@ -574,7 +574,7 @@ class MultiStreamFragment : Fragment() {
         val now = android.os.SystemClock.elapsedRealtime()
         if (now - tile.lastDecoderStepDownAt > 12_000L) {
             tile.lastDecoderStepDownAt = now
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(
+            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(
                 ctx,
                 getString(R.string.tv_multistream_decoder_stepdown, tile.stream.channelName ?: login),
                 android.widget.Toast.LENGTH_SHORT,
@@ -838,19 +838,19 @@ class MultiStreamFragment : Fragment() {
         }
         if (tiles.size >= 2) {
             val currentStreams = tiles.map { it.stream }
-            val groupId = com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamGroups.idOf(currentStreams)
+            val groupId = com.endlessbum.twitchpro.ui.tv.TvMultiStreamGroups.idOf(currentStreams)
             if (groupId.isNotEmpty()) {
-                val saved = com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamGroups.isSaved(requireContext(), currentStreams)
+                val saved = com.endlessbum.twitchpro.ui.tv.TvMultiStreamGroups.isSaved(requireContext(), currentStreams)
                 actions += TvActionPanel.Action(
                     getString(if (saved) R.string.tv_multistream_remove_group else R.string.tv_multistream_save_group),
                     if (saved) R.drawable.tv_ic_delete else R.drawable.tv_ic_star,
                 ) {
                     if (saved) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamGroups.remove(requireContext(), groupId)
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_multistream_group_removed, android.widget.Toast.LENGTH_SHORT).show()
+                        com.endlessbum.twitchpro.ui.tv.TvMultiStreamGroups.remove(requireContext(), groupId)
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_multistream_group_removed, android.widget.Toast.LENGTH_SHORT).show()
                     } else {
-                        com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamGroups.save(requireContext(), currentStreams)
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_multistream_group_saved, android.widget.Toast.LENGTH_SHORT).show()
+                        com.endlessbum.twitchpro.ui.tv.TvMultiStreamGroups.save(requireContext(), currentStreams)
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_multistream_group_saved, android.widget.Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -880,8 +880,8 @@ class MultiStreamFragment : Fragment() {
     }
 
     private fun isTileChatLoggedIn(context: android.content.Context): Boolean {
-        return !com.github.andreyasadchy.xtra.util.TwitchApiHelper.getGQLHeaders(context, true)[C.HEADER_TOKEN].isNullOrBlank() ||
-            !com.github.andreyasadchy.xtra.util.TwitchApiHelper.getHelixHeaders(context)[C.HEADER_TOKEN].isNullOrBlank()
+        return !com.endlessbum.twitchpro.util.TwitchApiHelper.getGQLHeaders(context, true)[C.HEADER_TOKEN].isNullOrBlank() ||
+            !com.endlessbum.twitchpro.util.TwitchApiHelper.getHelixHeaders(context)[C.HEADER_TOKEN].isNullOrBlank()
     }
 
     private fun findChatFragment(login: String?): ChatFragment? {
@@ -917,14 +917,14 @@ class MultiStreamFragment : Fragment() {
         }
         val roomState = chat?.getEffectiveRoomState()?.value ?: roomStateCache[loginKey] ?: return null
         if (roomState.subs == "1" && badges != null && "subscriber" !in badges && "founder" !in badges) {
-            return com.github.andreyasadchy.xtra.util.chat.TvChatNotices.restrictionMessage(ctx, "SUBSCRIBERS_ONLY")
+            return com.endlessbum.twitchpro.util.chat.TvChatNotices.restrictionMessage(ctx, "SUBSCRIBERS_ONLY")
         }
         val followersMin = roomState.followers?.toIntOrNull()
         val followEntry = channelId?.takeIf { it.isNotBlank() }?.let { followCache[it] }
         if (followersMin != null && followersMin >= 0 && followEntry?.first == true) {
             val followedAt = followEntry.second
             if (followedAt == null) {
-                return com.github.andreyasadchy.xtra.util.chat.TvChatNotices.restrictionMessage(
+                return com.endlessbum.twitchpro.util.chat.TvChatNotices.restrictionMessage(
                     ctx,
                     "FOLLOWERS_ONLY",
                     followersMinutes = followersMin,
@@ -935,7 +935,7 @@ class MultiStreamFragment : Fragment() {
                 val now = System.currentTimeMillis()
                 if (now < unlockAt) {
                     val remSec = (unlockAt - now + 999L) / 1000L
-                    return com.github.andreyasadchy.xtra.util.chat.TvChatNotices.restrictionMessage(
+                    return com.endlessbum.twitchpro.util.chat.TvChatNotices.restrictionMessage(
                         ctx,
                         "msg_followersonly_followed",
                         followersMinutes = followersMin,
@@ -963,17 +963,17 @@ class MultiStreamFragment : Fragment() {
         val ctx = context ?: return
         val login = tile.stream.channelLogin?.takeIf { it.isNotBlank() } ?: return
         val loginKey = login.lowercase()
-        val app = ctx.applicationContext as com.github.andreyasadchy.xtra.XtraApp
+        val app = ctx.applicationContext as com.endlessbum.twitchpro.TwitchProApp
         val networkLibrary = ctx.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
-        val gqlHeaders = com.github.andreyasadchy.xtra.util.TwitchApiHelper.getGQLHeaders(ctx, true)
-        val helixHeaders = com.github.andreyasadchy.xtra.util.TwitchApiHelper.getHelixHeaders(ctx)
+        val gqlHeaders = com.endlessbum.twitchpro.util.TwitchApiHelper.getGQLHeaders(ctx, true)
+        val helixHeaders = com.endlessbum.twitchpro.util.TwitchApiHelper.getHelixHeaders(ctx)
         val userId = ctx.tokenPrefs().getString(C.USER_ID, null)
         var channelId = tile.effectiveChannelId
         if (channelId.isNullOrBlank()) {
             val user = runCatching {
-                app.xtraModule.graphQLRepository.loadQueryUsersStream(
+                app.twitchProModule.graphQLRepository.loadQueryUsersStream(
                     networkLibrary,
-                    com.github.andreyasadchy.xtra.util.TwitchApiHelper.getGQLHeaders(ctx),
+                    com.endlessbum.twitchpro.util.TwitchApiHelper.getGQLHeaders(ctx),
                     ids = null,
                     logins = listOf(login),
                 ).data?.users?.firstOrNull()
@@ -991,7 +991,7 @@ class MultiStreamFragment : Fragment() {
                 val followedMs = runCatching {
                     val self = if (!gqlHeaders[C.HEADER_TOKEN].isNullOrBlank()) {
                         runCatching {
-                            app.xtraModule.graphQLRepository.loadQueryFollowingUser(
+                            app.twitchProModule.graphQLRepository.loadQueryFollowingUser(
                                 networkLibrary = networkLibrary,
                                 headers = gqlHeaders,
                                 id = channelId,
@@ -1007,7 +1007,7 @@ class MultiStreamFragment : Fragment() {
                             }
                         }
                         !helixHeaders[C.HEADER_TOKEN].isNullOrBlank() && !userId.isNullOrBlank() -> {
-                            val first = app.xtraModule.helixRepository.getUserFollows(networkLibrary, helixHeaders, userId, channelId).data.firstOrNull()
+                            val first = app.twitchProModule.helixRepository.getUserFollows(networkLibrary, helixHeaders, userId, channelId).data.firstOrNull()
                             known = true
                             first?.let { f -> f.followedAt?.let { kotlin.time.Instant.parseOrNull(it)?.toEpochMilliseconds() } ?: 1L }
                         }
@@ -1030,9 +1030,9 @@ class MultiStreamFragment : Fragment() {
             if (!useAuthSocket) {
                 gotUser.complete(Unit)
             }
-            val listener = object : com.github.andreyasadchy.xtra.util.chat.ChatReadWebSocket.Listener {
-                override suspend fun onRoomState(message: com.github.andreyasadchy.xtra.util.chat.ChatUtils.IRCMessage) {
-                    roomStateCache[loginKey] = com.github.andreyasadchy.xtra.model.chat.RoomState(
+            val listener = object : com.endlessbum.twitchpro.util.chat.ChatReadWebSocket.Listener {
+                override suspend fun onRoomState(message: com.endlessbum.twitchpro.util.chat.ChatUtils.IRCMessage) {
+                    roomStateCache[loginKey] = com.endlessbum.twitchpro.model.chat.RoomState(
                         emote = message.tags["emote-only"],
                         followers = message.tags["followers-only"],
                         unique = message.tags["r9k"],
@@ -1042,7 +1042,7 @@ class MultiStreamFragment : Fragment() {
                     gotRoom.complete(Unit)
                 }
 
-                override suspend fun onUserState(message: com.github.andreyasadchy.xtra.util.chat.ChatUtils.IRCMessage) {
+                override suspend fun onUserState(message: com.endlessbum.twitchpro.util.chat.ChatUtils.IRCMessage) {
                     val badgeSet = message.tags["badges"]
                         ?.split(',')
                         ?.mapNotNull { it.substringBefore('/').takeIf(String::isNotBlank) }
@@ -1061,15 +1061,15 @@ class MultiStreamFragment : Fragment() {
                 }
             }
             kotlinx.coroutines.supervisorScope {
-                var writeSocket: com.github.andreyasadchy.xtra.util.chat.ChatWriteWebSocket? = null
-                var readSocket: com.github.andreyasadchy.xtra.util.chat.ChatReadWebSocket? = null
+                var writeSocket: com.endlessbum.twitchpro.util.chat.ChatWriteWebSocket? = null
+                var readSocket: com.endlessbum.twitchpro.util.chat.ChatReadWebSocket? = null
                 var job: kotlinx.coroutines.Job? = null
                 try {
                     if (useAuthSocket) {
-                        writeSocket = com.github.andreyasadchy.xtra.util.chat.ChatWriteWebSocket(accountLogin, oauthToken, login, listener)
+                        writeSocket = com.endlessbum.twitchpro.util.chat.ChatWriteWebSocket(accountLogin, oauthToken, login, listener)
                         job = writeSocket.connect(this)
                     } else {
-                        readSocket = com.github.andreyasadchy.xtra.util.chat.ChatReadWebSocket(login, listener)
+                        readSocket = com.endlessbum.twitchpro.util.chat.ChatReadWebSocket(login, listener)
                         job = readSocket.connect(this)
                     }
                     kotlinx.coroutines.withTimeoutOrNull(2000L) {
@@ -1089,7 +1089,7 @@ class MultiStreamFragment : Fragment() {
         val ctx = context ?: return
         val immediateLock = computeTileChatLockMessage(tile)
         if (immediateLock != null) {
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(ctx, immediateLock, android.widget.Toast.LENGTH_SHORT).show()
+            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(ctx, immediateLock, android.widget.Toast.LENGTH_SHORT).show()
             return
         }
         val login = tile.stream.channelLogin ?: return
@@ -1106,7 +1106,7 @@ class MultiStreamFragment : Fragment() {
                 if (view == null || !isAdded || tile !in tiles) return@launch
                 val lockAfterCheck = computeTileChatLockMessage(tile)
                 if (lockAfterCheck != null) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), lockAfterCheck, android.widget.Toast.LENGTH_SHORT).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), lockAfterCheck, android.widget.Toast.LENGTH_SHORT).show()
                 } else {
                     showTileChatComposerDialog(tile)
                 }
@@ -1127,7 +1127,7 @@ class MultiStreamFragment : Fragment() {
         if (chat == null) {
             loadFallbackTileEmotes(tile, emoteGroupsState)
         }
-        com.github.andreyasadchy.xtra.ui.tv.TvDialogs.show(ctx) { dismiss ->
+        com.endlessbum.twitchpro.ui.tv.TvDialogs.show(ctx) { dismiss ->
             if (chat != null) {
                 androidx.compose.runtime.LaunchedEffect(chat) {
                     emoteGroupsState.value = chat.getTvEmoteGroups()
@@ -1136,7 +1136,7 @@ class MultiStreamFragment : Fragment() {
                     }
                 }
             }
-            com.github.andreyasadchy.xtra.ui.tv.ChatComposer(
+            com.endlessbum.twitchpro.ui.tv.ChatComposer(
                 title = "${getString(R.string.tv_write_message)} · $name",
                 hint = getString(R.string.tv_message_hint),
                 sendLabel = getString(R.string.tv_send),
@@ -1155,7 +1155,7 @@ class MultiStreamFragment : Fragment() {
         }
     }
 
-    private fun buildFallbackTileEmoteGroups(channelId: String?): List<Pair<String, List<com.github.andreyasadchy.xtra.model.chat.Emote>>> {
+    private fun buildFallbackTileEmoteGroups(channelId: String?): List<Pair<String, List<com.endlessbum.twitchpro.model.chat.Emote>>> {
         val ctx = context ?: return emptyList()
         val twitch = channelId?.let { twitchEmotesCache[it] }.orEmpty()
         val channelThirdParty = channelId?.let { thirdPartyEmotesCache[it] }.orEmpty()
@@ -1166,7 +1166,7 @@ class MultiStreamFragment : Fragment() {
             .orEmpty()
         val fallbackTwitch = twitch.ifEmpty {
             mountedGroups.firstOrNull { it.first == "Twitch" }?.second.orEmpty()
-                .filter { it.source != com.github.andreyasadchy.xtra.model.chat.Emote.CHANNEL_TWITCH }
+                .filter { it.source != com.endlessbum.twitchpro.model.chat.Emote.CHANNEL_TWITCH }
         }
         val globalThirdParty = mountedGroups
             .firstOrNull { it.first == "7TV/BTTV/FFZ" }
@@ -1175,7 +1175,7 @@ class MultiStreamFragment : Fragment() {
             .filterNot { it.isChannelEmote }
         val thirdParty = (channelThirdParty + globalThirdParty).distinctBy { it.name }
         val channelEmotes = (
-            twitch.filter { it.source == com.github.andreyasadchy.xtra.model.chat.Emote.CHANNEL_TWITCH } +
+            twitch.filter { it.source == com.endlessbum.twitchpro.model.chat.Emote.CHANNEL_TWITCH } +
                 channelThirdParty
             ).distinctBy { it.name }
         return buildList {
@@ -1187,15 +1187,15 @@ class MultiStreamFragment : Fragment() {
 
     private fun loadFallbackTileEmotes(
         tile: Tile,
-        state: androidx.compose.runtime.MutableState<List<Pair<String, List<com.github.andreyasadchy.xtra.model.chat.Emote>>>>,
+        state: androidx.compose.runtime.MutableState<List<Pair<String, List<com.endlessbum.twitchpro.model.chat.Emote>>>>,
     ) {
         val ctx = context ?: return
         val login = tile.stream.channelLogin ?: return
-        val app = ctx.applicationContext as com.github.andreyasadchy.xtra.XtraApp
+        val app = ctx.applicationContext as com.endlessbum.twitchpro.TwitchProApp
         val prefs = ctx.prefs()
         val networkLibrary = prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP)
-        val gqlHeaders = com.github.andreyasadchy.xtra.util.TwitchApiHelper.getGQLHeaders(ctx, true)
-        val helixHeaders = com.github.andreyasadchy.xtra.util.TwitchApiHelper.getHelixHeaders(ctx)
+        val gqlHeaders = com.endlessbum.twitchpro.util.TwitchApiHelper.getGQLHeaders(ctx, true)
+        val helixHeaders = com.endlessbum.twitchpro.util.TwitchApiHelper.getHelixHeaders(ctx)
         val userId = ctx.tokenPrefs().getString(C.USER_ID, null)
         val animateGifs = prefs.getBoolean(C.ANIMATED_EMOTES, true)
         val enableIntegrity = prefs.getBoolean(C.ENABLE_INTEGRITY, false)
@@ -1207,9 +1207,9 @@ class MultiStreamFragment : Fragment() {
             var channelId = tile.effectiveChannelId
             if (channelId.isNullOrBlank()) {
                 channelId = runCatching {
-                    app.xtraModule.graphQLRepository.loadQueryUsersStream(
+                    app.twitchProModule.graphQLRepository.loadQueryUsersStream(
                         networkLibrary,
-                        com.github.andreyasadchy.xtra.util.TwitchApiHelper.getGQLHeaders(ctx),
+                        com.endlessbum.twitchpro.util.TwitchApiHelper.getGQLHeaders(ctx),
                         ids = null,
                         logins = listOf(login),
                     ).data?.users?.firstOrNull()?.id
@@ -1225,7 +1225,7 @@ class MultiStreamFragment : Fragment() {
             }
             if (!twitchEmotesCache.containsKey(resolvedId)) {
                 val loadedTwitch = runCatching {
-                    app.xtraModule.playerRepository.loadUserEmotes(
+                    app.twitchProModule.playerRepository.loadUserEmotes(
                         networkLibrary = networkLibrary,
                         helixHeaders = helixHeaders,
                         gqlHeaders = gqlHeaders,
@@ -1236,14 +1236,14 @@ class MultiStreamFragment : Fragment() {
                     ).sortedByDescending { it.setId }
                         .sortedByDescending { it.ownerId == resolvedId }
                         .map {
-                            com.github.andreyasadchy.xtra.model.chat.Emote(
+                            com.endlessbum.twitchpro.model.chat.Emote(
                                 name = it.name,
                                 url1x = it.url1x,
                                 url2x = it.url2x,
                                 url3x = it.url3x,
                                 url4x = it.url4x,
                                 format = it.format,
-                                source = if (it.ownerId == resolvedId) com.github.andreyasadchy.xtra.model.chat.Emote.CHANNEL_TWITCH else null,
+                                source = if (it.ownerId == resolvedId) com.endlessbum.twitchpro.model.chat.Emote.CHANNEL_TWITCH else null,
                             )
                         }
                         .distinctBy { it.name }
@@ -1254,8 +1254,8 @@ class MultiStreamFragment : Fragment() {
                 }
             }
             if (!thirdPartyEmotesCache.containsKey(resolvedId)) {
-                val repo = app.xtraModule.playerRepository
-                val channel3p = mutableListOf<com.github.andreyasadchy.xtra.model.chat.Emote>()
+                val repo = app.twitchProModule.playerRepository
+                val channel3p = mutableListOf<com.endlessbum.twitchpro.model.chat.Emote>()
                 if (enableStv) {
                     runCatching {
                         val userResp = repo.loadSTVUserResponse(networkLibrary, resolvedId)
@@ -1292,17 +1292,17 @@ class MultiStreamFragment : Fragment() {
         val trimmed = rawMessage.trim()
         if (trimmed.isEmpty()) return
         val appCtx = ctx.applicationContext
-        val app = appCtx as com.github.andreyasadchy.xtra.XtraApp
+        val app = appCtx as com.endlessbum.twitchpro.TwitchProApp
         val login = tile.stream.channelLogin ?: return
         val loginKey = login.lowercase()
         val initialChannelId = tile.effectiveChannelId
         val networkLibrary = appCtx.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
-        val gqlHeaders = com.github.andreyasadchy.xtra.util.TwitchApiHelper.getGQLHeaders(appCtx, true)
-        val helixHeaders = com.github.andreyasadchy.xtra.util.TwitchApiHelper.getHelixHeaders(appCtx)
+        val gqlHeaders = com.endlessbum.twitchpro.util.TwitchApiHelper.getGQLHeaders(appCtx, true)
+        val helixHeaders = com.endlessbum.twitchpro.util.TwitchApiHelper.getHelixHeaders(appCtx)
         val accountId = appCtx.tokenPrefs().getString(C.USER_ID, null)
         if (!trimmed.startsWith("/")) {
             kotlinx.coroutines.MainScope().launch {
-                runCatching { com.github.andreyasadchy.xtra.ui.tv.TvStats.addMessage(appCtx) }
+                runCatching { com.endlessbum.twitchpro.ui.tv.TvStats.addMessage(appCtx) }
             }
         }
         kotlinx.coroutines.MainScope().launch {
@@ -1310,9 +1310,9 @@ class MultiStreamFragment : Fragment() {
                 var channelId = initialChannelId
                 if (channelId.isNullOrBlank()) {
                     channelId = runCatching {
-                        app.xtraModule.graphQLRepository.loadQueryUsersStream(
+                        app.twitchProModule.graphQLRepository.loadQueryUsersStream(
                             networkLibrary,
-                            com.github.andreyasadchy.xtra.util.TwitchApiHelper.getGQLHeaders(appCtx),
+                            com.endlessbum.twitchpro.util.TwitchApiHelper.getGQLHeaders(appCtx),
                             ids = null,
                             logins = listOf(login),
                         ).data?.users?.firstOrNull()?.id
@@ -1324,7 +1324,7 @@ class MultiStreamFragment : Fragment() {
                 if (channelId.isNullOrBlank()) return@launch
                 val followersMin = roomStateCache[loginKey]?.followers?.toIntOrNull()?.takeIf { it > 0 }
                 val toastMsg: String? = if (!gqlHeaders[C.HEADER_TOKEN].isNullOrBlank()) {
-                    val response = app.xtraModule.graphQLRepository.sendMessage(networkLibrary, gqlHeaders, channelId, trimmed, null)
+                    val response = app.twitchProModule.graphQLRepository.sendMessage(networkLibrary, gqlHeaders, channelId, trimmed, null)
                     val dropReason = response.data?.sendChatMessage?.dropReason
                     val dropMessage = response.data?.sendChatMessage?.dropReasonMessage
                     when {
@@ -1332,19 +1332,19 @@ class MultiStreamFragment : Fragment() {
                             if (dropReason == "SUBSCRIBERS_ONLY" && !userBadgesCache.containsKey(loginKey)) {
                                 userBadgesCache[loginKey] = emptySet()
                             }
-                            com.github.andreyasadchy.xtra.util.chat.TvChatNotices.restrictionMessage(appCtx, dropReason, dropMessage, followersMin)
+                            com.endlessbum.twitchpro.util.chat.TvChatNotices.restrictionMessage(appCtx, dropReason, dropMessage, followersMin)
                         }
                         !response.errors.isNullOrEmpty() -> {
                             val errMsg = response.errors
                                 .mapNotNull { it.message?.takeIf(String::isNotBlank) }
                                 .joinToString("; ")
                                 .ifBlank { appCtx.getString(R.string.tv_chat_restricted_generic) }
-                            com.github.andreyasadchy.xtra.util.chat.TvChatNotices.restrictionMessage(appCtx, null, errMsg)
+                            com.endlessbum.twitchpro.util.chat.TvChatNotices.restrictionMessage(appCtx, null, errMsg)
                         }
                         else -> null
                     }
                 } else if (!helixHeaders[C.HEADER_TOKEN].isNullOrBlank()) {
-                    val raw = app.xtraModule.helixRepository.sendMessage(networkLibrary, helixHeaders, accountId, channelId, trimmed, null)
+                    val raw = app.twitchProModule.helixRepository.sendMessage(networkLibrary, helixHeaders, accountId, channelId, trimmed, null)
                     when {
                         raw != null && raw.startsWith("DROP:") -> {
                             val payload = raw.removePrefix("DROP:")
@@ -1353,14 +1353,14 @@ class MultiStreamFragment : Fragment() {
                             if (code == "msg_subsonly" && !userBadgesCache.containsKey(loginKey)) {
                                 userBadgesCache[loginKey] = emptySet()
                             }
-                            com.github.andreyasadchy.xtra.util.chat.TvChatNotices.restrictionMessage(appCtx, code, msg, followersMin)
+                            com.endlessbum.twitchpro.util.chat.TvChatNotices.restrictionMessage(appCtx, code, msg, followersMin)
                         }
-                        !raw.isNullOrBlank() -> com.github.andreyasadchy.xtra.util.chat.TvChatNotices.restrictionMessage(appCtx, null, raw)
+                        !raw.isNullOrBlank() -> com.endlessbum.twitchpro.util.chat.TvChatNotices.restrictionMessage(appCtx, null, raw)
                         else -> null
                     }
                 } else null
                 if (!toastMsg.isNullOrBlank()) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(appCtx, toastMsg, android.widget.Toast.LENGTH_LONG).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(appCtx, toastMsg, android.widget.Toast.LENGTH_LONG).show()
                 }
             } catch (_: Exception) {
             }
@@ -1794,7 +1794,7 @@ class MultiStreamFragment : Fragment() {
         val tile = tiles.find { it.stream.channelLogin == channelLogin } ?: return false
         if (tile.experimentalVodActive) return true
         val ctx = context ?: return false
-        if (!com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(ctx)) return false
+        if (!com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(ctx)) return false
         return tile.playJob?.isActive == true || tile.player.playbackState != Player.STATE_READY
     }
 
@@ -1811,7 +1811,7 @@ class MultiStreamFragment : Fragment() {
         }
         if (tile.experimentalVodActive) {
             val baseMs = tile.experimentalCreatedAtMs
-                ?: com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.parseEpochMs(tile.stream.createdAt)
+                ?: com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.parseEpochMs(tile.stream.createdAt)
             if (baseMs != null) {
                 return baseMs + player.currentPosition.coerceAtLeast(0L)
             }
@@ -1826,20 +1826,20 @@ class MultiStreamFragment : Fragment() {
                 0L
             }
             val delayMs = maxOf(horizonMs, bufferedMs).coerceAtLeast(0L)
-            if (com.github.andreyasadchy.xtra.util.TwitchClock.isCalibrated() || delayMs > 0L) {
-                return com.github.andreyasadchy.xtra.util.TwitchClock.nowMs() - delayMs
+            if (com.endlessbum.twitchpro.util.TwitchClock.isCalibrated() || delayMs > 0L) {
+                return com.endlessbum.twitchpro.util.TwitchClock.nowMs() - delayMs
             }
         }
         return null
     }
 
-    fun getStreamWatchMetadata(login: String?): com.github.andreyasadchy.xtra.ui.chat.ChatViewModel.StreamWatchMetadata? {
+    fun getStreamWatchMetadata(login: String?): com.endlessbum.twitchpro.ui.chat.ChatViewModel.StreamWatchMetadata? {
         if (login == null) return null
         val tile = tiles.find { it.stream.channelLogin.equals(login, true) } ?: return null
         val prefs = context?.prefs()
         val usingProxy = prefs?.getBoolean(C.PLAYER_USE_CUSTOM_PROXY, false) == true ||
             prefs?.getBoolean(C.PLAYER_USE_STREAM_PROXY, false) == true
-        return com.github.andreyasadchy.xtra.ui.chat.ChatViewModel.StreamWatchMetadata(
+        return com.endlessbum.twitchpro.ui.chat.ChatViewModel.StreamWatchMetadata(
             streamId = tile.stream.id,
             gameId = tile.stream.gameId,
             gameName = tile.stream.gameName,
@@ -1879,9 +1879,9 @@ class MultiStreamFragment : Fragment() {
         tile.picture?.let { picture ->
             picture.setImageDrawable(null)
             val stream = tile.stream
-            com.github.andreyasadchy.xtra.ui.tv.TvLoadingPicture.show(
+            com.endlessbum.twitchpro.ui.tv.TvLoadingPicture.show(
                 picture, login,
-                stream.thumbnail?.also { com.github.andreyasadchy.xtra.ui.tv.TvThumbnails.remember(stream) }?.takeUnless { stream.thumbnailURL.isNullOrBlank() },
+                stream.thumbnail?.also { com.endlessbum.twitchpro.ui.tv.TvThumbnails.remember(stream) }?.takeUnless { stream.thumbnailURL.isNullOrBlank() },
                 stream.channelImage, viewLifecycleOwner.lifecycleScope
             ) { view != null && tile in tiles && tile.stream.channelLogin == login && (tile.texture?.alpha ?: 1f) < 1f }
         }
@@ -1898,11 +1898,11 @@ class MultiStreamFragment : Fragment() {
         if (tile.effectiveChannelId.isNullOrBlank() || tile.stream.createdAt.isNullOrBlank() || tile.stream.title.isNullOrBlank() || tile.stream.viewerCount == null) {
             tile.infoJob = viewLifecycleOwner.lifecycleScope.launch {
                 val context = context ?: return@launch
-                val app = context.applicationContext as com.github.andreyasadchy.xtra.XtraApp
+                val app = context.applicationContext as com.endlessbum.twitchpro.TwitchProApp
                 val user = runCatching {
-                    app.xtraModule.graphQLRepository.loadQueryUsersStream(
+                    app.twitchProModule.graphQLRepository.loadQueryUsersStream(
                         context.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
-                        com.github.andreyasadchy.xtra.util.TwitchApiHelper.getGQLHeaders(context),
+                        com.endlessbum.twitchpro.util.TwitchApiHelper.getGQLHeaders(context),
                         ids = tile.effectiveChannelId?.let { listOf(it) },
                         logins = if (tile.effectiveChannelId.isNullOrBlank()) listOf(login) else null,
                     ).data?.users?.firstOrNull()
@@ -1968,7 +1968,7 @@ class MultiStreamFragment : Fragment() {
         }
         tile.stateListener = stateListener
         player.addListener(stateListener)
-        if (com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isSwapAdblockEnabled(requireContext())) {
+        if (com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isSwapAdblockEnabled(requireContext())) {
             var lastSwitch = 0L
             val listener = object : Player.Listener {
                 override fun onTimelineChanged(timeline: androidx.media3.common.Timeline, reason: Int) {
@@ -2000,7 +2000,7 @@ class MultiStreamFragment : Fragment() {
             if (view == null || tile !in tiles || tile.stream.channelLogin != login || tile.player.isPlaying) {
                 return@launch
             }
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), getString(R.string.tv_multistream_stream_ended, tile.stream.channelName ?: login), android.widget.Toast.LENGTH_LONG).show()
+            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), getString(R.string.tv_multistream_stream_ended, tile.stream.channelName ?: login), android.widget.Toast.LENGTH_LONG).show()
             if (tiles.size > 2) {
                 removeTile(tile)
             } else {
@@ -2036,11 +2036,11 @@ class MultiStreamFragment : Fragment() {
             }
             if (attempt >= 1) {
                 val ctx = context ?: return@launch
-                val app = ctx.applicationContext as com.github.andreyasadchy.xtra.XtraApp
+                val app = ctx.applicationContext as com.endlessbum.twitchpro.TwitchProApp
                 val user = runCatching {
-                    app.xtraModule.graphQLRepository.loadQueryUsersStream(
+                    app.twitchProModule.graphQLRepository.loadQueryUsersStream(
                         ctx.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
-                        com.github.andreyasadchy.xtra.util.TwitchApiHelper.getGQLHeaders(ctx),
+                        com.endlessbum.twitchpro.util.TwitchApiHelper.getGQLHeaders(ctx),
                         ids = tile.effectiveChannelId?.let { listOf(it) },
                         logins = if (tile.effectiveChannelId.isNullOrBlank()) listOf(login) else null,
                     ).data?.users?.firstOrNull()
@@ -2076,11 +2076,11 @@ class MultiStreamFragment : Fragment() {
         }
         tile.playJob = viewLifecycleOwner.lifecycleScope.launch {
             val context = context ?: return@launch
-            val app = context.applicationContext as com.github.andreyasadchy.xtra.XtraApp
-            if (!backup && com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(context)) {
-                val outcome = com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.resolveLiveVod(
+            val app = context.applicationContext as com.endlessbum.twitchpro.TwitchProApp
+            if (!backup && com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(context)) {
+                val outcome = com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.resolveLiveVod(
                     context = context,
-                    xtraModule = app.xtraModule,
+                    twitchProModule = app.twitchProModule,
                     channelLogin = login,
                     streamIdHint = tile.stream.id,
                     createdAtHint = tile.stream.createdAt,
@@ -2095,15 +2095,15 @@ class MultiStreamFragment : Fragment() {
                     tile.stream.createdAt = outcome.createdAtIso
                 }
                 val vod = outcome.vod
-                if (vod != null && vod.vodDurationMs >= com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.MIN_INITIAL_VOD_DURATION_MS) {
+                if (vod != null && vod.vodDurationMs >= com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.MIN_INITIAL_VOD_DURATION_MS) {
                     tile.experimentalVodActive = true
                     tile.experimentalCreatedAtMs = vod.createdAtMs
                     tile.onBackup = false
                     updateAdBadge(tile)
                     player.setMediaSource(
-                        com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.buildMediaSource(
+                        com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.buildMediaSource(
                             context,
-                            app.xtraModule,
+                            app.twitchProModule,
                             vod.masterUri,
                             slidingWindowOnly = true,
                             createdAtMs = vod.createdAtMs,
@@ -2117,7 +2117,7 @@ class MultiStreamFragment : Fragment() {
                 tile.experimentalVodActive = false
                 tile.experimentalCreatedAtMs = null
                 if (outcome.channelIsLive &&
-                    (outcome.streamUptimeMs == null || outcome.streamUptimeMs < com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.NEW_STREAM_MAX_UPTIME_MS)
+                    (outcome.streamUptimeMs == null || outcome.streamUptimeMs < com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.NEW_STREAM_MAX_UPTIME_MS)
                 ) {
                     scheduleTileExperimentalUpgrade(tile, login, outcome.streamId, outcome.createdAtIso)
                 }
@@ -2127,12 +2127,12 @@ class MultiStreamFragment : Fragment() {
             }
             val normal = if (!backup) {
                 try {
-                    ExoPlayerService.loadStreamPlaylistUrl(app, app.xtraModule, login)
+                    ExoPlayerService.loadStreamPlaylistUrl(app, app.twitchProModule, login)
                 } catch (e: Exception) {
                     null
                 }
             } else null
-            val url = normal ?: com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.getBackupPlaylistUrl(app, login)
+            val url = normal ?: com.endlessbum.twitchpro.ui.tv.TvPreviewSource.getBackupPlaylistUrl(app, login)
             if (url != null && view != null && tile in tiles && tile.stream.channelLogin == login) {
                 tile.experimentalVodActive = false
                 tile.onBackup = normal == null
@@ -2158,19 +2158,19 @@ class MultiStreamFragment : Fragment() {
     ) {
         tile.expUpgradeJob?.cancel()
         tile.expUpgradeJob = viewLifecycleOwner.lifecycleScope.launch {
-            for (attempt in 1..com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.UPGRADE_MAX_ATTEMPTS) {
-                kotlinx.coroutines.delay(com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.UPGRADE_POLL_INTERVAL_MS)
+            for (attempt in 1..com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.UPGRADE_MAX_ATTEMPTS) {
+                kotlinx.coroutines.delay(com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.UPGRADE_POLL_INTERVAL_MS)
                 val ctx = context ?: return@launch
                 if (view == null || tile !in tiles || tile.stream.channelLogin != login || tile.experimentalVodActive) {
                     return@launch
                 }
-                if (!com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(ctx)) {
+                if (!com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(ctx)) {
                     return@launch
                 }
-                val app = ctx.applicationContext as com.github.andreyasadchy.xtra.XtraApp
-                val next = com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.resolveLiveVod(
+                val app = ctx.applicationContext as com.endlessbum.twitchpro.TwitchProApp
+                val next = com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.resolveLiveVod(
                     context = ctx,
-                    xtraModule = app.xtraModule,
+                    twitchProModule = app.twitchProModule,
                     channelLogin = login,
                     streamIdHint = streamIdHint ?: tile.stream.id,
                     createdAtHint = createdAtHint ?: tile.stream.createdAt,
@@ -2179,7 +2179,7 @@ class MultiStreamFragment : Fragment() {
                     return@launch
                 }
                 val vod = next.vod
-                if (vod != null && vod.vodDurationMs >= com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.UPGRADE_MIN_VOD_DURATION_MS) {
+                if (vod != null && vod.vodDurationMs >= com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.UPGRADE_MIN_VOD_DURATION_MS) {
                     if (view != null && tile in tiles && tile.stream.channelLogin == login && !tile.experimentalVodActive) {
                         tile.backJob?.cancel()
                         tile.onBackup = false
@@ -2188,9 +2188,9 @@ class MultiStreamFragment : Fragment() {
                         tile.playingSince = 0L
                         updateAdBadge(tile)
                         tile.player.setMediaSource(
-                            com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.buildMediaSource(
+                            com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.buildMediaSource(
                                 ctx,
-                                app.xtraModule,
+                                app.twitchProModule,
                                 vod.masterUri,
                                 slidingWindowOnly = true,
                                 createdAtMs = vod.createdAtMs,
@@ -2199,12 +2199,12 @@ class MultiStreamFragment : Fragment() {
                         tile.player.repeatMode = Player.REPEAT_MODE_OFF
                         tile.player.prepare()
                         tile.player.playWhenReady = true
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(ctx, R.string.tv_adblock_exp_switched, android.widget.Toast.LENGTH_SHORT).show()
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(ctx, R.string.tv_adblock_exp_switched, android.widget.Toast.LENGTH_SHORT).show()
                     }
                     return@launch
                 }
                 if (vod == null && next.streamUptimeMs != null &&
-                    next.streamUptimeMs >= com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.NEW_STREAM_MAX_UPTIME_MS
+                    next.streamUptimeMs >= com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.NEW_STREAM_MAX_UPTIME_MS
                 ) {
                     return@launch
                 }
@@ -2221,13 +2221,13 @@ class MultiStreamFragment : Fragment() {
                 if (view == null || tile !in tiles || tile.stream.channelLogin != login || !tile.onBackup) {
                     return@launch
                 }
-                val app = (context?.applicationContext as? com.github.andreyasadchy.xtra.XtraApp) ?: return@launch
+                val app = (context?.applicationContext as? com.endlessbum.twitchpro.TwitchProApp) ?: return@launch
                 val normal = try {
-                    ExoPlayerService.loadStreamPlaylistUrl(app, app.xtraModule, login)
+                    ExoPlayerService.loadStreamPlaylistUrl(app, app.twitchProModule, login)
                 } catch (e: Exception) {
                     null
                 } ?: continue
-                if (!com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource.playlistHasAds(app, normal) && view != null && tile in tiles && tile.stream.channelLogin == login) {
+                if (!com.endlessbum.twitchpro.ui.tv.TvPreviewSource.playlistHasAds(app, normal) && view != null && tile in tiles && tile.stream.channelLogin == login) {
                     tile.onBackup = false
                     updateAdBadge(tile)
                     tile.playingSince = 0L
@@ -2427,7 +2427,7 @@ class MultiStreamFragment : Fragment() {
             tile.infoContainer.alpha = alpha
             tile.view.foreground?.alpha = (alpha * 255).toInt()
             if (tile.view.hasFocus()) {
-                com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(tile.infoTitle, alpha > 0f)
+                com.endlessbum.twitchpro.ui.view.TvMarquee.update(tile.infoTitle, alpha > 0f)
             }
         }
     }
@@ -2438,13 +2438,13 @@ class MultiStreamFragment : Fragment() {
         val stream = tile.stream
         val name = stream.channelName ?: stream.channelLogin.orEmpty()
         val truncate = context.prefs().getBoolean(C.UI_TRUNCATE_VIEW_COUNT, true)
-        val viewers = stream.viewerCount?.let { com.github.andreyasadchy.xtra.util.TwitchApiHelper.formatCount(it, truncate) }
+        val viewers = stream.viewerCount?.let { com.endlessbum.twitchpro.util.TwitchApiHelper.formatCount(it, truncate) }
         val format = tile.player.videoFormat
         val quality = format?.height?.takeIf { it > 0 }?.let { h ->
             val fps = format.frameRate.takeIf { it > 0f }?.let { kotlin.math.round(it).toInt() }
             "${h}p${fps?.takeIf { it > 30 } ?: ""}"
         }
-        val uptime = com.github.andreyasadchy.xtra.ui.tv.TvUptime.format(context, stream.createdAt)
+        val uptime = com.endlessbum.twitchpro.ui.tv.TvUptime.format(context, stream.createdAt)
         val builder = android.text.SpannableStringBuilder(name)
         if (name.isNotEmpty()) {
             builder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, name.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -2470,7 +2470,7 @@ class MultiStreamFragment : Fragment() {
         tile.infoTitle.visibility = if (titleText.isEmpty()) View.GONE else View.VISIBLE
         if (tile.infoTitle.text.toString() != titleText) {
             tile.infoTitle.text = titleText
-            com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(tile.infoTitle, tile.view.hasFocus() && chromeAlpha > 0f)
+            com.endlessbum.twitchpro.ui.view.TvMarquee.update(tile.infoTitle, tile.view.hasFocus() && chromeAlpha > 0f)
         }
     }
 
@@ -2479,7 +2479,7 @@ class MultiStreamFragment : Fragment() {
 
     private fun holdPlaybackSignals() {
         val context = context ?: return
-        com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.hold(context, this) {
+        com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.hold(context, this) {
             pausedByAudioFocus = true
             tiles.forEach {
                 it.recoveryJob?.cancel()
@@ -2489,7 +2489,7 @@ class MultiStreamFragment : Fragment() {
         val session = session ?: android.media.session.MediaSession(context, "MultiStream").also { session = it }
         @Suppress("DEPRECATION")
         session.setFlags(7)
-        session.setPlaybackToLocal(com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.systemAttributes)
+        session.setPlaybackToLocal(com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.systemAttributes)
         val metadata = android.media.MediaMetadata.Builder()
             .putText(android.media.MediaMetadata.METADATA_KEY_TITLE, tiles.joinToString(" · ") { it.stream.channelName ?: it.stream.channelLogin ?: "" })
             .build()
@@ -2506,7 +2506,7 @@ class MultiStreamFragment : Fragment() {
     }
 
     private fun releasePlaybackSignals() {
-        context?.let { com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.release(it, this) }
+        context?.let { com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.release(it, this) }
         session?.let {
             it.isActive = false
             it.release()
@@ -2514,10 +2514,10 @@ class MultiStreamFragment : Fragment() {
         session = null
     }
 
-    private val dimListener: () -> Unit = { com.github.andreyasadchy.xtra.ui.tv.TvDim.apply(root) }
+    private val dimListener: () -> Unit = { com.endlessbum.twitchpro.ui.tv.TvDim.apply(root) }
 
     override fun onDestroyView() {
-        com.github.andreyasadchy.xtra.ui.tv.TvDim.removeListener(dimListener)
+        com.endlessbum.twitchpro.ui.tv.TvDim.removeListener(dimListener)
         root.removeCallbacks(followFocus)
         root.removeCallbacks(hideChrome)
         chromeAnimator?.cancel()

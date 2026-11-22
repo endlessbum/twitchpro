@@ -1,10 +1,10 @@
-package com.github.andreyasadchy.xtra.repository
+package com.endlessbum.twitchpro.repository
 
-import com.github.andreyasadchy.xtra.db.BookmarkIgnoredUsersDao
-import com.github.andreyasadchy.xtra.db.BookmarksDao
-import com.github.andreyasadchy.xtra.db.OfflineVideosDao
-import com.github.andreyasadchy.xtra.model.ui.Bookmark
-import com.github.andreyasadchy.xtra.model.ui.BookmarkIgnoredUser
+import com.endlessbum.twitchpro.db.BookmarkIgnoredUsersDao
+import com.endlessbum.twitchpro.db.BookmarksDao
+import com.endlessbum.twitchpro.db.OfflineVideosDao
+import com.endlessbum.twitchpro.model.ui.Bookmark
+import com.endlessbum.twitchpro.model.ui.BookmarkIgnoredUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

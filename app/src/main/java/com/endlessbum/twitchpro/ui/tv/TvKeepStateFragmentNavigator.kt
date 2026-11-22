@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.os.Bundle
@@ -14,7 +14,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.R
 
 /**
  * TV FragmentNavigator that keeps top-level side-menu root destinations alive in memory

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.graphics.Color
 import android.graphics.Outline
@@ -17,15 +17,15 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingSource
 import coil3.load
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.repository.datasource.FollowedStreamsDataSource
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.repository.datasource.FollowedStreamsDataSource
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -62,7 +62,7 @@ class TvLiveAlerts(private val activity: MainActivity, private val container: Vi
         if (!showing || currentStreams.isEmpty() || key == 0 || heldAlertOpened) return@Runnable
         heldAlertOpened = true
         heldAlertKeyDown = 0
-        com.github.andreyasadchy.xtra.ui.player.PlayerFragment.markHeldRemoteKey(key)
+        com.endlessbum.twitchpro.ui.player.PlayerFragment.markHeldRemoteKey(key)
         openAlertActions()
     }
 
@@ -124,7 +124,7 @@ class TvLiveAlerts(private val activity: MainActivity, private val container: Vi
     }
 
     private suspend fun loadFollowedStreams(): List<Stream>? {
-        val module = (activity.application as XtraApp).xtraModule
+        val module = (activity.application as TwitchProApp).twitchProModule
         val prefs = activity.prefs()
         return try {
             (FollowedStreamsDataSource(
@@ -256,7 +256,7 @@ class TvLiveAlerts(private val activity: MainActivity, private val container: Vi
                     holdHandler.removeCallbacks(holdAlertRunnable)
                     heldAlertOpened = true
                     heldAlertKeyDown = 0
-                    com.github.andreyasadchy.xtra.ui.player.PlayerFragment.markHeldRemoteKey(code)
+                    com.endlessbum.twitchpro.ui.player.PlayerFragment.markHeldRemoteKey(code)
                     openAlertActions()
                 }
                 return true
@@ -360,7 +360,7 @@ class TvLiveAlerts(private val activity: MainActivity, private val container: Vi
             if (activity.isMultiStreamOpen()) {
                 activity.closeMultiStream()
             } else if (activity.isPlayerMaximized()) {
-                (activity.playerFragment as? com.github.andreyasadchy.xtra.ui.player.PlayerFragment)?.leaveForBrowsing()
+                (activity.playerFragment as? com.endlessbum.twitchpro.ui.player.PlayerFragment)?.leaveForBrowsing()
             }
             activity.openTvChannel(stream, null)
         }

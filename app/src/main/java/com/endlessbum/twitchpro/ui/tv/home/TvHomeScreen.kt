@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.ui.tv.home
+package com.endlessbum.twitchpro.ui.tv.home
 
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import android.view.TextureView
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -88,17 +88,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.github.andreyasadchy.xtra.ui.tv.tvHorizontalFade
-import com.github.andreyasadchy.xtra.ui.tv.tvTopFade
+import com.endlessbum.twitchpro.ui.tv.tvHorizontalFade
+import com.endlessbum.twitchpro.ui.tv.tvTopFade
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.tv.TvColors
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.tv.TvColors
 
 class TvHomeActions(
     val openStream: (Stream, List<Stream>) -> Unit,
@@ -126,17 +126,17 @@ class TvHomeActions(
     val thumbnailStamp: () -> Long = { 0L },
     val refreshing: () -> Boolean = { false },
     /** "Continue watching": OK resumes the video, OK held down opens its actions. */
-    val openVideo: (com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item) -> Unit = {},
-    val showVideoActions: (com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item) -> Unit = {},
+    val openVideo: (com.endlessbum.twitchpro.ui.tv.TvResumeHistory.Item) -> Unit = {},
+    val showVideoActions: (com.endlessbum.twitchpro.ui.tv.TvResumeHistory.Item) -> Unit = {},
     val formatDuration: (Long) -> String = { "" },
     /** Row of the latest videos of the followed channels: OK plays the video, OK held down opens its actions. */
-    val openFollowedVideo: (com.github.andreyasadchy.xtra.model.ui.Video) -> Unit = {},
-    val showFollowedVideoActions: (com.github.andreyasadchy.xtra.model.ui.Video) -> Unit = {},
-    val videoPosition: (com.github.andreyasadchy.xtra.model.ui.Video) -> Long? = { null },
+    val openFollowedVideo: (com.endlessbum.twitchpro.model.ui.Video) -> Unit = {},
+    val showFollowedVideoActions: (com.endlessbum.twitchpro.model.ui.Video) -> Unit = {},
+    val videoPosition: (com.endlessbum.twitchpro.model.ui.Video) -> Long? = { null },
     val formatVideoDuration: (Int) -> String = { "" },
     /** Row of top clips of followed channels: OK plays the clip queue, OK held down opens its actions. */
-    val openClip: (com.github.andreyasadchy.xtra.model.ui.Clip, List<com.github.andreyasadchy.xtra.model.ui.Clip>) -> Unit = { _, _ -> },
-    val showClipActions: (com.github.andreyasadchy.xtra.model.ui.Clip, List<com.github.andreyasadchy.xtra.model.ui.Clip>) -> Unit = { _, _ -> },
+    val openClip: (com.endlessbum.twitchpro.model.ui.Clip, List<com.endlessbum.twitchpro.model.ui.Clip>) -> Unit = { _, _ -> },
+    val showClipActions: (com.endlessbum.twitchpro.model.ui.Clip, List<com.endlessbum.twitchpro.model.ui.Clip>) -> Unit = { _, _ -> },
     /** Goes up at each refresh with the button once the rows came: a light sweeps over them. */
     val sweepCount: () -> Int = { 0 },
     /** OK on the card of the statistics: their page in detail. */
@@ -144,13 +144,13 @@ class TvHomeActions(
     /** The statistics of the badge of the top of the home (icon, text), one shown at a time. */
     val statsBadges: () -> List<Pair<Int, String>> = { emptyList() },
     /** How long a stream is live for its badge ("2 h 39"), null to show none. */
-    val uptime: (com.github.andreyasadchy.xtra.model.ui.Stream) -> String? = { null },
+    val uptime: (com.endlessbum.twitchpro.model.ui.Stream) -> String? = { null },
     /** Saved multi-stream groups with at least 2 channels live: OK launches the multi-stream, OK held opens its actions. */
     val openMultiStream: (TvHomeMultiStream) -> Unit = {},
     val showMultiStreamActions: (TvHomeMultiStream) -> Unit = {},
     /** Offline followed channels row: OK opens the channel page, OK held opens channel actions. */
-    val openOfflineChannel: (com.github.andreyasadchy.xtra.model.ui.User) -> Unit = {},
-    val showOfflineChannelActions: (com.github.andreyasadchy.xtra.model.ui.User) -> Unit = {},
+    val openOfflineChannel: (com.endlessbum.twitchpro.model.ui.User) -> Unit = {},
+    val showOfflineChannelActions: (com.endlessbum.twitchpro.model.ui.User) -> Unit = {},
 )
 
 class TvHomeRow<T>(
@@ -166,12 +166,12 @@ sealed class TvHomeSection(val key: String) {
     class Skeleton(key: String) : TvHomeSection(key)
     class Streams(key: String, val row: TvHomeRow<Stream>) : TvHomeSection(key)
     class MultiStreams(key: String, val row: TvHomeRow<TvHomeMultiStream>) : TvHomeSection(key)
-    class Resume(key: String, val row: TvHomeRow<com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item>) : TvHomeSection(key)
-    class Videos(key: String, val row: TvHomeRow<com.github.andreyasadchy.xtra.model.ui.Video>) : TvHomeSection(key)
-    class Clips(key: String, val row: TvHomeRow<com.github.andreyasadchy.xtra.model.ui.Clip>) : TvHomeSection(key)
+    class Resume(key: String, val row: TvHomeRow<com.endlessbum.twitchpro.ui.tv.TvResumeHistory.Item>) : TvHomeSection(key)
+    class Videos(key: String, val row: TvHomeRow<com.endlessbum.twitchpro.model.ui.Video>) : TvHomeSection(key)
+    class Clips(key: String, val row: TvHomeRow<com.endlessbum.twitchpro.model.ui.Clip>) : TvHomeSection(key)
     class Stats(key: String, val stats: TvHomeStats) : TvHomeSection(key)
     class Games(key: String, val row: TvHomeRow<Game>) : TvHomeSection(key)
-    class OfflineChannels(key: String, val row: TvHomeRow<com.github.andreyasadchy.xtra.model.ui.User>) : TvHomeSection(key)
+    class OfflineChannels(key: String, val row: TvHomeRow<com.endlessbum.twitchpro.model.ui.User>) : TvHomeSection(key)
 }
 
 private class HomeRowInfo(val rowIndex: Int, val key: String, val itemKeys: List<String>)
@@ -313,10 +313,10 @@ fun TvHomeScreen(
     val homeContext = androidx.compose.ui.platform.LocalContext.current
     val isPlayerCovering = {
         var ctx: android.content.Context? = homeContext
-        while (ctx is android.content.ContextWrapper && ctx !is com.github.andreyasadchy.xtra.ui.main.MainActivity) {
+        while (ctx is android.content.ContextWrapper && ctx !is com.endlessbum.twitchpro.ui.main.MainActivity) {
             ctx = ctx.baseContext
         }
-        (ctx as? com.github.andreyasadchy.xtra.ui.main.MainActivity)?.isTvPlayerOverContent() == true
+        (ctx as? com.endlessbum.twitchpro.ui.main.MainActivity)?.isTvPlayerOverContent() == true
     }
     // the grey card had the focus and its row came (or turned out empty): the focus goes on, unless it moved meanwhile
     val firstKey = sections.firstOrNull()?.key
@@ -749,13 +749,13 @@ fun TvHomeScreen(
 
 @Composable
 private fun PlaybackBadgePill(
-    badge: com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.Badge,
+    badge: com.endlessbum.twitchpro.ui.tv.TvPlaybackState.Badge,
     small: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val accent = MaterialTheme.colorScheme.primary
     val shape = RoundedCornerShape(5.dp)
-    val isPlaying = badge.kind == com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.Kind.PLAYING
+    val isPlaying = badge.kind == com.endlessbum.twitchpro.ui.tv.TvPlaybackState.Kind.PLAYING
     Row(
         modifier = modifier
             .clip(shape)
@@ -811,7 +811,7 @@ private fun HeroBanner(
     onSelectedPill: (Int, String) -> Unit,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
-    val favorites by com.github.andreyasadchy.xtra.ui.tv.TvFavorites.items.collectAsState()
+    val favorites by com.endlessbum.twitchpro.ui.tv.TvFavorites.items.collectAsState()
     val isFavorite = favorites.any { it.login == stream.channelLogin }
     var heroFocused by remember { mutableStateOf(false) }
     // the focus as the banner reports it: going from one of its buttons to the other may report it lost for an instant,
@@ -871,7 +871,7 @@ private fun HeroBanner(
                 }
         ) {
             AsyncImage(
-                model = com.github.andreyasadchy.xtra.ui.tv.TvThumbnails.picture(stream, stream.thumbnail),
+                model = com.endlessbum.twitchpro.ui.tv.TvThumbnails.picture(stream, stream.thumbnail),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize().graphicsLayer { alpha = 0.90f }
@@ -914,8 +914,8 @@ private fun HeroBanner(
                     Spacer(Modifier.width(5.dp))
                     Text("LIVE", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White, maxLines = 1)
                 }
-                val heroPlaybackSnapshot by com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.state.collectAsState()
-                com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.badgeFor(context, stream.channelLogin, heroPlaybackSnapshot)?.let { badge ->
+                val heroPlaybackSnapshot by com.endlessbum.twitchpro.ui.tv.TvPlaybackState.state.collectAsState()
+                com.endlessbum.twitchpro.ui.tv.TvPlaybackState.badgeFor(context, stream.channelLogin, heroPlaybackSnapshot)?.let { badge ->
                     PlaybackBadgePill(badge = badge, small = false)
                 }
                 Text(
@@ -1492,7 +1492,7 @@ private fun MultiStreamRow(
 @Composable
 private fun MultiStreamTileThumb(stream: Stream, modifier: Modifier) {
     AsyncImage(
-        model = com.github.andreyasadchy.xtra.ui.tv.TvThumbnails.picture(stream, stream.thumbnail?.replace("1280x720", "640x360")),
+        model = com.endlessbum.twitchpro.ui.tv.TvThumbnails.picture(stream, stream.thumbnail?.replace("1280x720", "640x360")),
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = modifier.background(Color(0xFF26252C)),
@@ -1769,7 +1769,7 @@ private fun GameRow(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun OfflineChannelRow(
-    row: TvHomeRow<com.github.andreyasadchy.xtra.model.ui.User>,
+    row: TvHomeRow<com.endlessbum.twitchpro.model.ui.User>,
     actions: TvHomeActions,
     firstRequester: FocusRequester?,
     startInset: Dp = 0.dp,
@@ -1834,13 +1834,13 @@ private fun OfflineChannelRow(
 
 @Composable
 private fun OfflineChannelCard(
-    user: com.github.andreyasadchy.xtra.model.ui.User,
+    user: com.endlessbum.twitchpro.model.ui.User,
     actions: TvHomeActions,
     modifier: Modifier,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
 ) {
-    val favorites by com.github.andreyasadchy.xtra.ui.tv.TvFavorites.items.collectAsState()
+    val favorites by com.endlessbum.twitchpro.ui.tv.TvFavorites.items.collectAsState()
     val isFavorite = favorites.any { it.login.equals(user.login, ignoreCase = true) }
     val lastText = remember(user.lastBroadcast) {
         val lastMs = user.lastBroadcast?.let { kotlin.time.Instant.parseOrNull(it)?.toEpochMilliseconds()?.takeIf { ms -> ms > 0 } }
@@ -1936,7 +1936,7 @@ private fun FocusCard(
 ) {
     val interaction = remember { MutableInteractionSource() }
     val focused by interaction.collectIsFocusedAsState()
-    // the growth of the card can be turned off in the Xtra TV settings
+    // the growth of the card can be turned off in the TwitchPro settings
     val context = androidx.compose.ui.platform.LocalContext.current
     val zoom = remember { context.prefs().getBoolean(C.TV_CARD_ZOOM, false) }
     val big = zoom && focused && growth > 1f && grown()
@@ -1958,13 +1958,13 @@ private fun FocusCard(
     var cardCoords by remember { mutableStateOf<androidx.compose.ui.layout.LayoutCoordinates?>(null) }
     LaunchedEffect(focused) {
         if (focused) {
-            cardCoords?.let { com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.reportCoordinates(focusToken, it) }
+            cardCoords?.let { com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.reportCoordinates(focusToken, it) }
         } else {
-            com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.clearCard(focusToken)
+            com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.clearCard(focusToken)
         }
     }
     DisposableEffect(focusToken) {
-        onDispose { com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.clearCard(focusToken) }
+        onDispose { com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.clearCard(focusToken) }
     }
     Column(
         modifier
@@ -1973,7 +1973,7 @@ private fun FocusCard(
             .onGloballyPositioned { coords ->
                 cardCoords = coords
                 if (focused) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.reportCoordinates(focusToken, coords)
+                    com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.reportCoordinates(focusToken, coords)
                 }
             }
             .onFocusChanged { onFocus(it.isFocused) }
@@ -2051,7 +2051,7 @@ private fun StreamCard(
             AsyncImage(
                 // smaller thumbnails than the 1280x720 of the lists, the cards are small
                 // the minute is in the address (TvThumbnails): the newest thumbnail of Twitch, loaded again each minute
-                model = com.github.andreyasadchy.xtra.ui.tv.TvThumbnails.picture(stream, stream.thumbnail?.replace("1280x720", "640x360")),
+                model = com.endlessbum.twitchpro.ui.tv.TvThumbnails.picture(stream, stream.thumbnail?.replace("1280x720", "640x360")),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
@@ -2063,7 +2063,7 @@ private fun StreamCard(
                     update = { player.setVideoTextureView(it) },
                     onRelease = {
                         // the last picture of the preview, shown while the stream opens
-                        com.github.andreyasadchy.xtra.ui.tv.TvPreviewFrames.capture(stream.channelLogin, it)
+                        com.endlessbum.twitchpro.ui.tv.TvPreviewFrames.capture(stream.channelLogin, it)
                         runCatching { player.clearVideoTextureView(it) }
                     },
                     modifier = Modifier.fillMaxSize()
@@ -2112,8 +2112,8 @@ private fun StreamCard(
             )
             // discreet Playing / PiP pill at bottom-start of the thumbnail
             val playbackContext = LocalContext.current
-            val playbackSnapshot by com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.state.collectAsState()
-            com.github.andreyasadchy.xtra.ui.tv.TvPlaybackState.badgeFor(playbackContext, stream.channelLogin, playbackSnapshot)?.let { badge ->
+            val playbackSnapshot by com.endlessbum.twitchpro.ui.tv.TvPlaybackState.state.collectAsState()
+            com.endlessbum.twitchpro.ui.tv.TvPlaybackState.badgeFor(playbackContext, stream.channelLogin, playbackSnapshot)?.let { badge ->
                 PlaybackBadgePill(
                     badge = badge,
                     small = small,
@@ -2153,7 +2153,7 @@ private fun StreamCard(
             Spacer(Modifier.width(if (small) 8.dp else 10.dp))
             Column {
                 // a star before the name of a favorite channel
-                val favorites by com.github.andreyasadchy.xtra.ui.tv.TvFavorites.items.collectAsState()
+                val favorites by com.endlessbum.twitchpro.ui.tv.TvFavorites.items.collectAsState()
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (favorites.any { it.login == stream.channelLogin }) {
                         Icon(
@@ -2206,11 +2206,11 @@ private fun CoStreamCountPill(
     small: Boolean = false,
 ) {
     val context = LocalContext.current
-    val tick by com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.version.collectAsState()
+    val tick by com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.version.collectAsState()
     LaunchedEffect(stream.channelId, stream.channelLogin) {
-        com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.enqueue(context, stream)
+        com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.enqueue(context, stream)
     }
-    val count = com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.getCount(stream.channelId, stream.channelLogin, tick)
+    val count = com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.getCount(stream.channelId, stream.channelLogin, tick)
     if (count > 0) {
         Spacer(Modifier.width(if (hero) 10.dp else 5.dp))
         val corner = RoundedCornerShape(if (hero) 7.dp else 5.dp)
@@ -2244,7 +2244,7 @@ class TvHomeStats(val title: String, val subtitle: String?, val items: List<TvHo
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ResumeRow(
-    row: TvHomeRow<com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item>,
+    row: TvHomeRow<com.endlessbum.twitchpro.ui.tv.TvResumeHistory.Item>,
     actions: TvHomeActions,
     firstRequester: FocusRequester?,
     startInset: Dp = 0.dp,
@@ -2292,7 +2292,7 @@ private fun ResumeRow(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun VideoRow(
-    row: TvHomeRow<com.github.andreyasadchy.xtra.model.ui.Video>,
+    row: TvHomeRow<com.endlessbum.twitchpro.model.ui.Video>,
     actions: TvHomeActions,
     firstRequester: FocusRequester?,
     startInset: Dp = 0.dp,
@@ -2343,7 +2343,7 @@ private fun VideoRow(
  */
 @Composable
 private fun androidx.compose.foundation.layout.BoxScope.VideoThumbnail(thumbnail: String?, channelImage: String?) {
-    if (!com.github.andreyasadchy.xtra.ui.tv.TvVideoThumbnail.isMissing(thumbnail)) {
+    if (!com.endlessbum.twitchpro.ui.tv.TvVideoThumbnail.isMissing(thumbnail)) {
         AsyncImage(
             model = thumbnail,
             contentDescription = null,
@@ -2403,7 +2403,7 @@ private fun androidx.compose.foundation.layout.BoxScope.VideoProgressBar(progres
 @Composable
 private fun FollowedVideoCard(
     width: Dp,
-    video: com.github.andreyasadchy.xtra.model.ui.Video,
+    video: com.endlessbum.twitchpro.model.ui.Video,
     actions: TvHomeActions,
     modifier: Modifier,
     onSelected: () -> Unit = {},
@@ -2475,7 +2475,7 @@ private fun FollowedVideoCard(
 @Composable
 private fun ResumeCard(
     width: Dp,
-    item: com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item,
+    item: com.endlessbum.twitchpro.ui.tv.TvResumeHistory.Item,
     actions: TvHomeActions,
     modifier: Modifier,
     onSelected: () -> Unit = {},
@@ -2574,13 +2574,13 @@ private fun StatsCard(
     var cardCoords by remember { mutableStateOf<androidx.compose.ui.layout.LayoutCoordinates?>(null) }
     LaunchedEffect(focused) {
         if (focused) {
-            cardCoords?.let { com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.reportCoordinates(focusToken, it) }
+            cardCoords?.let { com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.reportCoordinates(focusToken, it) }
         } else {
-            com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.clearCard(focusToken)
+            com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.clearCard(focusToken)
         }
     }
     DisposableEffect(focusToken) {
-        onDispose { com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.clearCard(focusToken) }
+        onDispose { com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.clearCard(focusToken) }
     }
     Column(Modifier.padding(start = startInset + 12.dp, end = endInset + 12.dp, top = 8.dp, bottom = 8.dp)) {
         RowTitle(stats.title, R.drawable.tv_ic_bar_chart)
@@ -2591,7 +2591,7 @@ private fun StatsCard(
                 .onGloballyPositioned { coords ->
                     cardCoords = coords
                     if (focused) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.reportCoordinates(focusToken, coords)
+                        com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.reportCoordinates(focusToken, coords)
                     }
                 }
                 .leftEdge(0, actions.openMenu)
@@ -2639,7 +2639,7 @@ private fun StatsCard(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ClipRow(
-    row: TvHomeRow<com.github.andreyasadchy.xtra.model.ui.Clip>,
+    row: TvHomeRow<com.endlessbum.twitchpro.model.ui.Clip>,
     actions: TvHomeActions,
     firstRequester: FocusRequester?,
     startInset: Dp = 0.dp,
@@ -2691,8 +2691,8 @@ private fun ClipRow(
 @Composable
 private fun ClipCard(
     width: Dp,
-    clip: com.github.andreyasadchy.xtra.model.ui.Clip,
-    queue: List<com.github.andreyasadchy.xtra.model.ui.Clip>,
+    clip: com.endlessbum.twitchpro.model.ui.Clip,
+    queue: List<com.endlessbum.twitchpro.model.ui.Clip>,
     actions: TvHomeActions,
     modifier: Modifier,
     onSelected: () -> Unit = {},

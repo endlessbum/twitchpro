@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.webkit.CookieManager
@@ -42,14 +42,14 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.tv.home.TvHomeRows
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -325,27 +325,27 @@ object TvAccounts {
         saveAccounts(context, all)
 
         // Revoke removed account's tokens on Twitch
-        val app = context.applicationContext as XtraApp
+        val app = context.applicationContext as TwitchProApp
         val networkLibrary = context.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
         val helixClientId = TwitchApiHelper.getHelixHeaders(context)[C.HEADER_CLIENT_ID]
         val defaultWebClientId = context.prefs().getString(C.GQL_CLIENT_ID_WEB, "kimne78kx3ncx6brgo4mv6wki5h1ko")
         bgScope.launch {
             if (!helixClientId.isNullOrBlank() && !removed.helixToken.isNullOrBlank()) {
                 runCatching {
-                    app.xtraModule.authRepository.revoke(networkLibrary, "client_id=$helixClientId&token=${removed.helixToken}")
+                    app.twitchProModule.authRepository.revoke(networkLibrary, "client_id=$helixClientId&token=${removed.helixToken}")
                 }
             }
             val gqlCid = removed.gqlClientId2 ?: context.prefs().getString(C.GQL_CLIENT_ID2, "ue6666qo983tsx6so1t0vnawi233wa")
             val gqlTok = removed.gqlToken2 ?: removed.gqlToken
             if (!gqlCid.isNullOrBlank() && !gqlTok.isNullOrBlank() && gqlTok != removed.gqlTokenWeb) {
                 runCatching {
-                    app.xtraModule.authRepository.revoke(networkLibrary, "client_id=$gqlCid&token=$gqlTok")
+                    app.twitchProModule.authRepository.revoke(networkLibrary, "client_id=$gqlCid&token=$gqlTok")
                 }
             }
             val webCid = removed.gqlClientIdWeb ?: defaultWebClientId
             if (!webCid.isNullOrBlank() && !removed.gqlTokenWeb.isNullOrBlank()) {
                 runCatching {
-                    app.xtraModule.authRepository.revoke(networkLibrary, "client_id=$webCid&token=${removed.gqlTokenWeb}")
+                    app.twitchProModule.authRepository.revoke(networkLibrary, "client_id=$webCid&token=${removed.gqlTokenWeb}")
                 }
             }
         }

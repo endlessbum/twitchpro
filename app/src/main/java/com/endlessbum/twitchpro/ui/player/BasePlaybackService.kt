@@ -1,13 +1,13 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.LifecycleService
-import com.github.andreyasadchy.xtra.XtraModule
-import com.github.andreyasadchy.xtra.model.PlaybackState
-import com.github.andreyasadchy.xtra.model.VideoQuality
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProModule
+import com.endlessbum.twitchpro.model.PlaybackState
+import com.endlessbum.twitchpro.model.VideoQuality
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.buildJsonArray
@@ -17,7 +17,7 @@ import kotlin.math.floor
 
 abstract class BasePlaybackService : LifecycleService() {
 
-    lateinit var xtraModule: XtraModule
+    lateinit var twitchProModule: TwitchProModule
 
     val integrity = MutableSharedFlow<String?>()
 
@@ -63,8 +63,8 @@ abstract class BasePlaybackService : LifecycleService() {
     protected suspend fun restorePlaybackState() {
         val immediateState = pendingImmediatePlaybackState
         pendingImmediatePlaybackState = null
-        val savedState = immediateState ?: xtraModule.playerRepository.getPlaybackStates().firstOrNull()
-        xtraModule.playerRepository.deletePlaybackStates()
+        val savedState = immediateState ?: twitchProModule.playerRepository.getPlaybackStates().firstOrNull()
+        twitchProModule.playerRepository.deletePlaybackStates()
         if (savedState != null) {
             type = savedState.type
             streamId = savedState.streamId
@@ -90,12 +90,12 @@ abstract class BasePlaybackService : LifecycleService() {
             savedPosition = savedState.position
             paused = savedState.paused
             qualities = savedState.qualities?.let { qualities ->
-                xtraModule.json.decodeFromString<JsonArray>(qualities).map {
-                    xtraModule.json.decodeFromJsonElement<VideoQuality>(it)
+                twitchProModule.json.decodeFromString<JsonArray>(qualities).map {
+                    twitchProModule.json.decodeFromJsonElement<VideoQuality>(it)
                 }
             }
-            quality = savedState.quality?.let { xtraModule.json.decodeFromString(it) }
-            previousQuality = savedState.previousQuality?.let { xtraModule.json.decodeFromString(it) }
+            quality = savedState.quality?.let { twitchProModule.json.decodeFromString(it) }
+            previousQuality = savedState.previousQuality?.let { twitchProModule.json.decodeFromString(it) }
             restoreQuality = savedState.restoreQuality
             playlistUrl = savedState.playlistUrl
             restorePlaylist = savedState.restorePlaylist
@@ -135,12 +135,12 @@ abstract class BasePlaybackService : LifecycleService() {
             qualities = qualities?.let { qualities ->
                 buildJsonArray {
                     qualities.forEach {
-                        add(xtraModule.json.encodeToJsonElement(it))
+                        add(twitchProModule.json.encodeToJsonElement(it))
                     }
                 }.toString()
             },
-            quality = quality?.let { xtraModule.json.encodeToString(it) },
-            previousQuality = previousQuality?.let { xtraModule.json.encodeToString(it) },
+            quality = quality?.let { twitchProModule.json.encodeToString(it) },
+            previousQuality = previousQuality?.let { twitchProModule.json.encodeToString(it) },
             restoreQuality = restoreQuality,
             playlistUrl = playlistUrl,
             restorePlaylist = restorePlaylist,
@@ -150,7 +150,7 @@ abstract class BasePlaybackService : LifecycleService() {
             currentStreamProxy = currentStreamProxy,
             skipAccessToken = skipAccessToken,
         )
-        xtraModule.playerRepository.savePlaybackStates(listOf(item))
+        twitchProModule.playerRepository.savePlaybackStates(listOf(item))
     }
 
     protected fun setDefaultQuality() {

@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.R
 import kotlin.time.Clock
 import kotlin.time.Instant
 

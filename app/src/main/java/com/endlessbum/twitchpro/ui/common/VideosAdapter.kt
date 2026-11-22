@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import android.content.Intent
 import android.text.format.DateUtils
@@ -18,18 +18,18 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentVideosListItemBinding
-import com.github.andreyasadchy.xtra.model.VideoPosition
-import com.github.andreyasadchy.xtra.model.ui.Bookmark
-import com.github.andreyasadchy.xtra.model.ui.Video
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentVideosListItemBinding
+import com.endlessbum.twitchpro.model.VideoPosition
+import com.endlessbum.twitchpro.model.ui.Bookmark
+import com.endlessbum.twitchpro.model.ui.Video
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlin.time.Instant
 
 class VideosAdapter(
@@ -87,7 +87,7 @@ class VideosAdapter(
                     val position = item.id?.toLongOrNull()?.let { id -> positions?.find { it.id == id }?.position }
                     val startFromBeginning = position != null && item.durationSeconds != null && item.durationSeconds > 0 && position >= (item.durationSeconds * 1000)
                             && item.thumbnail.let { it != null && !it.startsWith("https://vod-secure.twitch.tv/_404/404_processing") }
-                    val isTv = com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(context)
+                    val isTv = com.endlessbum.twitchpro.ui.view.TvUi.isTv(context)
                     root.setOnClickListener {
                         (fragment.activity as MainActivity).startVideo(
                             item,
@@ -103,7 +103,7 @@ class VideosAdapter(
                         if (isTv) {
                             // the same panel as on the home, with the bookmark and the download of the lists
                             val activity = fragment.activity as? MainActivity ?: return@setOnLongClickListener true
-                            com.github.andreyasadchy.xtra.ui.tv.TvVideoActions.show(
+                            com.endlessbum.twitchpro.ui.tv.TvVideoActions.show(
                                 activity,
                                 item,
                                 position,
@@ -114,7 +114,7 @@ class VideosAdapter(
                                     if (!item.id.isNullOrBlank()) {
                                         val bookmarked = bookmarks?.any { it.videoId == item.id } == true
                                         add(
-                                            com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                            com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                                 context.getString(if (bookmarked) R.string.remove_bookmark else R.string.add_bookmark),
                                                 R.drawable.tv_ic_pin,
                                             ) {
@@ -123,7 +123,7 @@ class VideosAdapter(
                                         )
                                     }
                                     add(
-                                        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(context.getString(R.string.download), R.drawable.tv_ic_download) {
+                                        com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(context.getString(R.string.download), R.drawable.tv_ic_download) {
                                             showDownloadDialog(item)
                                         }
                                     )
@@ -135,7 +135,7 @@ class VideosAdapter(
                         true
                     }
                     // TV: a video without picture yet ("?" of Twitch): the avatar of the streamer, over its blurred copy
-                    val missing = thumbnailAvatar != null && com.github.andreyasadchy.xtra.ui.tv.TvVideoThumbnail.isMissing(item.thumbnailURL)
+                    val missing = thumbnailAvatar != null && com.endlessbum.twitchpro.ui.tv.TvVideoThumbnail.isMissing(item.thumbnailURL)
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                         thumbnail.setRenderEffect(if (missing && item.channelImage != null) android.graphics.RenderEffect.createBlurEffect(40f, 40f, android.graphics.Shader.TileMode.CLAMP) else null)
                     }

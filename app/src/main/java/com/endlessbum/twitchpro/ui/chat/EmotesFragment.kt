@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.chat
+package com.endlessbum.twitchpro.ui.chat
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -11,12 +11,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.github.andreyasadchy.xtra.databinding.FragmentEmotesBinding
-import com.github.andreyasadchy.xtra.model.chat.RecentEmote
-import com.github.andreyasadchy.xtra.ui.chat.ChatViewModel.Companion.ChatViewModelFactory
-import com.github.andreyasadchy.xtra.ui.view.GridAutofitLayoutManager
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.databinding.FragmentEmotesBinding
+import com.endlessbum.twitchpro.model.chat.RecentEmote
+import com.endlessbum.twitchpro.ui.chat.ChatViewModel.Companion.ChatViewModelFactory
+import com.endlessbum.twitchpro.ui.view.GridAutofitLayoutManager
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -131,7 +131,7 @@ class EmotesFragment : Fragment() {
             }
             1 -> {
                 val twitchChannel = synchronized(viewModel.userEmotes) {
-                    viewModel.userEmotes.filter { it.source == com.github.andreyasadchy.xtra.model.chat.Emote.CHANNEL_TWITCH }
+                    viewModel.userEmotes.filter { it.source == com.endlessbum.twitchpro.model.chat.Emote.CHANNEL_TWITCH }
                 }
                 val thirdPartyChannel = synchronized(viewModel.thirdPartyEmotes) {
                     viewModel.thirdPartyEmotes.filter { it.isChannelEmote }

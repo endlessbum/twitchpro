@@ -1,6 +1,6 @@
-package com.github.andreyasadchy.xtra.ui.channel.schedule
+package com.endlessbum.twitchpro.ui.channel.schedule
 
-import com.github.andreyasadchy.xtra.ui.tv.tvTopFade
+import com.endlessbum.twitchpro.ui.tv.tvTopFade
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -65,21 +65,21 @@ import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentArgs
-import com.github.andreyasadchy.xtra.ui.common.BaseNetworkFragment
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.tv.TvColors
-import com.github.andreyasadchy.xtra.ui.tv.TvDialogs
-import com.github.andreyasadchy.xtra.ui.view.TvHeader
-import com.github.andreyasadchy.xtra.ui.view.TvUi
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentArgs
+import com.endlessbum.twitchpro.ui.common.BaseNetworkFragment
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.tv.TvColors
+import com.endlessbum.twitchpro.ui.tv.TvDialogs
+import com.endlessbum.twitchpro.ui.view.TvHeader
+import com.endlessbum.twitchpro.ui.view.TvUi
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -128,8 +128,8 @@ class ChannelScheduleViewModel(
     companion object {
         val Factory = viewModelFactory {
             initializer {
-                val app = this[APPLICATION_KEY] as XtraApp
-                ChannelScheduleViewModel(app.xtraModule.graphQLRepository)
+                val app = this[APPLICATION_KEY] as TwitchProApp
+                ChannelScheduleViewModel(app.twitchProModule.graphQLRepository)
             }
         }
     }

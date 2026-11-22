@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.andreyasadchy.xtra.util.coil.internal
+package com.endlessbum.twitchpro.util.coil.internal
 
 import coil3.network.NetworkHeaders
 

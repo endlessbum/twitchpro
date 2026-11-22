@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.saved.filters
+package com.endlessbum.twitchpro.ui.saved.filters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +9,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentFiltersListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.SavedFilter
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.top.TopStreamsFragmentDirections
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentFiltersListItemBinding
+import com.endlessbum.twitchpro.model.ui.SavedFilter
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.top.TopStreamsFragmentDirections
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 
 class FiltersAdapter(
     private val fragment: Fragment,

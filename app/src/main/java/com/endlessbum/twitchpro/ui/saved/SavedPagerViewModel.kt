@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.saved
+package com.endlessbum.twitchpro.ui.saved
 
 import android.content.Context
 import android.net.Uri
@@ -10,11 +10,11 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.ui.OfflineVideo
-import com.github.andreyasadchy.xtra.repository.OfflineVideosRepository
-import com.github.andreyasadchy.xtra.util.m3u8.PlaylistUtils
-import com.github.andreyasadchy.xtra.util.m3u8.Segment
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.ui.OfflineVideo
+import com.endlessbum.twitchpro.repository.OfflineVideosRepository
+import com.endlessbum.twitchpro.util.m3u8.PlaylistUtils
+import com.endlessbum.twitchpro.util.m3u8.Segment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -245,9 +245,9 @@ class SavedPagerViewModel(
     companion object {
         val SavedPagerViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                SavedPagerViewModel(application.applicationContext, xtraModule.offlineVideosRepository)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                SavedPagerViewModel(application.applicationContext, twitchProModule.offlineVideosRepository)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -53,8 +53,8 @@ import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
 import kotlinx.coroutines.launch
 
 /**

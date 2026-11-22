@@ -19,9 +19,9 @@
         app:singleLineTitle="false" />
 
     <Preference
-        android:key="xtratv_settings"
-        android:summary="@string/xtratv_settings_summary"
-        android:title="@string/xtratv_settings"
+        android:key="twitchpro_settings"
+        android:summary="@string/twitchpro_settings_summary"
+        android:title="@string/twitchpro_settings"
         app:iconSpaceReserved="false"
         app:singleLineTitle="false" />
 
@@ -182,7 +182,7 @@
 
     <Preference
         android:key="about_app"
-        android:summary="XtraTV forked from https://github.com/crackededed/Xtra by razeN with AI"
+        android:summary="TwitchPro forked from https://github.com/crackededed/Xtra by razeN with AI"
         android:title="@string/tv_settings_section_about"
         app:iconSpaceReserved="false"
         app:singleLineTitle="false" />

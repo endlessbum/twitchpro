@@ -1,10 +1,10 @@
-package com.github.andreyasadchy.xtra.util.chat
+package com.endlessbum.twitchpro.util.chat
 
-import com.github.andreyasadchy.xtra.model.chat.ChannelPointReward
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.chat.Poll
-import com.github.andreyasadchy.xtra.model.chat.Prediction
-import com.github.andreyasadchy.xtra.model.chat.Raid
+import com.endlessbum.twitchpro.model.chat.ChannelPointReward
+import com.endlessbum.twitchpro.model.chat.ChatMessage
+import com.endlessbum.twitchpro.model.chat.Poll
+import com.endlessbum.twitchpro.model.chat.Prediction
+import com.endlessbum.twitchpro.model.chat.Raid
 import org.json.JSONObject
 import kotlin.time.Instant
 

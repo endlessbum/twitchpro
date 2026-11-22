@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
@@ -7,14 +7,14 @@ import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 
 abstract class MaterialPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
-        if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(requireContext())) {
+        if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(requireContext())) {
             // settings that only make sense on a touch screen phone or tablet: hidden before the list is shown, they no longer flash
             TV_HIDDEN_KEYS.forEach { findPreference<Preference>(it)?.isVisible = false }
             // an icon in front of each setting, to find one at a glance
@@ -28,7 +28,7 @@ abstract class MaterialPreferenceFragment : PreferenceFragmentCompat() {
         savedInstanceState: android.os.Bundle?
     ): android.view.View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        if (!com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(requireContext())) {
+        if (!com.endlessbum.twitchpro.ui.view.TvUi.isTv(requireContext())) {
             return view
         }
         return object : android.widget.FrameLayout(requireContext()) {
@@ -43,7 +43,7 @@ abstract class MaterialPreferenceFragment : PreferenceFragmentCompat() {
                             return it
                         }
                         val next = super.focusSearch(focused, direction)
-                        val side = activity?.findViewById<android.view.View>(com.github.andreyasadchy.xtra.R.id.tvSettingsSide)
+                        val side = activity?.findViewById<android.view.View>(com.endlessbum.twitchpro.R.id.tvSettingsSide)
                         if (next != null && side is android.view.ViewGroup) {
                             var p: android.view.ViewParent? = next.parent
                             while (p != null) {
@@ -73,12 +73,12 @@ abstract class MaterialPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onViewCreated(view: android.view.View, savedInstanceState: android.os.Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(requireContext())) {
+        if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(requireContext())) {
             styleTvRows()
             val position = focusedPositions[javaClass.name]
             listView.postDelayed({
                 // shown while going through the categories of the left column: the focus stays on them
-                val categories = activity?.findViewById<android.view.View>(com.github.andreyasadchy.xtra.R.id.tvSettingsCategories)
+                val categories = activity?.findViewById<android.view.View>(com.endlessbum.twitchpro.R.id.tvSettingsCategories)
                 if (view.isAttachedToWindow && listView.focusedChild == null && categories?.hasFocus() != true) {
                     if (position != null) {
                         // back from a settings screen: the focus goes back to the entry that opened it
@@ -101,23 +101,23 @@ abstract class MaterialPreferenceFragment : PreferenceFragmentCompat() {
     private fun styleTvRows() {
         val context = requireContext()
         val density = resources.displayMetrics.density
-        val focusedTitle = context.getColor(com.github.andreyasadchy.xtra.R.color.tv_settings_title_focused)
-        val focusedSummary = context.getColor(com.github.andreyasadchy.xtra.R.color.tv_settings_summary_focused)
+        val focusedTitle = context.getColor(com.endlessbum.twitchpro.R.color.tv_settings_title_focused)
+        val focusedSummary = context.getColor(com.endlessbum.twitchpro.R.color.tv_settings_summary_focused)
         val title = android.graphics.Color.WHITE
         val summary = 0xB3FFFFFF.toInt()
         listView.clipToPadding = false
         // the rows draw their own focus, not the frame of the other lists
-        listView.setTag(com.github.andreyasadchy.xtra.R.id.tvRowsHighlighted, true)
+        listView.setTag(com.endlessbum.twitchpro.R.id.tvRowsHighlighted, true)
         val styleRow = { view: android.view.View ->
             keepDisabledRowFocusable(view)
             if (view.isFocusable) {
-                val background = view.getTag(com.github.andreyasadchy.xtra.R.id.tvSettingsRowBackground) as? android.graphics.drawable.Drawable
+                val background = view.getTag(com.endlessbum.twitchpro.R.id.tvSettingsRowBackground) as? android.graphics.drawable.Drawable
                 if (background == null || view.background !== background) {
-                    val drawable = androidx.core.content.ContextCompat.getDrawable(context, com.github.andreyasadchy.xtra.R.drawable.tv_settings_row_background)
+                    val drawable = androidx.core.content.ContextCompat.getDrawable(context, com.endlessbum.twitchpro.R.drawable.tv_settings_row_background)
                     view.background = drawable
                     // drawn at once in its state, without waiting for a state change
                     drawable?.jumpToCurrentState()
-                    view.setTag(com.github.andreyasadchy.xtra.R.id.tvSettingsRowBackground, drawable)
+                    view.setTag(com.endlessbum.twitchpro.R.id.tvSettingsRowBackground, drawable)
                     val padding = (20 * density).toInt()
                     view.setPaddingRelative(padding, view.paddingTop.coerceAtLeast((14 * density).toInt()), padding, view.paddingBottom.coerceAtLeast((14 * density).toInt()))
                 }
@@ -133,9 +133,9 @@ abstract class MaterialPreferenceFragment : PreferenceFragmentCompat() {
                 }
                 // the icon of the setting: light grey, the ambiance color on the white of the focused row
                 view.findViewById<android.widget.ImageView>(android.R.id.icon)?.let {
-                    val color = if (focused) com.github.andreyasadchy.xtra.ui.tv.TvAccent.onLight else 0xCCFFFFFF.toInt()
-                    if (it.getTag(com.github.andreyasadchy.xtra.R.id.tvSettingIconTint) != color) {
-                        it.setTag(com.github.andreyasadchy.xtra.R.id.tvSettingIconTint, color)
+                    val color = if (focused) com.endlessbum.twitchpro.ui.tv.TvAccent.onLight else 0xCCFFFFFF.toInt()
+                    if (it.getTag(com.endlessbum.twitchpro.R.id.tvSettingIconTint) != color) {
+                        it.setTag(com.endlessbum.twitchpro.R.id.tvSettingIconTint, color)
                         it.imageTintList = android.content.res.ColorStateList.valueOf(color)
                     }
                 }
@@ -180,23 +180,23 @@ abstract class MaterialPreferenceFragment : PreferenceFragmentCompat() {
     private fun keepDisabledRowFocusable(view: android.view.View) {
         val title = view.findViewById<android.widget.TextView>(android.R.id.title) ?: return
         if (title.isEnabled) {
-            if (view.getTag(com.github.andreyasadchy.xtra.R.id.tvDisabledRow) == true) {
-                view.setTag(com.github.andreyasadchy.xtra.R.id.tvDisabledRow, false)
+            if (view.getTag(com.endlessbum.twitchpro.R.id.tvDisabledRow) == true) {
+                view.setTag(com.endlessbum.twitchpro.R.id.tvDisabledRow, false)
                 view.alpha = 1f
             }
             return
         }
-        if (!view.isEnabled || view.getTag(com.github.andreyasadchy.xtra.R.id.tvDisabledRow) != true) {
-            view.setTag(com.github.andreyasadchy.xtra.R.id.tvDisabledRow, true)
+        if (!view.isEnabled || view.getTag(com.endlessbum.twitchpro.R.id.tvDisabledRow) != true) {
+            view.setTag(com.endlessbum.twitchpro.R.id.tvDisabledRow, true)
             view.isEnabled = true
             view.isFocusable = true
             view.alpha = 0.5f
             view.setOnClickListener {
                 val preference = findByTitle(preferenceScreen, title.text?.toString())
                 val hint = preference?.key?.let { disabledHints[it]?.invoke() }
-                    ?: preference?.dependency?.let { findPreference<Preference>(it)?.title?.toString() }?.let { getString(com.github.andreyasadchy.xtra.R.string.setting_disabled_dependency, it) }
-                    ?: getString(com.github.andreyasadchy.xtra.R.string.setting_disabled_generic)
-                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), hint, android.widget.Toast.LENGTH_LONG).show()
+                    ?: preference?.dependency?.let { findPreference<Preference>(it)?.title?.toString() }?.let { getString(com.endlessbum.twitchpro.R.string.setting_disabled_dependency, it) }
+                    ?: getString(com.endlessbum.twitchpro.R.string.setting_disabled_generic)
+                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), hint, android.widget.Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -224,7 +224,7 @@ abstract class MaterialPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
         if ((preference.key == C.TV_AMBIENT_COLOR || preference.key == C.TV_STREAM_END_ACTION) &&
-            com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(requireContext())
+            com.endlessbum.twitchpro.ui.view.TvUi.isTv(requireContext())
         ) {
             // TV: its own panel opens from its click listener, not the list of Android as well
             return
@@ -262,10 +262,10 @@ abstract class MaterialPreferenceFragment : PreferenceFragmentCompat() {
             "player_background_audio_pip_locked", "player_handle_audio_becoming_noisy", "player_show_stream_notification_seekbar",
             "player_default_cellular_quality", "playerRewindV2", "playerForwardV2", "sleep_timer_lock", "admin_settings",
             "tv_back_minimizes_player",
-            // the theme is the one of Xtra TV; the start page has its own setting in the Xtra TV settings
+            // the theme is the one of TwitchPro; the start page has its own setting in the TwitchPro settings
             "theme_settings", "ui_startonfollowed",
             // a clock face for the sleep timer is made for a touch screen; the live notifications of Android are replaced
-            // by the live banner of Xtra TV; seek-to-live uses Xtra TV's Direct button and remote shortcut
+            // by the live banner of TwitchPro; seek-to-live uses TwitchPro's Direct button and remote shortcut
             "sleep_timer_use_time_picker", "live_notifications_enabled", "player_use_video_swap", "player_seeklive",
         )
     }

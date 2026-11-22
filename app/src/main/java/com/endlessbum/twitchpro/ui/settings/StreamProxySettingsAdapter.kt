@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.databinding.FragmentProxySettingsListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.StreamProxy
+import com.endlessbum.twitchpro.databinding.FragmentProxySettingsListItemBinding
+import com.endlessbum.twitchpro.model.ui.StreamProxy
 
 class StreamProxySettingsAdapter: ListAdapter<StreamProxy, StreamProxySettingsAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<StreamProxy>() {

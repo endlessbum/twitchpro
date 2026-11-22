@@ -1,11 +1,11 @@
-package com.github.andreyasadchy.xtra.db
+package com.endlessbum.twitchpro.db
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.github.andreyasadchy.xtra.model.ui.GameSort
+import com.endlessbum.twitchpro.model.ui.GameSort
 
 @Dao
 interface GameSortDao {

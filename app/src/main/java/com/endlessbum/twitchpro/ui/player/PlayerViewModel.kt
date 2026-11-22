@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.annotation.SuppressLint
 import android.net.http.HttpEngine
@@ -7,25 +7,25 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.NotificationUser
-import com.github.andreyasadchy.xtra.model.ShownNotification
-import com.github.andreyasadchy.xtra.model.VideoQuality
-import com.github.andreyasadchy.xtra.model.ui.Bookmark
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.model.ui.LocalChannelFollow
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.repository.BookmarksRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.LocalChannelFollowsRepository
-import com.github.andreyasadchy.xtra.repository.NotificationsRepository
-import com.github.andreyasadchy.xtra.repository.PlayerRepository
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.NotificationUser
+import com.endlessbum.twitchpro.model.ShownNotification
+import com.endlessbum.twitchpro.model.VideoQuality
+import com.endlessbum.twitchpro.model.ui.Bookmark
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.model.ui.LocalChannelFollow
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.repository.BookmarksRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.LocalChannelFollowsRepository
+import com.endlessbum.twitchpro.repository.NotificationsRepository
+import com.endlessbum.twitchpro.repository.PlayerRepository
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.util.TwitchApiHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -85,7 +85,7 @@ class PlayerViewModel(
             val started = streamCreatedAt?.let { kotlin.time.Instant.parseOrNull(it)?.toEpochMilliseconds() } ?: return null
             val node = graphQLRepository.loadQueryUserVideos(
                 networkLibrary, headers, channelId, channelLogin.takeIf { channelId.isNullOrBlank() },
-                com.github.andreyasadchy.xtra.graphql.type.VideoSort.TIME, listOf(com.github.andreyasadchy.xtra.graphql.type.BroadcastType.ARCHIVE), 1, null
+                com.endlessbum.twitchpro.graphql.type.VideoSort.TIME, listOf(com.endlessbum.twitchpro.graphql.type.BroadcastType.ARCHIVE), 1, null
             ).data?.user?.videos?.edges?.firstOrNull()?.node ?: return null
             val created = node.createdAt?.toString()?.let { kotlin.time.Instant.parseOrNull(it)?.toEpochMilliseconds() } ?: return null
             node.id.takeIf { kotlin.math.abs(created - started) < 15 * 60_000L }
@@ -765,9 +765,9 @@ class PlayerViewModel(
     companion object {
         val PlayerViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                PlayerViewModel(xtraModule.httpEngine, xtraModule.cronetEngine, xtraModule.cronetExecutor, xtraModule.okHttpClient, xtraModule.json, xtraModule.graphQLRepository, xtraModule.helixRepository, xtraModule.playerRepository, xtraModule.bookmarksRepository, xtraModule.localChannelFollowsRepository, xtraModule.notificationsRepository)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                PlayerViewModel(twitchProModule.httpEngine, twitchProModule.cronetEngine, twitchProModule.cronetExecutor, twitchProModule.okHttpClient, twitchProModule.json, twitchProModule.graphQLRepository, twitchProModule.helixRepository, twitchProModule.playerRepository, twitchProModule.bookmarksRepository, twitchProModule.localChannelFollowsRepository, twitchProModule.notificationsRepository)
             }
         }
     }

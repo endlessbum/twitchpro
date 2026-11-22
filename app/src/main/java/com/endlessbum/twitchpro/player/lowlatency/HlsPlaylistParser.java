@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.andreyasadchy.xtra.player.lowlatency;
+package com.endlessbum.twitchpro.player.lowlatency;
 
 import static androidx.media3.common.util.Util.castNonNull;
 import static androidx.media3.common.util.Util.msToUs;
@@ -455,7 +455,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
     ArrayList<String> mediaTags = new ArrayList<>();
     ArrayList<DrmInitData> sessionKeyDrmInitData = new ArrayList<>();
     ArrayList<String> tags = new ArrayList<>();
-    ArrayList<String> unavailableMedia = new ArrayList<>(); // xtra: unavailable qualities
+    ArrayList<String> unavailableMedia = new ArrayList<>(); // twitchpro: unavailable qualities
     Format muxedAudioFormat = null;
     List<Format> muxedCaptionFormats = null;
     boolean noClosedCaptions = false;
@@ -470,7 +470,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
         // We expose all tags through the playlist.
         tags.add(line);
         if (line.startsWith("#EXT-X-TWITCH-INFO:")) {
-          com.github.andreyasadchy.xtra.util.TwitchClock.onTwitchInfoLine(line);
+          com.endlessbum.twitchpro.util.TwitchClock.onTwitchInfoLine(line);
         }
       }
       boolean isIFrameOnlyVariant = line.startsWith(TAG_I_FRAME_STREAM_INF);
@@ -618,7 +618,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
           line = replaceVariableReferences(iterator.next(), variableDefinitions, matcherCache);
           uri = UriUtil.resolveToUri(baseUri, line);
         }
-        if (!unavailableMedia.isEmpty() && uri.toString().contains("/index-")) { // xtra: unavailable qualities
+        if (!unavailableMedia.isEmpty() && uri.toString().contains("/index-")) { // twitchpro: unavailable qualities
           for (int index = 0; index < unavailableMedia.size(); index++) {
             String string = unavailableMedia.get(index);
             JSONArray array = null;
@@ -752,7 +752,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
                 audioGroupId,
                 subtitlesGroupId,
                 closedCaptionsGroupId));
-      } else if (line.startsWith("#EXT-X-SESSION-DATA")) { // xtra: unavailable qualities
+      } else if (line.startsWith("#EXT-X-SESSION-DATA")) { // twitchpro: unavailable qualities
         String id = parseOptionalStringAttr(line, Pattern.compile("DATA-ID=\"(.+?)\""), variableDefinitions, matcherCache);
         if (id != null && id.equals("com.amazon.ivs.unavailable-media")) {
           String value = parseOptionalStringAttr(line, REGEX_VALUE, variableDefinitions, matcherCache);
@@ -830,7 +830,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
           if (uri == null) {
             // TODO: Remove this case and add a Rendition with a null uri to videos.
             formatBuilder.setMetadata(metadata);
-            videos.add(new Rendition(uri, formatBuilder.build(), groupId, name, stableRenditionId)); // xtra: quality names
+            videos.add(new Rendition(uri, formatBuilder.build(), groupId, name, stableRenditionId)); // twitchpro: quality names
           } else {
             formatBuilder.setMetadata(metadata);
             videos.add(new Rendition(uri, formatBuilder.build(), groupId, name, stableRenditionId));
@@ -920,7 +920,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
       muxedCaptionFormats = Collections.emptyList();
     }
 
-    muxedCaptionFormats = new ArrayList<>(); // xtra: closed captions
+    muxedCaptionFormats = new ArrayList<>(); // twitchpro: closed captions
     muxedCaptionFormats.add(
             new Format.Builder()
                     .setSampleMimeType(MimeTypes.APPLICATION_CEA608)
@@ -1042,7 +1042,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
         // We expose all tags through the playlist.
         tags.add(line);
         if (line.startsWith("#EXT-X-TWITCH-INFO:")) {
-          com.github.andreyasadchy.xtra.util.TwitchClock.onTwitchInfoLine(line);
+          com.endlessbum.twitchpro.util.TwitchClock.onTwitchInfoLine(line);
         }
       }
 
@@ -1104,7 +1104,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
       } else if (line.startsWith(TAG_TARGET_DURATION)) {
         int targetDurationSeconds = parseIntAttr(line, REGEX_TARGET_DURATION, matcherCache);
         if (targetDurationSeconds < 10) {
-          targetDurationSeconds = 2; // xtra: low latency
+          targetDurationSeconds = 2; // twitchpro: low latency
         }
         targetDurationUs = targetDurationSeconds * C.MICROS_PER_SECOND;
       } else if (line.startsWith(TAG_MEDIA_SEQUENCE)) {
@@ -1351,7 +1351,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
         if (partByteRangeLength != C.LENGTH_UNSET) {
           partByteRangeOffset += partByteRangeLength;
         }
-      } else if (line.startsWith(TAG_DATERANGE)) { // xtra: ad segments
+      } else if (line.startsWith(TAG_DATERANGE)) { // twitchpro: ad segments
         String className = parseOptionalStringAttr(line, REGEX_CLASS, /* defaultValue= */ "", variableDefinitions, matcherCache);
         String id = parseStringAttr(line, REGEX_ID, variableDefinitions, matcherCache);
         @Nullable Uri assetUri = null;
@@ -1360,7 +1360,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
         if (assetUriString != null) {
           assetUri = Uri.parse(assetUriString);
         } else {
-          assetUri = Uri.parse(""); // xtra: ad segments
+          assetUri = Uri.parse(""); // twitchpro: ad segments
         }
         @Nullable Uri assetListUri = null;
         String assetListUriString =
@@ -1540,7 +1540,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
               break;
           }
         }
-        clientDefinedAttributes.add( // xtra: ad segments
+        clientDefinedAttributes.add( // twitchpro: ad segments
                 new HlsMediaPlaylist.ClientDefinedAttribute(
                         "CLASS", className, HlsMediaPlaylist.ClientDefinedAttribute.TYPE_TEXT)
         );
@@ -1568,18 +1568,18 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
                 .setSkipControlDurationUs(skipControlDurationUs)
                 .setSkipControlLabelId(skipControlLabelId);
         interstitialBuilderMap.put(id, interstitialBuilder);
-      } else if (!line.startsWith("#") || line.startsWith("#EXT-X-TWITCH-PREFETCH")) { // xtra: low latency
+      } else if (!line.startsWith("#") || line.startsWith("#EXT-X-TWITCH-PREFETCH")) { // twitchpro: low latency
         @Nullable
         String segmentEncryptionIV =
             getSegmentEncryptionIV(
                 segmentMediaSequence, fullSegmentEncryptionKeyUri, fullSegmentEncryptionIV);
         segmentMediaSequence++;
-        if (line.startsWith("#EXT-X-TWITCH-PREFETCH")) { // xtra: low latency
+        if (line.startsWith("#EXT-X-TWITCH-PREFETCH")) { // twitchpro: low latency
           segmentDurationUs = 2 * C.MICROS_PER_SECOND;
           line = line.substring(line.indexOf(':') + 1);
         }
         String segmentUri = replaceVariableReferences(line, variableDefinitions, matcherCache)
-                .replace("-unmuted", "-muted"); // xtra: unmuted segments
+                .replace("-unmuted", "-muted"); // twitchpro: unmuted segments
         @Nullable Segment inferredInitSegment = urlToInferredInitSegment.get(segmentUri);
         if (segmentByteRangeLength == C.LENGTH_UNSET) {
           // The segment has no byte range defined.

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -58,28 +58,28 @@ import androidx.preference.forEach
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.SettingsNavGraphDirections
-import com.github.andreyasadchy.xtra.databinding.ActivitySettingsBinding
-import com.github.andreyasadchy.xtra.databinding.DialogUpdateDownloadBinding
-import com.github.andreyasadchy.xtra.model.ui.SettingsDragListItem
-import com.github.andreyasadchy.xtra.model.ui.SettingsSearchItem
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.settings.SettingsViewModel.Companion.SettingsViewModelFactory
-import com.github.andreyasadchy.xtra.ui.view.TvReorder
-import com.github.andreyasadchy.xtra.ui.view.TvUi
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.UpdateInstallHelper
-import com.github.andreyasadchy.xtra.util.applyTheme
-import com.github.andreyasadchy.xtra.util.canInstallUnknownAppsCompat
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.openUnknownAppSourcesSettings
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.showInstallBlockedDialog
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.SettingsNavGraphDirections
+import com.endlessbum.twitchpro.databinding.ActivitySettingsBinding
+import com.endlessbum.twitchpro.databinding.DialogUpdateDownloadBinding
+import com.endlessbum.twitchpro.model.ui.SettingsDragListItem
+import com.endlessbum.twitchpro.model.ui.SettingsSearchItem
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.settings.SettingsViewModel.Companion.SettingsViewModelFactory
+import com.endlessbum.twitchpro.ui.view.TvReorder
+import com.endlessbum.twitchpro.ui.view.TvUi
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.UpdateInstallHelper
+import com.endlessbum.twitchpro.util.applyTheme
+import com.endlessbum.twitchpro.util.canInstallUnknownAppsCompat
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.openUnknownAppSourcesSettings
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.showInstallBlockedDialog
+import com.endlessbum.twitchpro.util.tokenPrefs
 import com.google.android.material.appbar.AppBarLayout
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
@@ -104,7 +104,7 @@ class SettingsActivity : AppCompatActivity() {
     private class TvCategory(val title: Int, val icon: Int, val destination: Int, val xml: Int = 0)
 
     private val tvCategories = listOf(
-        TvCategory(R.string.app_name, R.drawable.tv_ic_tv_small, R.id.xtraTvSettingsFragment),
+        TvCategory(R.string.app_name, R.drawable.tv_ic_tv_small, R.id.twitchProSettingsFragment),
         TvCategory(R.string.player_settings, R.drawable.tv_ic_play, R.id.settingsFragment, R.xml.tv_settings_player),
         TvCategory(R.string.chat_settings, R.drawable.tv_ic_chat, R.id.chatSettingsFragment),
         TvCategory(R.string.ui_settings, R.drawable.tv_ic_view_quilt, R.id.settingsFragment, R.xml.tv_settings_interface),
@@ -140,11 +140,11 @@ class SettingsActivity : AppCompatActivity() {
         val activated = intArrayOf(android.R.attr.state_activated)
         val textColors = android.content.res.ColorStateList(
             arrayOf(focused, activated, intArrayOf()),
-            intArrayOf(com.github.andreyasadchy.xtra.ui.tv.TvAccent.onLight, android.graphics.Color.WHITE, 0xB3FFFFFF.toInt())
+            intArrayOf(com.endlessbum.twitchpro.ui.tv.TvAccent.onLight, android.graphics.Color.WHITE, 0xB3FFFFFF.toInt())
         )
         val iconColors = android.content.res.ColorStateList(
             arrayOf(focused, activated, intArrayOf()),
-            intArrayOf(com.github.andreyasadchy.xtra.ui.tv.TvAccent.onLight, com.github.andreyasadchy.xtra.ui.tv.TvAccent.color, 0xB3FFFFFF.toInt())
+            intArrayOf(com.endlessbum.twitchpro.ui.tv.TvAccent.onLight, com.endlessbum.twitchpro.ui.tv.TvAccent.color, 0xB3FFFFFF.toInt())
         )
         fun shape(color: Int) = android.graphics.drawable.GradientDrawable().apply {
             cornerRadius = 14 * density
@@ -262,7 +262,7 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        com.github.andreyasadchy.xtra.ui.tv.TvBackup.onRequestPermissionsResult(this, requestCode)
+        com.endlessbum.twitchpro.ui.tv.TvBackup.onRequestPermissionsResult(this, requestCode)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -275,7 +275,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
         if (TvUi.isTv(this)) {
             (binding.root.background as? android.graphics.drawable.ColorDrawable)?.color?.let { base ->
-                binding.root.background = com.github.andreyasadchy.xtra.ui.tv.TvAmbient.background(this, base)
+                binding.root.background = com.endlessbum.twitchpro.ui.tv.TvAmbient.background(this, base)
             }
             TvUi.adapt(binding.root, hideToolbarActions = false)
             supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
@@ -337,7 +337,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
         if (TvUi.isTv(this)) {
-            // under the name of the screen: the app and its version ("Xtra TV 1.2.0", "(debug)" on the test builds)
+            // under the name of the screen: the app and its version ("TwitchPro 1.2.0", "(debug)" on the test builds)
             val version = BuildConfig.VERSION_NAME.removeSuffix("-DEBUG").removeSuffix("-tv")
             binding.tvSettingsSubtitle?.text = getString(R.string.app_name) + " " + version + if (BuildConfig.DEBUG) " (debug)" else ""
             // Google TV style: the name of the screen in big on the left, the toolbar keeps the back and search buttons
@@ -432,7 +432,7 @@ class SettingsActivity : AppCompatActivity() {
         val size = (44 * resources.displayMetrics.density).toInt()
         val tint = android.content.res.ColorStateList(
             arrayOf(intArrayOf(android.R.attr.state_focused), intArrayOf()),
-            intArrayOf(com.github.andreyasadchy.xtra.ui.tv.TvAccent.onLight, android.graphics.Color.WHITE)
+            intArrayOf(com.endlessbum.twitchpro.ui.tv.TvAccent.onLight, android.graphics.Color.WHITE)
         )
         fun style(view: View) {
             when (view) {
@@ -502,7 +502,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         if (TvUi.isTv(this)) {
             // TV: a side panel like the proxies of the player (switch, house, arrows), saved when it closes
-            com.github.andreyasadchy.xtra.ui.tv.TvListPanel.show(this, title, list, showDefault, save)
+            com.endlessbum.twitchpro.ui.tv.TvListPanel.show(this, title, list, showDefault, save)
             return
         }
         val listAdapter = SettingsDragListAdapter()
@@ -621,7 +621,7 @@ class SettingsActivity : AppCompatActivity() {
                 if (isTv) {
                     // TV: search bar with the mic in it
                     toolbar.findViewById<View>(R.id.tvSearchBar)?.let { toolbar.removeView(it) }
-                    com.github.andreyasadchy.xtra.ui.tv.TvDialogs.replaceSearchView(searchView, getString(R.string.search))?.let { bar ->
+                    com.endlessbum.twitchpro.ui.tv.TvDialogs.replaceSearchView(searchView, getString(R.string.search))?.let { bar ->
                         bar.post { bar.requestFocus() }
                     }
                 } else {
@@ -781,9 +781,9 @@ class SettingsActivity : AppCompatActivity() {
                 findNavController().navigate(SettingsNavGraphDirections.actionGlobalThemeSettingsFragment())
                 true
             }
-            findPreference<Preference>("xtratv_settings")?.setOnPreferenceClickListener {
+            findPreference<Preference>("twitchpro_settings")?.setOnPreferenceClickListener {
                 requireActivity().findViewById<AppBarLayout>(R.id.appBar)?.setExpanded(true)
-                findNavController().navigate(SettingsNavGraphDirections.actionGlobalXtraTvSettingsFragment())
+                findNavController().navigate(SettingsNavGraphDirections.actionGlobalTwitchProSettingsFragment())
                 true
             }
             findPreference<Preference>("ui_settings")?.setOnPreferenceClickListener {
@@ -812,11 +812,11 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>(C.TV_SWITCHER_ROWS)?.let { preference ->
                 val context = requireContext()
                 val updateSummary = {
-                    preference.summary = com.github.andreyasadchy.xtra.ui.tv.TvSwitcherRows.summary(context)
+                    preference.summary = com.endlessbum.twitchpro.ui.tv.TvSwitcherRows.summary(context)
                 }
                 updateSummary()
                 preference.setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.ui.tv.TvSwitcherRows.showManagerPanel(context) {
+                    com.endlessbum.twitchpro.ui.tv.TvSwitcherRows.showManagerPanel(context) {
                         updateSummary()
                         (requireActivity() as? SettingsActivity)?.setResult()
                     }
@@ -830,7 +830,7 @@ class SettingsActivity : AppCompatActivity() {
             }
             findPreference<Preference>("custom_proxy_settings")?.setOnPreferenceClickListener {
                 if (TvUi.isTv(requireContext()) && requireContext().prefs().getBoolean(C.TV_EXPERIMENTAL_ADBLOCK, false)) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_proxies_disabled, android.widget.Toast.LENGTH_LONG).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_proxies_disabled, android.widget.Toast.LENGTH_LONG).show()
                     return@setOnPreferenceClickListener true
                 }
                 val openScreen = {
@@ -840,14 +840,14 @@ class SettingsActivity : AppCompatActivity() {
                 if (TvUi.isTv(requireContext())) {
                     // TV: the proxies in a side panel (status, on / off, order, add, edit, delete), the screen stays there
                     val activity = requireActivity()
-                    val repository = (activity.application as com.github.andreyasadchy.xtra.XtraApp).xtraModule.playerRepository
+                    val repository = (activity.application as com.endlessbum.twitchpro.TwitchProApp).twitchProModule.playerRepository
                     viewLifecycleOwner.lifecycleScope.launch {
                         val proxies = repository.getCustomProxies()
-                        com.github.andreyasadchy.xtra.ui.tv.TvProxyPanel.show(
+                        com.endlessbum.twitchpro.ui.tv.TvProxyPanel.show(
                             activity,
                             proxies,
                             openSettings = { if (isAdded) openScreen() },
-                            manage = com.github.andreyasadchy.xtra.ui.tv.TvProxyPanel.Manage(activity.lifecycleScope, repository),
+                            manage = com.endlessbum.twitchpro.ui.tv.TvProxyPanel.Manage(activity.lifecycleScope, repository),
                         ) { changed ->
                             activity.lifecycleScope.launch {
                                 if (changed != null) {
@@ -867,7 +867,7 @@ class SettingsActivity : AppCompatActivity() {
             }
             findPreference<Preference>("stream_proxy_settings")?.setOnPreferenceClickListener {
                 if (TvUi.isTv(requireContext()) && requireContext().prefs().getBoolean(C.TV_EXPERIMENTAL_ADBLOCK, false)) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_proxies_disabled, android.widget.Toast.LENGTH_LONG).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_proxies_disabled, android.widget.Toast.LENGTH_LONG).show()
                     return@setOnPreferenceClickListener true
                 }
                 requireActivity().findViewById<AppBarLayout>(R.id.appBar)?.setExpanded(true)
@@ -882,8 +882,8 @@ class SettingsActivity : AppCompatActivity() {
             if (TvUi.isTv(requireContext())) {
                 findPreference<SwitchPreferenceCompat>(C.TV_EXPERIMENTAL_ADBLOCK)?.setOnPreferenceChangeListener { _, newValue ->
                     val enabled = newValue as Boolean
-                    if (enabled && com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isAnyProxyEnabled(requireContext())) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_disabled_by_proxy, android.widget.Toast.LENGTH_LONG).show()
+                    if (enabled && com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isAnyProxyEnabled(requireContext())) {
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_disabled_by_proxy, android.widget.Toast.LENGTH_LONG).show()
                         return@setOnPreferenceChangeListener false
                     }
                     requireContext().prefs().edit().putBoolean(C.TV_EXPERIMENTAL_ADBLOCK, enabled).apply()
@@ -894,7 +894,7 @@ class SettingsActivity : AppCompatActivity() {
                 findPreference<SwitchPreferenceCompat>(C.PLAYER_USE_STREAM_PROXY)?.setOnPreferenceChangeListener { _, newValue ->
                     val enabled = newValue as Boolean
                     if (enabled && requireContext().prefs().getBoolean(C.TV_EXPERIMENTAL_ADBLOCK, false)) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_proxies_disabled, android.widget.Toast.LENGTH_LONG).show()
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_proxies_disabled, android.widget.Toast.LENGTH_LONG).show()
                         return@setOnPreferenceChangeListener false
                     }
                     requireContext().prefs().edit().putBoolean(C.PLAYER_USE_STREAM_PROXY, enabled).apply()
@@ -903,13 +903,13 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 findPreference<SwitchPreferenceCompat>(C.PLAYER_ADBLOCK)?.setOnPreferenceChangeListener { _, newValue ->
                     val enabled = newValue as Boolean
-                    if (!enabled && !com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isAnyProxyEnabled(requireContext())) {
+                    if (!enabled && !com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isAnyProxyEnabled(requireContext())) {
                         val hintRes = if (requireContext().prefs().getBoolean(C.TV_EXPERIMENTAL_ADBLOCK, false)) {
                             R.string.tv_adblock_swap_locked_exp_hint
                         } else {
                             R.string.tv_adblock_swap_locked_hint
                         }
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), hintRes, android.widget.Toast.LENGTH_LONG).show()
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), hintRes, android.widget.Toast.LENGTH_LONG).show()
                         return@setOnPreferenceChangeListener false
                     }
                     requireContext().prefs().edit().putBoolean(C.PLAYER_ADBLOCK, enabled).apply()
@@ -955,7 +955,7 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>("check_updates")?.setOnPreferenceClickListener {
                 viewModel.checkUpdates(
                     requireContext().prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
-                    requireContext().prefs().getString(C.UPDATE_URL, null) ?: "https://api.github.com/repos/razeNFR/XtraATV/releases/latest",
+                    requireContext().prefs().getString(C.UPDATE_URL, null) ?: "https://api.github.com/repos/endlessbum/twitch/releases/latest",
                     requireContext().tokenPrefs().getLong(C.UPDATE_LAST_CHECKED, 0)
                 )
                 true
@@ -967,15 +967,15 @@ class SettingsActivity : AppCompatActivity() {
             }
             findPreference<Preference>("backup_settings")?.setOnPreferenceClickListener {
                 if (TvUi.isTv(requireContext())) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.show(
+                    com.endlessbum.twitchpro.ui.tv.TvActionPanel.show(
                         requireContext(),
                         getString(R.string.backup_settings),
                         listOf(
-                            com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(getString(R.string.tv_backup_save_tv), R.drawable.tv_ic_download) {
-                                com.github.andreyasadchy.xtra.ui.tv.TvBackup.saveToTv(requireContext(), lifecycleScope)
+                            com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(getString(R.string.tv_backup_save_tv), R.drawable.tv_ic_download) {
+                                com.endlessbum.twitchpro.ui.tv.TvBackup.saveToTv(requireContext(), lifecycleScope)
                             },
-                            com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(getString(R.string.tv_backup_qr_send), R.drawable.tv_ic_share) {
-                                com.github.andreyasadchy.xtra.ui.tv.TvBackup.showQrExport(requireContext(), lifecycleScope)
+                            com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(getString(R.string.tv_backup_qr_send), R.drawable.tv_ic_share) {
+                                com.endlessbum.twitchpro.ui.tv.TvBackup.showQrExport(requireContext(), lifecycleScope)
                             },
                         )
                     )
@@ -983,19 +983,19 @@ class SettingsActivity : AppCompatActivity() {
                     try {
                         backupResultLauncher?.launch(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE))
                     } catch (e: ActivityNotFoundException) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvBackup.saveToTv(requireContext(), lifecycleScope)
+                        com.endlessbum.twitchpro.ui.tv.TvBackup.saveToTv(requireContext(), lifecycleScope)
                     }
                 }
                 true
             }
             findPreference<Preference>("restore_settings")?.setOnPreferenceClickListener {
                 if (TvUi.isTv(requireContext())) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.show(
+                    com.endlessbum.twitchpro.ui.tv.TvActionPanel.show(
                         requireContext(),
                         getString(R.string.restore_settings),
                         listOf(
-                            com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(getString(R.string.tv_backup_restore_tv), R.drawable.tv_ic_history) {
-                                com.github.andreyasadchy.xtra.ui.tv.TvBackup.restoreFromTv(requireContext(), lifecycleScope) {
+                            com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(getString(R.string.tv_backup_restore_tv), R.drawable.tv_ic_history) {
+                                com.endlessbum.twitchpro.ui.tv.TvBackup.restoreFromTv(requireContext(), lifecycleScope) {
                                     try {
                                         restoreResultLauncher?.launch(Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                                             addCategory(Intent.CATEGORY_OPENABLE)
@@ -1003,12 +1003,12 @@ class SettingsActivity : AppCompatActivity() {
                                             putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                                         })
                                     } catch (e: ActivityNotFoundException) {
-                                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_backup_not_found, Toast.LENGTH_LONG).show()
+                                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_backup_not_found, Toast.LENGTH_LONG).show()
                                     }
                                 }
                             },
-                            com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(getString(R.string.tv_backup_qr_receive), R.drawable.tv_ic_wifi) {
-                                com.github.andreyasadchy.xtra.ui.tv.TvBackup.showQrImport(requireContext(), lifecycleScope)
+                            com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(getString(R.string.tv_backup_qr_receive), R.drawable.tv_ic_wifi) {
+                                com.endlessbum.twitchpro.ui.tv.TvBackup.showQrImport(requireContext(), lifecycleScope)
                             },
                         )
                     )
@@ -1020,8 +1020,8 @@ class SettingsActivity : AppCompatActivity() {
                             putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                         })
                     } catch (e: ActivityNotFoundException) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvBackup.restoreFromTv(requireContext(), lifecycleScope) {
-                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_backup_not_found, Toast.LENGTH_LONG).show()
+                        com.endlessbum.twitchpro.ui.tv.TvBackup.restoreFromTv(requireContext(), lifecycleScope) {
+                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_backup_not_found, Toast.LENGTH_LONG).show()
                         }
                     }
                 }
@@ -1036,24 +1036,24 @@ class SettingsActivity : AppCompatActivity() {
                 if (tvXml != 0) {
                     title = "${getString(R.string.app_name)} ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
                 }
-                summary = com.github.andreyasadchy.xtra.ui.tv.TvAbout.CREDIT_TEXT
+                summary = com.endlessbum.twitchpro.ui.tv.TvAbout.CREDIT_TEXT
                 setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.ui.tv.TvAbout.show(requireContext())
+                    com.endlessbum.twitchpro.ui.tv.TvAbout.show(requireContext())
                     true
                 }
             }
             findPreference<Preference>("about_github")?.setOnPreferenceClickListener {
-                com.github.andreyasadchy.xtra.ui.tv.TvAbout.show(requireContext())
+                com.endlessbum.twitchpro.ui.tv.TvAbout.show(requireContext())
                 true
             }
             findPreference<Preference>("about_discord")?.setOnPreferenceClickListener {
-                com.github.andreyasadchy.xtra.ui.tv.TvAbout.show(requireContext(), discord = true)
+                com.endlessbum.twitchpro.ui.tv.TvAbout.show(requireContext(), discord = true)
                 true
             }
             findPreference<Preference>("about_device")?.apply {
-                summary = com.github.andreyasadchy.xtra.ui.tv.TvAbout.deviceSummary()
+                summary = com.endlessbum.twitchpro.ui.tv.TvAbout.deviceSummary()
                 setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.ui.tv.TvAbout.show(requireContext())
+                    com.endlessbum.twitchpro.ui.tv.TvAbout.show(requireContext())
                     true
                 }
             }
@@ -1103,7 +1103,7 @@ class SettingsActivity : AppCompatActivity() {
                                             putLong(C.UPDATE_LAST_CHECKED, System.currentTimeMillis())
                                         }
                                     } catch (e: ActivityNotFoundException) {
-                                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.no_browser_found, Toast.LENGTH_LONG).show()
+                                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.no_browser_found, Toast.LENGTH_LONG).show()
                                     }
                                 } else {
                                     // the settings "Install unknown apps" at most once an hour, then the ways of installing (never a loop)
@@ -1112,7 +1112,7 @@ class SettingsActivity : AppCompatActivity() {
                             }
                             if (TvUi.isTv(requireContext())) {
                                 // TV: the version and its changelog, the focus on "Update"
-                                com.github.andreyasadchy.xtra.ui.tv.TvUpdateDialog.show(requireActivity(), viewModel.updateVersion, viewModel.updateNotes, startUpdate) {}
+                                com.endlessbum.twitchpro.ui.tv.TvUpdateDialog.show(requireActivity(), viewModel.updateVersion, viewModel.updateNotes, startUpdate) {}
                             } else {
                                 requireActivity().getAlertDialogBuilder()
                                     .setTitle(getString(R.string.update_available))
@@ -1122,7 +1122,7 @@ class SettingsActivity : AppCompatActivity() {
                                     .show()
                             }
                         } else {
-                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.no_updates_found, Toast.LENGTH_LONG).show()
+                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.no_updates_found, Toast.LENGTH_LONG).show()
                         }
                     }
                 }
@@ -1208,7 +1208,7 @@ class SettingsActivity : AppCompatActivity() {
         fun updateTvAdsAndProxiesState() {
             val ctx = context ?: return
             if (!TvUi.isTv(ctx)) return
-            com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.normalizePrefs(ctx)
+            com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.normalizePrefs(ctx)
             val prefs = ctx.prefs()
             val expOn = prefs.getBoolean(C.TV_EXPERIMENTAL_ADBLOCK, false)
             val customProxyOn = prefs.getBoolean(C.PLAYER_USE_CUSTOM_PROXY, false)
@@ -1253,7 +1253,7 @@ class SettingsActivity : AppCompatActivity() {
             if (arguments?.getInt(ARG_TV_XML, 0) == 0) {
                 return
             }
-            val repository = (requireActivity().application as com.github.andreyasadchy.xtra.XtraApp).xtraModule.playerRepository
+            val repository = (requireActivity().application as com.endlessbum.twitchpro.TwitchProApp).twitchProModule.playerRepository
             viewLifecycleOwner.lifecycleScope.launch {
                 val count = repository.getCustomProxies().size
                 if (!isAdded) return@launch
@@ -1663,15 +1663,15 @@ class SettingsActivity : AppCompatActivity() {
             }
             findPreference<SwitchPreferenceCompat>(C.CHAT_HIDE_BOTS)?.setOnPreferenceChangeListener { _, _ ->
                 (requireActivity() as? SettingsActivity)?.setResult()
-                com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.notifyPrefsChanged()
+                com.endlessbum.twitchpro.util.chat.ChatBlocklist.notifyPrefsChanged()
                 true
             }
             findPreference<Preference>(C.CHAT_HIGHLIGHTED_USERS)?.apply {
-                summary = com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.highlightedSummary(requireContext())
+                summary = com.endlessbum.twitchpro.util.chat.ChatBlocklist.highlightedSummary(requireContext())
                 setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.showHighlightedSettingsDialog(requireActivity()) {
+                    com.endlessbum.twitchpro.util.chat.ChatBlocklist.showHighlightedSettingsDialog(requireActivity()) {
                         if (isAdded) {
-                            summary = com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.highlightedSummary(requireContext())
+                            summary = com.endlessbum.twitchpro.util.chat.ChatBlocklist.highlightedSummary(requireContext())
                             summary = summary // force refresh
                             (activity as? SettingsActivity)?.setResult()
                         }
@@ -1680,11 +1680,11 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
             findPreference<Preference>(C.CHAT_BLOCKED_USERS)?.apply {
-                summary = com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.summary(requireContext())
+                summary = com.endlessbum.twitchpro.util.chat.ChatBlocklist.summary(requireContext())
                 setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.showSettingsDialog(requireActivity()) {
+                    com.endlessbum.twitchpro.util.chat.ChatBlocklist.showSettingsDialog(requireActivity()) {
                         if (isAdded) {
-                            summary = com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.summary(requireContext())
+                            summary = com.endlessbum.twitchpro.util.chat.ChatBlocklist.summary(requireContext())
                             (activity as? SettingsActivity)?.setResult()
                         }
                     }
@@ -2056,10 +2056,10 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    /** Settings added by Xtra TV, all in one screen. */
-    class XtraTvSettingsFragment : MaterialPreferenceFragment() {
+    /** Settings added by TwitchPro, all in one screen. */
+    class TwitchProSettingsFragment : MaterialPreferenceFragment() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.xtratv_preferences, rootKey)
+            setPreferencesFromResource(R.xml.twitchpro_preferences, rootKey)
             // what leaving the app keeps playing: its choices follow the back button of the player (the mini player and the
             // sound only mode are only reached with it), the summary says in full what the choice does
             val backAction = findPreference<ListPreference>(C.TV_BACK_ACTION)
@@ -2105,23 +2105,23 @@ class SettingsActivity : AppCompatActivity() {
             // favorite channels: their order (first in the followed streams), unchecked ones leave the favorites
             findPreference<Preference>("tv_favorites")?.let { preference ->
                 val context = requireContext()
-                com.github.andreyasadchy.xtra.ui.tv.TvFavorites.load(context)
+                com.endlessbum.twitchpro.ui.tv.TvFavorites.load(context)
                 val updateSummary = {
-                    val count = com.github.andreyasadchy.xtra.ui.tv.TvFavorites.items.value.size
+                    val count = com.endlessbum.twitchpro.ui.tv.TvFavorites.items.value.size
                     preference.summary = if (count == 0) getString(R.string.tv_favorites_empty) else getString(R.string.tv_favorites_count, count)
                 }
                 updateSummary()
                 preference.setOnPreferenceClickListener {
-                    val favorites = com.github.andreyasadchy.xtra.ui.tv.TvFavorites.items.value
+                    val favorites = com.endlessbum.twitchpro.ui.tv.TvFavorites.items.value
                     if (favorites.isEmpty()) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(context, R.string.tv_favorites_how, android.widget.Toast.LENGTH_LONG).show()
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(context, R.string.tv_favorites_how, android.widget.Toast.LENGTH_LONG).show()
                     } else {
                         val items = favorites.map { SettingsDragListItem(key = it.login, text = it.name ?: it.login, default = false, enabled = true) }.toMutableList()
                         (requireActivity() as? SettingsActivity)?.showDragListDialog(items, "", preference.title, showDefault = false) { list ->
                             val names = favorites.associate { it.login to it.name }
-                            com.github.andreyasadchy.xtra.ui.tv.TvFavorites.reorder(
+                            com.endlessbum.twitchpro.ui.tv.TvFavorites.reorder(
                                 context,
-                                list.filter { it.enabled }.map { com.github.andreyasadchy.xtra.ui.tv.TvFavorites.Favorite(it.key, names[it.key]) }
+                                list.filter { it.enabled }.map { com.endlessbum.twitchpro.ui.tv.TvFavorites.Favorite(it.key, names[it.key]) }
                             )
                             updateSummary()
                         }
@@ -2132,11 +2132,11 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>("tv_blacklist")?.let { preference ->
                 val context = requireContext()
                 val updateSummary = {
-                    preference.summary = com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.summary(context)
+                    preference.summary = com.endlessbum.twitchpro.ui.tv.TvBlacklist.summary(context)
                 }
                 updateSummary()
                 preference.setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.showManagerPanel(context) {
+                    com.endlessbum.twitchpro.ui.tv.TvBlacklist.showManagerPanel(context) {
                         if (isAdded) {
                             updateSummary()
                             (requireActivity() as? SettingsActivity)?.setResult()
@@ -2146,10 +2146,10 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
             findPreference<ListPreference>(C.TV_STREAM_END_ACTION)?.let { preference ->
-                if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(requireContext())) {
+                if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(requireContext())) {
                     preference.setOnPreferenceClickListener {
                         val values = preference.entryValues.map { it.toString() }
-                        com.github.andreyasadchy.xtra.ui.tv.TvDialogs.showChoices(
+                        com.endlessbum.twitchpro.ui.tv.TvDialogs.showChoices(
                             requireContext(),
                             preference.title.toString(),
                             preference.entries.map { it.toString() },
@@ -2167,15 +2167,15 @@ class SettingsActivity : AppCompatActivity() {
             }
             // TV: the colors in a side panel, a dot of each color in front of its name
             findPreference<ListPreference>(C.TV_AMBIENT_COLOR)?.let { preference ->
-                if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(requireContext())) {
+                if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(requireContext())) {
                     preference.setOnPreferenceClickListener {
                         val values = preference.entryValues.map { it.toString() }
-                        com.github.andreyasadchy.xtra.ui.tv.TvDialogs.showChoices(
+                        com.endlessbum.twitchpro.ui.tv.TvDialogs.showChoices(
                             requireContext(),
                             preference.title.toString(),
                             preference.entries.map { it.toString() },
                             values.indexOf(preference.value),
-                            colors = values.map { com.github.andreyasadchy.xtra.ui.tv.TvAmbient.colorOf(it) },
+                            colors = values.map { com.endlessbum.twitchpro.ui.tv.TvAmbient.colorOf(it) },
                         ) { index ->
                             val value = values[index]
                             if (preference.callChangeListener(value)) {
@@ -2207,11 +2207,11 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>(C.TV_PLAYER_CLOCK)?.let { preference ->
                 val context = requireContext()
                 val updateSummary = {
-                    preference.summary = com.github.andreyasadchy.xtra.ui.tv.TvClockSettings.summary(context)
+                    preference.summary = com.endlessbum.twitchpro.ui.tv.TvClockSettings.summary(context)
                 }
                 updateSummary()
                 preference.setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.ui.tv.TvClockSettings.showPanel(context) {
+                    com.endlessbum.twitchpro.ui.tv.TvClockSettings.showPanel(context) {
                         updateSummary()
                     }
                     true
@@ -2220,11 +2220,11 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>(C.TV_MULTISTREAM_QUALITY)?.let { preference ->
                 val context = requireContext()
                 val updateSummary = {
-                    preference.summary = com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamQuality.summary(context)
+                    preference.summary = com.endlessbum.twitchpro.ui.tv.TvMultiStreamQuality.summary(context)
                 }
                 updateSummary()
                 preference.setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.ui.tv.TvMultiStreamQuality.showPanel(context = context) {
+                    com.endlessbum.twitchpro.ui.tv.TvMultiStreamQuality.showPanel(context = context) {
                         updateSummary()
                     }
                     true
@@ -2233,11 +2233,11 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>(C.TV_SWITCHER_ROWS)?.let { preference ->
                 val context = requireContext()
                 val updateSummary = {
-                    preference.summary = com.github.andreyasadchy.xtra.ui.tv.TvSwitcherRows.summary(context)
+                    preference.summary = com.endlessbum.twitchpro.ui.tv.TvSwitcherRows.summary(context)
                 }
                 updateSummary()
                 preference.setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.ui.tv.TvSwitcherRows.showManagerPanel(context) {
+                    com.endlessbum.twitchpro.ui.tv.TvSwitcherRows.showManagerPanel(context) {
                         updateSummary()
                         (requireActivity() as? SettingsActivity)?.setResult()
                     }
@@ -2247,11 +2247,11 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>("tv_dpad_shortcuts")?.let { preference ->
                 val context = requireContext()
                 val updateSummary = {
-                    preference.summary = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys.dpadSummary(context)
+                    preference.summary = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys.dpadSummary(context)
                 }
                 updateSummary()
                 preference.setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys.showDpadPanel(context) {
+                    com.endlessbum.twitchpro.ui.tv.TvRemoteKeys.showDpadPanel(context) {
                         updateSummary()
                     }
                     true
@@ -2260,11 +2260,11 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>(C.TV_CUSTOM_KEYS)?.let { preference ->
                 val context = requireContext()
                 val updateSummary = {
-                    preference.summary = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys.customKeysSummary(context)
+                    preference.summary = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys.customKeysSummary(context)
                 }
                 updateSummary()
                 preference.setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys.showCustomKeysPanel(context) {
+                    com.endlessbum.twitchpro.ui.tv.TvRemoteKeys.showCustomKeysPanel(context) {
                         updateSummary()
                     }
                     true
@@ -2275,11 +2275,11 @@ class SettingsActivity : AppCompatActivity() {
             homeRowsPref?.let { preference ->
                 val context = requireContext()
                 val updateSummary = {
-                    preference.summary = com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows.summary(context)
+                    preference.summary = com.endlessbum.twitchpro.ui.tv.home.TvHomeRows.summary(context)
                 }
                 updateSummary()
                 preference.setOnPreferenceClickListener {
-                    com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows.showManagerPanel(context) {
+                    com.endlessbum.twitchpro.ui.tv.home.TvHomeRows.showManagerPanel(context) {
                         updateSummary()
                         langRowsPref?.values = context.prefs().getStringSet(C.TV_HOME_LANGUAGE_ROWS, emptySet()).orEmpty()
                         (requireActivity() as? SettingsActivity)?.setResult()
@@ -2291,8 +2291,8 @@ class SettingsActivity : AppCompatActivity() {
                 val context = requireContext()
                 @Suppress("UNCHECKED_CAST")
                 val selected = (newValue as? Set<String>).orEmpty()
-                com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows.syncFromLanguageRowsPref(context, selected)
-                homeRowsPref?.summary = com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows.summary(context)
+                com.endlessbum.twitchpro.ui.tv.home.TvHomeRows.syncFromLanguageRowsPref(context, selected)
+                homeRowsPref?.summary = com.endlessbum.twitchpro.ui.tv.home.TvHomeRows.summary(context)
                 (requireActivity() as? SettingsActivity)?.setResult()
                 true
             }
@@ -2346,7 +2346,7 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    /** Ad blocker of Xtra TV: Swap (VAFT) and Experimental (live VOD), plus hiding during ads. */
+    /** Ad blocker of TwitchPro: Swap (VAFT) and Experimental (live VOD), plus hiding during ads. */
     class AdblockSettingsFragment : MaterialPreferenceFragment() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.adblock_preferences, rootKey)
@@ -2357,13 +2357,13 @@ class SettingsActivity : AppCompatActivity() {
                     setSummary(R.string.tv_adblock_summary_1440p)
                     setOnPreferenceChangeListener { _, newValue ->
                         val enabled = newValue as Boolean
-                        if (!enabled && !com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isAnyProxyEnabled(requireContext())) {
+                        if (!enabled && !com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isAnyProxyEnabled(requireContext())) {
                             val hintRes = if (requireContext().prefs().getBoolean(C.TV_EXPERIMENTAL_ADBLOCK, false)) {
                                 R.string.tv_adblock_swap_locked_exp_hint
                             } else {
                                 R.string.tv_adblock_swap_locked_hint
                             }
-                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), hintRes, android.widget.Toast.LENGTH_LONG).show()
+                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), hintRes, android.widget.Toast.LENGTH_LONG).show()
                             return@setOnPreferenceChangeListener false
                         }
                         requireContext().prefs().edit().putBoolean(C.PLAYER_ADBLOCK, enabled).apply()
@@ -2373,8 +2373,8 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 findPreference<SwitchPreferenceCompat>(C.TV_EXPERIMENTAL_ADBLOCK)?.setOnPreferenceChangeListener { _, newValue ->
                     val enabled = newValue as Boolean
-                    if (enabled && com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isAnyProxyEnabled(requireContext())) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_disabled_by_proxy, android.widget.Toast.LENGTH_LONG).show()
+                    if (enabled && com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isAnyProxyEnabled(requireContext())) {
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_disabled_by_proxy, android.widget.Toast.LENGTH_LONG).show()
                         return@setOnPreferenceChangeListener false
                     }
                     requireContext().prefs().edit().putBoolean(C.TV_EXPERIMENTAL_ADBLOCK, enabled).apply()
@@ -2415,10 +2415,10 @@ class SettingsActivity : AppCompatActivity() {
         private fun updateTvAdblockState() {
             val ctx = context ?: return
             if (!TvUi.isTv(ctx)) return
-            com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.normalizePrefs(ctx)
+            com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.normalizePrefs(ctx)
             val prefs = ctx.prefs()
             val expOn = prefs.getBoolean(C.TV_EXPERIMENTAL_ADBLOCK, false)
-            val anyProxyOn = !expOn && com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isAnyProxyEnabled(ctx)
+            val anyProxyOn = !expOn && com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isAnyProxyEnabled(ctx)
             val swapOn = if (!anyProxyOn) true else prefs.getBoolean(C.PLAYER_ADBLOCK, true)
             disabledHints[C.PLAYER_ADBLOCK] = {
                 getString(if (expOn) R.string.tv_adblock_swap_locked_exp_hint else R.string.tv_adblock_swap_locked_hint)
@@ -2780,7 +2780,7 @@ class SettingsActivity : AppCompatActivity() {
                     Triple(R.xml.theme_preferences, SettingsNavGraphDirections.actionGlobalThemeSettingsFragment(), getString(R.string.theme)),
                     Triple(R.xml.ui_preferences, SettingsNavGraphDirections.actionGlobalUiSettingsFragment(), getString(R.string.ui_settings)),
                     Triple(R.xml.update_preferences, SettingsNavGraphDirections.actionGlobalUpdateSettingsFragment(), getString(R.string.update_settings)),
-                    Triple(R.xml.xtratv_preferences, SettingsNavGraphDirections.actionGlobalXtraTvSettingsFragment(), getString(R.string.xtratv_settings)),
+                    Triple(R.xml.twitchpro_preferences, SettingsNavGraphDirections.actionGlobalTwitchProSettingsFragment(), getString(R.string.twitchpro_settings)),
                     Triple(R.xml.adblock_preferences, SettingsNavGraphDirections.actionGlobalAdblockSettingsFragment(), getString(R.string.adblock)),
                 ).filter {
                     // no theme settings on TV

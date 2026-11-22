@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.app.Dialog
 import android.app.admin.DeviceAdminReceiver
@@ -10,11 +10,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.DialogSleepTimerBinding
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.DialogSleepTimerBinding
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
 
 class SleepTimerDialog : DialogFragment() {
 

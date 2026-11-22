@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.top
+package com.endlessbum.twitchpro.ui.top
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -9,20 +9,20 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.graphql.type.Language
-import com.github.andreyasadchy.xtra.graphql.type.StreamSort
-import com.github.andreyasadchy.xtra.model.ui.GameSort
-import com.github.andreyasadchy.xtra.model.ui.SavedFilter
-import com.github.andreyasadchy.xtra.repository.GameSortRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.SavedFiltersRepository
-import com.github.andreyasadchy.xtra.repository.datasource.StreamsDataSource
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.graphql.type.Language
+import com.endlessbum.twitchpro.graphql.type.StreamSort
+import com.endlessbum.twitchpro.model.ui.GameSort
+import com.endlessbum.twitchpro.model.ui.SavedFilter
+import com.endlessbum.twitchpro.repository.GameSortRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.SavedFiltersRepository
+import com.endlessbum.twitchpro.repository.datasource.StreamsDataSource
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -118,9 +118,9 @@ class TopStreamsViewModel(
     companion object {
         val TopStreamsViewModelFactory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as XtraApp)
-                val xtraModule = application.xtraModule
-                TopStreamsViewModel(application.applicationContext, xtraModule.gameSortRepository, xtraModule.savedFiltersRepository, xtraModule.graphQLRepository, xtraModule.helixRepository)
+                val application = (this[APPLICATION_KEY] as TwitchProApp)
+                val twitchProModule = application.twitchProModule
+                TopStreamsViewModel(application.applicationContext, twitchProModule.gameSortRepository, twitchProModule.savedFiltersRepository, twitchProModule.graphQLRepository, twitchProModule.helixRepository)
             }
         }
     }

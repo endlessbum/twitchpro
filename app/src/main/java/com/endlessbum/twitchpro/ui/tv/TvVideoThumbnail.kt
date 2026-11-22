@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 /** TV: Twitch gives the picture "404_processing" (a "?") for a video that records or is processed. */
 object TvVideoThumbnail {

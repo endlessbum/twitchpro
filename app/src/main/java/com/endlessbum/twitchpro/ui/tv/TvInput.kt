@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.Manifest
 import android.content.Context
@@ -79,9 +79,9 @@ import androidx.core.content.ContextCompat
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.awaitCancellation
 
 object TvPermissions {
@@ -558,7 +558,7 @@ fun ChatComposer(
     title: String,
     hint: String,
     sendLabel: String,
-    emoteGroups: List<Pair<String, List<com.github.andreyasadchy.xtra.model.chat.Emote>>> = emptyList(),
+    emoteGroups: List<Pair<String, List<com.endlessbum.twitchpro.model.chat.Emote>>> = emptyList(),
     initialText: String = "",
     onSend: (String) -> Unit,
 ) {

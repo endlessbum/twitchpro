@@ -1,6 +1,6 @@
-package com.github.andreyasadchy.xtra.util.chat
+package com.endlessbum.twitchpro.util.chat
 
-import com.github.andreyasadchy.xtra.util.WebSocket
+import com.endlessbum.twitchpro.util.WebSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

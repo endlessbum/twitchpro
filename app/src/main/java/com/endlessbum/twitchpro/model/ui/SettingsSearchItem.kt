@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.model.ui
+package com.endlessbum.twitchpro.model.ui
 
 import androidx.navigation.NavDirections
 

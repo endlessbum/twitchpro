@@ -1,13 +1,13 @@
-package com.github.andreyasadchy.xtra.ui.channel
+package com.endlessbum.twitchpro.ui.channel
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.github.andreyasadchy.xtra.ui.channel.about.ChannelAboutFragment
-import com.github.andreyasadchy.xtra.ui.channel.clips.ChannelClipsFragment
-import com.github.andreyasadchy.xtra.ui.channel.schedule.ChannelScheduleFragment
-import com.github.andreyasadchy.xtra.ui.channel.suggestions.ChannelSuggestionsFragment
-import com.github.andreyasadchy.xtra.ui.channel.videos.ChannelVideosFragment
-import com.github.andreyasadchy.xtra.ui.chat.ChatFragment
+import com.endlessbum.twitchpro.ui.channel.about.ChannelAboutFragment
+import com.endlessbum.twitchpro.ui.channel.clips.ChannelClipsFragment
+import com.endlessbum.twitchpro.ui.channel.schedule.ChannelScheduleFragment
+import com.endlessbum.twitchpro.ui.channel.suggestions.ChannelSuggestionsFragment
+import com.endlessbum.twitchpro.ui.channel.videos.ChannelVideosFragment
+import com.endlessbum.twitchpro.ui.chat.ChatFragment
 import kotlin.math.max
 
 class ChannelPagerAdapter(

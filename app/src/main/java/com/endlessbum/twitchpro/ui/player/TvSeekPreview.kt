@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -56,12 +56,12 @@ import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.ui.tv.FocusRow
-import com.github.andreyasadchy.xtra.ui.tv.SidePanel
-import com.github.andreyasadchy.xtra.ui.tv.TvColors
-import com.github.andreyasadchy.xtra.ui.tv.TvDialogs
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.ui.tv.FocusRow
+import com.endlessbum.twitchpro.ui.tv.SidePanel
+import com.endlessbum.twitchpro.ui.tv.TvColors
+import com.endlessbum.twitchpro.ui.tv.TvDialogs
+import com.endlessbum.twitchpro.util.TwitchApiHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -160,7 +160,7 @@ class TvSeekPreview(
         visibility = View.GONE
     }
     private val clockIconView = ImageView(container.context).apply {
-        setImageResource(com.github.andreyasadchy.xtra.R.drawable.tv_ic_schedule)
+        setImageResource(com.endlessbum.twitchpro.R.drawable.tv_ic_schedule)
         setColorFilter(0xC8FFFFFF.toInt())
         scaleType = ImageView.ScaleType.FIT_CENTER
         importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
@@ -349,8 +349,8 @@ class TvSeekPreview(
     }
 
     private fun log(message: String) {
-        if (com.github.andreyasadchy.xtra.BuildConfig.DEBUG) {
-            android.util.Log.d("XtraTv", "seekPreview $message")
+        if (com.endlessbum.twitchpro.BuildConfig.DEBUG) {
+            android.util.Log.d("TwitchPro", "seekPreview $message")
         }
     }
 
@@ -385,8 +385,8 @@ class TvSeekPreview(
 
         if (deltaMs != null) {
             deltaTextView.text = formatSignedDelta(deltaMs)
-            val baseAccent = if (com.github.andreyasadchy.xtra.ui.tv.TvAccent.current != null) {
-                com.github.andreyasadchy.xtra.ui.tv.TvAccent.color
+            val baseAccent = if (com.endlessbum.twitchpro.ui.tv.TvAccent.current != null) {
+                com.endlessbum.twitchpro.ui.tv.TvAccent.color
             } else {
                 0xFFA970FF.toInt()
             }

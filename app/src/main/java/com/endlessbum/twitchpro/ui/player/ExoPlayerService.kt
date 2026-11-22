@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -65,29 +65,29 @@ import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
 import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
 import androidx.media3.exoplayer.upstream.ParsingLoadable
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.model.VideoPosition
-import com.github.andreyasadchy.xtra.model.VideoQuality
-import com.github.andreyasadchy.xtra.model.ui.CustomProxy
-import com.github.andreyasadchy.xtra.model.ui.StreamProxy
-import com.github.andreyasadchy.xtra.model.ui.Video
-import com.github.andreyasadchy.xtra.model.ui.VideoSwap
-import com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock
-import com.github.andreyasadchy.xtra.ui.tv.TvProxyStatus
-import com.github.andreyasadchy.xtra.player.lowlatency.CronetDataSource
-import com.github.andreyasadchy.xtra.player.lowlatency.HlsPlaylistParser
-import com.github.andreyasadchy.xtra.player.lowlatency.HttpEngineDataSource
-import com.github.andreyasadchy.xtra.player.lowlatency.OkHttpDataSource
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.MediaButtonReceiver
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.TwitchClock
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.model.VideoPosition
+import com.endlessbum.twitchpro.model.VideoQuality
+import com.endlessbum.twitchpro.model.ui.CustomProxy
+import com.endlessbum.twitchpro.model.ui.StreamProxy
+import com.endlessbum.twitchpro.model.ui.Video
+import com.endlessbum.twitchpro.model.ui.VideoSwap
+import com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock
+import com.endlessbum.twitchpro.ui.tv.TvProxyStatus
+import com.endlessbum.twitchpro.player.lowlatency.CronetDataSource
+import com.endlessbum.twitchpro.player.lowlatency.HlsPlaylistParser
+import com.endlessbum.twitchpro.player.lowlatency.HttpEngineDataSource
+import com.endlessbum.twitchpro.player.lowlatency.OkHttpDataSource
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.MediaButtonReceiver
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.TwitchClock
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -341,13 +341,13 @@ class ExoPlayerService : BasePlaybackService() {
 
     override fun onCreate() {
         super.onCreate()
-        xtraModule = (application as XtraApp).xtraModule
+        twitchProModule = (application as TwitchProApp).twitchProModule
         // statistics of the home: time watched, by streamer
         lifecycleScope.launch {
             while (true) {
                 delay(30_000L)
                 if (visiblePlayer?.isPlaying == true && (type == STREAM || type == VIDEO)) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvStats.addWatchTime(this@ExoPlayerService, channelLogin, channelName, 30_000L, gameId, gameName, channelImage)
+                    com.endlessbum.twitchpro.ui.tv.TvStats.addWatchTime(this@ExoPlayerService, channelLogin, channelName, 30_000L, gameId, gameName, channelImage)
                 }
                 // the system (and the screensavers of the launchers that look at it) sees a playback going on: its state
                 // is given again now and then, whichever player plays (the backup player of the ad blocker too)
@@ -721,7 +721,7 @@ class ExoPlayerService : BasePlaybackService() {
                                     adRollType = rollTypeOf(playlist) ?: if (firstPlaylistAd) "preroll" else "midroll"
                                     firstPlaylistAd = false
                                     // statistics of the home: an ad break handled by the ad blocker (or a proxy)
-                                    lifecycleScope.launch { com.github.andreyasadchy.xtra.ui.tv.TvStats.addAdBlocked(this@ExoPlayerService) }
+                                    lifecycleScope.launch { com.endlessbum.twitchpro.ui.tv.TvStats.addAdBlocked(this@ExoPlayerService) }
                                     when {
                                         useProxy -> {
                                             if (!proxyMediaPlaylist) {
@@ -949,14 +949,14 @@ class ExoPlayerService : BasePlaybackService() {
                                                             DefaultDataSource.Factory(
                                                                 this@ExoPlayerService,
                                                                 when {
-                                                                    networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
-                                                                        HttpEngineDataSource.Factory(xtraModule.httpEngine.value, xtraModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
+                                                                    networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                                                        HttpEngineDataSource.Factory(twitchProModule.httpEngine.value, twitchProModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
                                                                     }
-                                                                    networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
-                                                                        CronetDataSource.Factory(xtraModule.cronetEngine.value, xtraModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
+                                                                    networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
+                                                                        CronetDataSource.Factory(twitchProModule.cronetEngine.value, twitchProModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
                                                                     }
                                                                     else -> {
-                                                                        OkHttpDataSource.Factory(xtraModule.okHttpClient.value, null, null, null, null) { false }
+                                                                        OkHttpDataSource.Factory(twitchProModule.okHttpClient.value, null, null, null, null) { false }
                                                                     }
                                                                 }
                                                             )
@@ -981,7 +981,7 @@ class ExoPlayerService : BasePlaybackService() {
                                         val listener = this
                                         lifecycleScope.launch {
                                             val preview = try {
-                                                xtraModule.graphQLRepository.loadQueryVideo(
+                                                twitchProModule.graphQLRepository.loadQueryVideo(
                                                     networkLibrary = prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
                                                     headers = TwitchApiHelper.getGQLHeaders(this@ExoPlayerService),
                                                     id = videoId
@@ -1043,7 +1043,7 @@ class ExoPlayerService : BasePlaybackService() {
                     if (isPlaying) {
                         pendingProxyStat?.let {
                             pendingProxyStat = null
-                            lifecycleScope.launch { com.github.andreyasadchy.xtra.ui.tv.TvStats.addProxy(this@ExoPlayerService, it) }
+                            lifecycleScope.launch { com.endlessbum.twitchpro.ui.tv.TvStats.addProxy(this@ExoPlayerService, it) }
                         }
                         if (savePositionTimer == null && type != STREAM) {
                             savePositionTimer = Timer().apply {
@@ -1176,7 +1176,7 @@ class ExoPlayerService : BasePlaybackService() {
                 if (resources.getBoolean(R.bool.isTv)) {
                     // TV: the sound of a film, the audio focus is held by the app for every player (TvPlaybackSignals),
                     // and Bluetooth keyboards / remotes / HDMI audio sinks going idle must never pause the stream
-                    setAudioAttributes(com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.playerAttributes, false)
+                    setAudioAttributes(com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.playerAttributes, false)
                     setHandleAudioBecomingNoisy(false)
                 } else {
                     setAudioAttributes(AudioAttributes.DEFAULT, prefs().getBoolean(C.PLAYER_AUDIO_FOCUS, false))
@@ -1225,7 +1225,7 @@ class ExoPlayerService : BasePlaybackService() {
                 // of one item), with the sound of a film: the launchers looking at it see a playback going on
                 @Suppress("DEPRECATION")
                 session.setFlags(7)
-                session.setPlaybackToLocal(com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.systemAttributes)
+                session.setPlaybackToLocal(com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.systemAttributes)
             }
             session.isActive = true
             notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -1296,7 +1296,7 @@ class ExoPlayerService : BasePlaybackService() {
                         }
                     }
                     if (useCustomProxy) {
-                        customProxyList = xtraModule.playerRepository.getCustomProxies().filter {
+                        customProxyList = twitchProModule.playerRepository.getCustomProxies().filter {
                             it.enabled && !it.url.isNullOrBlank()
                         }.sortedBy { it.position }
                     }
@@ -1314,7 +1314,7 @@ class ExoPlayerService : BasePlaybackService() {
                         useCustomProxy = false
                     }
                     if (useStreamProxy) {
-                        streamProxyList = xtraModule.playerRepository.getStreamProxies().filter {
+                        streamProxyList = twitchProModule.playerRepository.getStreamProxies().filter {
                             it.enabled && !it.host.isNullOrBlank() && it.port != null
                                     && (it.proxyPlaybackAccessToken || it.proxyMultivariantPlaylist || it.proxyMediaPlaylist)
                         }.sortedBy { it.position }
@@ -1323,7 +1323,7 @@ class ExoPlayerService : BasePlaybackService() {
                     // the ad blocker also backs up the proxies: if an ad still comes through them, the playlist of another player type is used
                     useVideoSwap = (!useCustomProxy && !useStreamProxy && prefs().getBoolean(C.PLAYER_USE_VIDEO_SWAP, true)) || adblock || adsOnlyProxies.isNotEmpty()
                     if (useVideoSwap) {
-                        videoSwapList = adsOnlyProxies + xtraModule.playerRepository.getVideoSwapItems(this@ExoPlayerService).filter {
+                        videoSwapList = adsOnlyProxies + twitchProModule.playerRepository.getVideoSwapItems(this@ExoPlayerService).filter {
                             it.enabled && !it.platform.isNullOrBlank() && !it.playerType.isNullOrBlank()
                         }.sortedBy { it.position }.ifEmpty {
                             // ad blocker: like the VAFT userscript, switch to the playlist of another player type while ads play
@@ -1396,14 +1396,14 @@ class ExoPlayerService : BasePlaybackService() {
                                             DefaultDataSource.Factory(
                                                 this@ExoPlayerService,
                                                 when {
-                                                    networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
-                                                        HttpEngineDataSource.Factory(xtraModule.httpEngine.value, xtraModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
+                                                    networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                                        HttpEngineDataSource.Factory(twitchProModule.httpEngine.value, twitchProModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
                                                     }
-                                                    networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
-                                                        CronetDataSource.Factory(xtraModule.cronetEngine.value, xtraModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
+                                                    networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
+                                                        CronetDataSource.Factory(twitchProModule.cronetEngine.value, twitchProModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
                                                     }
                                                     else -> {
-                                                        OkHttpDataSource.Factory(xtraModule.okHttpClient.value, null, null, null, null) { false }
+                                                        OkHttpDataSource.Factory(twitchProModule.okHttpClient.value, null, null, null, null) { false }
                                                     }
                                                 }
                                             )
@@ -1438,7 +1438,7 @@ class ExoPlayerService : BasePlaybackService() {
                 }
                 OFFLINE_VIDEO -> {
                     offlineVideoId?.let { id ->
-                        val video = xtraModule.offlineVideosRepository.getById(id)
+                        val video = twitchProModule.offlineVideosRepository.getById(id)
                         if (video != null) {
                             val playbackPosition = if (prefs().getBoolean(C.PLAYER_USE_VIDEO_POSITIONS, true)) {
                                 video.lastWatchPosition
@@ -1496,7 +1496,7 @@ class ExoPlayerService : BasePlaybackService() {
                 }
                 val outcome = TvExperimentalAdblock.resolveLiveVod(
                     context = this@ExoPlayerService,
-                    xtraModule = xtraModule,
+                    twitchProModule = twitchProModule,
                     channelLogin = login,
                     streamIdHint = streamId,
                     createdAtHint = createdAt,
@@ -1547,7 +1547,7 @@ class ExoPlayerService : BasePlaybackService() {
                         p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().apply {
                             setTrackTypeDisabled(androidx.media3.common.C.TRACK_TYPE_VIDEO, isAudioOnly)
                         }.build()
-                        p.setMediaSource(TvExperimentalAdblock.buildMediaSource(this@ExoPlayerService, xtraModule, vod.masterUri))
+                        p.setMediaSource(TvExperimentalAdblock.buildMediaSource(this@ExoPlayerService, twitchProModule, vod.masterUri))
                         p.volume = userVolume()
                         p.setPlaybackSpeed(1f)
                         p.prepare()
@@ -1601,7 +1601,7 @@ class ExoPlayerService : BasePlaybackService() {
             if (TvExperimentalAdblock.isExperimentalEnabled(this@ExoPlayerService) && quality?.name != VideoQuality.CHAT_ONLY_QUALITY) {
                 val outcome = TvExperimentalAdblock.resolveLiveVod(
                     context = this@ExoPlayerService,
-                    xtraModule = xtraModule,
+                    twitchProModule = twitchProModule,
                     channelLogin = channelLogin,
                     streamIdHint = streamId,
                     createdAtHint = createdAt,
@@ -1632,7 +1632,7 @@ class ExoPlayerService : BasePlaybackService() {
                         }
                     }
                     player?.let { player ->
-                        player.setMediaSource(TvExperimentalAdblock.buildMediaSource(this@ExoPlayerService, xtraModule, vod.masterUri))
+                        player.setMediaSource(TvExperimentalAdblock.buildMediaSource(this@ExoPlayerService, twitchProModule, vod.masterUri))
                         if (fallbackH264ForStream) {
                             player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()
                                 .setMaxVideoSize(1920, 1080)
@@ -1775,7 +1775,7 @@ class ExoPlayerService : BasePlaybackService() {
                             DefaultDataSource.Factory(
                                 this@ExoPlayerService,
                                 when {
-                                    networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                    networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                         val proxyClient = if (proxyMultivariantPlaylist) {
                                             val proxyHeaders = if (!proxyUser.isNullOrBlank() && !proxyPassword.isNullOrBlank()) {
                                                 listOf(android.util.Pair("Proxy-Authorization", Base64.encodeToString("$proxyUser:$proxyPassword".toByteArray(), Base64.NO_WRAP)))
@@ -1788,7 +1788,7 @@ class ExoPlayerService : BasePlaybackService() {
                                                             android.net.http.Proxy.SCHEME_HTTP,
                                                             proxyHost,
                                                             proxyPort,
-                                                            xtraModule.cronetExecutor.value,
+                                                            twitchProModule.cronetExecutor.value,
                                                             object : android.net.http.Proxy.HttpConnectCallback {
                                                                 override fun onBeforeRequest(request: android.net.http.Proxy.HttpConnectCallback.Request) {
                                                                     request.proceed(proxyHeaders)
@@ -1807,7 +1807,7 @@ class ExoPlayerService : BasePlaybackService() {
                                             }?.build()
                                         } else null
                                         val multivariantPlaylistProxyOkHttpClient = if (proxyMultivariantPlaylist && proxyClient == null) {
-                                            xtraModule.okHttpClient.value.newBuilder().apply {
+                                            twitchProModule.okHttpClient.value.newBuilder().apply {
                                                 val proxyTimeout = proxyTimeout.toLong()
                                                 connectTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
                                                 writeTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
@@ -1835,8 +1835,8 @@ class ExoPlayerService : BasePlaybackService() {
                                             }.build()
                                         } else null
                                         HttpEngineDataSource.Factory(
-                                            xtraModule.httpEngine.value,
-                                            xtraModule.cronetExecutor.value,
+                                            twitchProModule.httpEngine.value,
+                                            twitchProModule.cronetExecutor.value,
                                             customProxyUrl,
                                             proxyTimeout,
                                             proxyMultivariantPlaylist,
@@ -1846,7 +1846,7 @@ class ExoPlayerService : BasePlaybackService() {
                                             null
                                         ) { false }
                                     }
-                                    networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                                    networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                         val proxyClient = if (proxyMultivariantPlaylist && CronetProvider.getAllProviders(application).any { it.isEnabled }) {
                                             val proxyHeaders = if (!proxyUser.isNullOrBlank() && !proxyPassword.isNullOrBlank()) {
                                                 mapOf("Proxy-Authorization" to Base64.encodeToString("$proxyUser:$proxyPassword".toByteArray(), Base64.NO_WRAP)).entries.toList()
@@ -1865,7 +1865,7 @@ class ExoPlayerService : BasePlaybackService() {
                                                             org.chromium.net.Proxy.HTTP,
                                                             proxyHost,
                                                             proxyPort,
-                                                            xtraModule.cronetExecutor.value,
+                                                            twitchProModule.cronetExecutor.value,
                                                             object : org.chromium.net.Proxy.Callback() {
                                                                 override fun onBeforeTunnelRequest(request: org.chromium.net.Proxy.Callback.Request) {
                                                                     request.proceed(proxyHeaders)
@@ -1883,7 +1883,7 @@ class ExoPlayerService : BasePlaybackService() {
                                             }?.build()
                                         } else null
                                         val multivariantPlaylistProxyOkHttpClient = if (proxyMultivariantPlaylist && proxyClient == null) {
-                                            xtraModule.okHttpClient.value.newBuilder().apply {
+                                            twitchProModule.okHttpClient.value.newBuilder().apply {
                                                 val proxyTimeout = proxyTimeout.toLong()
                                                 connectTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
                                                 writeTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
@@ -1911,8 +1911,8 @@ class ExoPlayerService : BasePlaybackService() {
                                             }.build()
                                         } else null
                                         CronetDataSource.Factory(
-                                            xtraModule.cronetEngine.value,
-                                            xtraModule.cronetExecutor.value,
+                                            twitchProModule.cronetEngine.value,
+                                            twitchProModule.cronetExecutor.value,
                                             customProxyUrl,
                                             proxyTimeout,
                                             proxyMultivariantPlaylist,
@@ -1924,7 +1924,7 @@ class ExoPlayerService : BasePlaybackService() {
                                     }
                                     else -> {
                                         val customProxyClient = if (customProxyUrl != null) {
-                                            xtraModule.okHttpClient.value.newBuilder().apply {
+                                            twitchProModule.okHttpClient.value.newBuilder().apply {
                                                 val proxyTimeout = proxyTimeout.toLong()
                                                 connectTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
                                                 writeTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
@@ -1932,7 +1932,7 @@ class ExoPlayerService : BasePlaybackService() {
                                             }.build()
                                         } else null
                                         val multivariantPlaylistProxyClient = if (proxyMultivariantPlaylist) {
-                                            xtraModule.okHttpClient.value.newBuilder().apply {
+                                            twitchProModule.okHttpClient.value.newBuilder().apply {
                                                 val proxyTimeout = proxyTimeout.toLong()
                                                 connectTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
                                                 writeTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
@@ -1960,7 +1960,7 @@ class ExoPlayerService : BasePlaybackService() {
                                             }.build()
                                         } else null
                                         OkHttpDataSource.Factory(
-                                            xtraModule.okHttpClient.value,
+                                            twitchProModule.okHttpClient.value,
                                             customProxyClient,
                                             customProxyUrl,
                                             multivariantPlaylistProxyClient,
@@ -2014,7 +2014,7 @@ class ExoPlayerService : BasePlaybackService() {
         supportedCodecsOverride: String? = null,
     ): String? {
         return try {
-            loadStreamPlaylistUrl(this, xtraModule, channelLogin, streamProxy, supportedCodecsOverride)
+            loadStreamPlaylistUrl(this, twitchProModule, channelLogin, streamProxy, supportedCodecsOverride)
         } catch (e: Exception) {
             if (e.message == C.FAILED_INTEGRITY_CHECK) {
                 waitingIntegrity = true
@@ -2099,14 +2099,14 @@ class ExoPlayerService : BasePlaybackService() {
     private suspend fun loadVideo(restorePauseState: Boolean = false) {
         videoId?.let { videoId ->
             val playbackPosition = (if (prefs().getBoolean(C.PLAYER_USE_VIDEO_POSITIONS, true)) {
-                videoId.toLongOrNull()?.let { xtraModule.playerRepository.getVideoPosition(it)?.position }
+                videoId.toLongOrNull()?.let { twitchProModule.playerRepository.getVideoPosition(it)?.position }
             } else {
                 null
             } ?: savedPosition ?: 0L).coerceAtLeast(0L)
             videoStartPosition = playbackPosition
             if (qualities.isNullOrEmpty()) {
                 val result = try {
-                    xtraModule.playerRepository.loadVideoPlaylistUrl(
+                    twitchProModule.playerRepository.loadVideoPlaylistUrl(
                         networkLibrary = prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
                         gqlHeaders = TwitchApiHelper.getGQLHeaders(this@ExoPlayerService, prefs().getBoolean(C.TOKEN_INCLUDE_TOKEN_VIDEO, true)),
                         videoId = videoId,
@@ -2132,7 +2132,7 @@ class ExoPlayerService : BasePlaybackService() {
                     if (videoAnimatedPreviewURL == null && !videoPreviewLookupDone) {
                         videoPreviewLookupDone = true
                         videoAnimatedPreviewURL = runCatching {
-                            xtraModule.graphQLRepository.loadQueryVideo(
+                            twitchProModule.graphQLRepository.loadQueryVideo(
                                 networkLibrary = prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
                                 headers = TwitchApiHelper.getGQLHeaders(this@ExoPlayerService),
                                 id = videoId,
@@ -2178,14 +2178,14 @@ class ExoPlayerService : BasePlaybackService() {
                             DefaultDataSource.Factory(
                                 this@ExoPlayerService,
                                 when {
-                                    networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
-                                        HttpEngineDataSource.Factory(xtraModule.httpEngine.value, xtraModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
+                                    networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                        HttpEngineDataSource.Factory(twitchProModule.httpEngine.value, twitchProModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
                                     }
-                                    networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
-                                        CronetDataSource.Factory(xtraModule.cronetEngine.value, xtraModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
+                                    networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
+                                        CronetDataSource.Factory(twitchProModule.cronetEngine.value, twitchProModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
                                     }
                                     else -> {
-                                        OkHttpDataSource.Factory(xtraModule.okHttpClient.value, null, null, null, null) { false }
+                                        OkHttpDataSource.Factory(twitchProModule.okHttpClient.value, null, null, null, null) { false }
                                     }
                                 }
                             )
@@ -2209,7 +2209,7 @@ class ExoPlayerService : BasePlaybackService() {
 
     private suspend fun updateVideoInfo() {
         val video = try {
-            val response = xtraModule.graphQLRepository.loadQueryVideo(
+            val response = twitchProModule.graphQLRepository.loadQueryVideo(
                 networkLibrary = prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
                 headers = TwitchApiHelper.getGQLHeaders(this),
                 id = videoId
@@ -2244,7 +2244,7 @@ class ExoPlayerService : BasePlaybackService() {
             val helixHeaders = TwitchApiHelper.getHelixHeaders(this)
             if (!helixHeaders[C.HEADER_TOKEN].isNullOrBlank()) {
                 try {
-                    xtraModule.helixRepository.getVideos(
+                    twitchProModule.helixRepository.getVideos(
                         networkLibrary = prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
                         headers = helixHeaders,
                         ids = videoId?.let { listOf(it) }
@@ -2291,7 +2291,7 @@ class ExoPlayerService : BasePlaybackService() {
             val networkLibrary = prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
             if (qualities.isNullOrEmpty()) {
                 val list = try {
-                    xtraModule.playerRepository.loadClipQualities(
+                    twitchProModule.playerRepository.loadClipQualities(
                         networkLibrary = networkLibrary,
                         gqlHeaders = TwitchApiHelper.getGQLHeaders(this@ExoPlayerService),
                         clipId = clipId,
@@ -2335,14 +2335,14 @@ class ExoPlayerService : BasePlaybackService() {
                             DefaultDataSource.Factory(
                                 this@ExoPlayerService,
                                 when {
-                                    networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
-                                        HttpEngineDataSource.Factory(xtraModule.httpEngine.value, xtraModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
+                                    networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                        HttpEngineDataSource.Factory(twitchProModule.httpEngine.value, twitchProModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
                                     }
-                                    networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
-                                        CronetDataSource.Factory(xtraModule.cronetEngine.value, xtraModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
+                                    networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
+                                        CronetDataSource.Factory(twitchProModule.cronetEngine.value, twitchProModule.cronetExecutor.value, null, 0, false, false, null, null, null) { false }
                                     }
                                     else -> {
-                                        OkHttpDataSource.Factory(xtraModule.okHttpClient.value, null, null, null, null) { false }
+                                        OkHttpDataSource.Factory(twitchProModule.okHttpClient.value, null, null, null, null) { false }
                                     }
                                 }
                             )
@@ -2385,7 +2385,7 @@ class ExoPlayerService : BasePlaybackService() {
 
     private fun setStreamMediaUri(player: ExoPlayer, mediaItem: MediaItem, uriString: String, seekPositionMs: Long) {
         if (experimentalVodActive) {
-            player.setMediaSource(TvExperimentalAdblock.buildMediaSource(this, xtraModule, uriString.toUri()), seekPositionMs)
+            player.setMediaSource(TvExperimentalAdblock.buildMediaSource(this, twitchProModule, uriString.toUri()), seekPositionMs)
             player.prepare()
         } else {
             player.setMediaItem(mediaItem.buildUpon().setUri(uriString).build())
@@ -2745,7 +2745,7 @@ class ExoPlayerService : BasePlaybackService() {
                     if (isPlaying) {
                         pendingSecondaryProxyStat?.let {
                             pendingSecondaryProxyStat = null
-                            lifecycleScope.launch { com.github.andreyasadchy.xtra.ui.tv.TvStats.addProxy(this@ExoPlayerService, it) }
+                            lifecycleScope.launch { com.endlessbum.twitchpro.ui.tv.TvStats.addProxy(this@ExoPlayerService, it) }
                         }
                     }
                     // the backup player plays: the system sees the playback going on
@@ -2820,7 +2820,7 @@ class ExoPlayerService : BasePlaybackService() {
                 setLoadControl(createLoadControl())
                 if (resources.getBoolean(R.bool.isTv)) {
                     // TV: the sound of a film, the audio focus is held by the app for every player (TvPlaybackSignals)
-                    setAudioAttributes(com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.playerAttributes, false)
+                    setAudioAttributes(com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.playerAttributes, false)
                     setHandleAudioBecomingNoisy(false)
                 } else {
                     setAudioAttributes(AudioAttributes.DEFAULT, prefs().getBoolean(C.PLAYER_AUDIO_FOCUS, false))
@@ -2843,7 +2843,7 @@ class ExoPlayerService : BasePlaybackService() {
                     // a custom proxy while the ad plays: its playlist, else the playlist of another player type
                     val playlistUrl = if (videoSwap.platform == AD_PROXY_PLATFORM) videoSwap.playerType else channelLogin?.let { channelLogin ->
                         try {
-                            xtraModule.playerRepository.loadStreamPlaylistUrl(
+                            twitchProModule.playerRepository.loadStreamPlaylistUrl(
                                 context = this@ExoPlayerService,
                                 networkLibrary = networkLibrary,
                                 gqlHeaders = getStreamTokenHeaders(this@ExoPlayerService, videoSwap.platform),
@@ -2867,12 +2867,12 @@ class ExoPlayerService : BasePlaybackService() {
                         withContext(Dispatchers.IO) {
                             try {
                                 when {
-                                    networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                    networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                         val response = suspendCancellableCoroutine { continuation ->
                                             val timeout = NetworkUtils.HttpEngineTimeout()
-                                            val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                                            val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                                 playlistUrl,
-                                                xtraModule.cronetExecutor.value,
+                                                twitchProModule.cronetExecutor.value,
                                                 NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                                             ).build()
                                             timeout.start(request, continuation)
@@ -2887,13 +2887,13 @@ class ExoPlayerService : BasePlaybackService() {
                                             response.body.decodeToString()
                                         } else null
                                     }
-                                    networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                                    networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                         val response = suspendCancellableCoroutine { continuation ->
                                             val timeout = NetworkUtils.CronetTimeout()
-                                            val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                                            val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                                 playlistUrl,
                                                 NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                                xtraModule.cronetExecutor.value
+                                                twitchProModule.cronetExecutor.value
                                             ).build()
                                             timeout.start(request, continuation)
                                             request.start()
@@ -2908,7 +2908,7 @@ class ExoPlayerService : BasePlaybackService() {
                                         } else null
                                     }
                                     else -> {
-                                        xtraModule.okHttpClient.value.newCall(Request.Builder().url(playlistUrl).build()).executeAsync().use { response ->
+                                        twitchProModule.okHttpClient.value.newCall(Request.Builder().url(playlistUrl).build()).executeAsync().use { response ->
                                             playlistStatusCode = response.code
                                             if (response.isSuccessful) {
                                                 response.body.string()
@@ -2965,7 +2965,7 @@ class ExoPlayerService : BasePlaybackService() {
                         DefaultDataSource.Factory(
                             this@ExoPlayerService,
                             when {
-                                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                     val proxyClient = if (proxyMediaPlaylist) {
                                         val proxyHeaders = if (!proxyUser.isNullOrBlank() && !proxyPassword.isNullOrBlank()) {
                                             listOf(android.util.Pair("Proxy-Authorization", Base64.encodeToString("$proxyUser:$proxyPassword".toByteArray(), Base64.NO_WRAP)))
@@ -2978,7 +2978,7 @@ class ExoPlayerService : BasePlaybackService() {
                                                         android.net.http.Proxy.SCHEME_HTTP,
                                                         proxyHost,
                                                         proxyPort,
-                                                        xtraModule.cronetExecutor.value,
+                                                        twitchProModule.cronetExecutor.value,
                                                         object : android.net.http.Proxy.HttpConnectCallback {
                                                             override fun onBeforeRequest(request: android.net.http.Proxy.HttpConnectCallback.Request) {
                                                                 request.proceed(proxyHeaders)
@@ -2997,7 +2997,7 @@ class ExoPlayerService : BasePlaybackService() {
                                         }?.build()
                                     } else null
                                     val mediaPlaylistProxyOkHttpClient = if (proxyMediaPlaylist && proxyClient == null) {
-                                        xtraModule.okHttpClient.value.newBuilder().apply {
+                                        twitchProModule.okHttpClient.value.newBuilder().apply {
                                             val proxyTimeout = proxyTimeout.toLong()
                                             connectTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
                                             writeTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
@@ -3025,8 +3025,8 @@ class ExoPlayerService : BasePlaybackService() {
                                         }.build()
                                     } else null
                                     HttpEngineDataSource.Factory(
-                                        xtraModule.httpEngine.value,
-                                        xtraModule.cronetExecutor.value,
+                                        twitchProModule.httpEngine.value,
+                                        twitchProModule.cronetExecutor.value,
                                         null,
                                         proxyTimeout,
                                         false,
@@ -3036,7 +3036,7 @@ class ExoPlayerService : BasePlaybackService() {
                                         mediaPlaylistProxyOkHttpClient
                                     ) { this@ExoPlayerService.proxyMediaPlaylist }
                                 }
-                                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                                networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                     val proxyClient = if (proxyMediaPlaylist && CronetProvider.getAllProviders(application).any { it.isEnabled }) {
                                         val proxyHeaders = if (!proxyUser.isNullOrBlank() && !proxyPassword.isNullOrBlank()) {
                                             mapOf("Proxy-Authorization" to Base64.encodeToString("$proxyUser:$proxyPassword".toByteArray(), Base64.NO_WRAP)).entries.toList()
@@ -3055,7 +3055,7 @@ class ExoPlayerService : BasePlaybackService() {
                                                         org.chromium.net.Proxy.HTTP,
                                                         proxyHost,
                                                         proxyPort,
-                                                        xtraModule.cronetExecutor.value,
+                                                        twitchProModule.cronetExecutor.value,
                                                         object : org.chromium.net.Proxy.Callback() {
                                                             override fun onBeforeTunnelRequest(request: org.chromium.net.Proxy.Callback.Request) {
                                                                 request.proceed(proxyHeaders)
@@ -3073,7 +3073,7 @@ class ExoPlayerService : BasePlaybackService() {
                                         }?.build()
                                     } else null
                                     val mediaPlaylistProxyOkHttpClient = if (proxyMediaPlaylist && proxyClient == null) {
-                                        xtraModule.okHttpClient.value.newBuilder().apply {
+                                        twitchProModule.okHttpClient.value.newBuilder().apply {
                                             val proxyTimeout = proxyTimeout.toLong()
                                             connectTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
                                             writeTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
@@ -3101,8 +3101,8 @@ class ExoPlayerService : BasePlaybackService() {
                                         }.build()
                                     } else null
                                     CronetDataSource.Factory(
-                                        xtraModule.cronetEngine.value,
-                                        xtraModule.cronetExecutor.value,
+                                        twitchProModule.cronetEngine.value,
+                                        twitchProModule.cronetExecutor.value,
                                         null,
                                         proxyTimeout,
                                         false,
@@ -3114,7 +3114,7 @@ class ExoPlayerService : BasePlaybackService() {
                                 }
                                 else -> {
                                     val mediaPlaylistProxyClient = if (proxyMediaPlaylist) {
-                                        xtraModule.okHttpClient.value.newBuilder().apply {
+                                        twitchProModule.okHttpClient.value.newBuilder().apply {
                                             val proxyTimeout = proxyTimeout.toLong()
                                             connectTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
                                             writeTimeout(proxyTimeout, TimeUnit.MILLISECONDS)
@@ -3142,7 +3142,7 @@ class ExoPlayerService : BasePlaybackService() {
                                         }.build()
                                     } else null
                                     OkHttpDataSource.Factory(
-                                        xtraModule.okHttpClient.value,
+                                        twitchProModule.okHttpClient.value,
                                         null,
                                         null,
                                         null,
@@ -4335,7 +4335,7 @@ class ExoPlayerService : BasePlaybackService() {
     }
 
     /** The volume of the settings, with the share the small window of the TV leaves to this stream. */
-    private fun userVolume() = if (com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.leaveMuted) 0f else prefs().getInt(C.PLAYER_VOLUME, 100) / 100f * TvPip.mainMix
+    private fun userVolume() = if (com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.leaveMuted) 0f else prefs().getInt(C.PLAYER_VOLUME, 100) / 100f * TvPip.mainMix
 
     /** TV: the sound of the small window changed (its panel, opened or closed): the stream that is heard follows. */
     fun refreshVolume() {
@@ -4447,7 +4447,7 @@ class ExoPlayerService : BasePlaybackService() {
             }
             if (attempt >= 1 && isNetworkValidated()) {
                 val stillLive = runCatching {
-                    val user = xtraModule.graphQLRepository.loadQueryUsersStream(
+                    val user = twitchProModule.graphQLRepository.loadQueryUsersStream(
                         networkLibrary = prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
                         headers = TwitchApiHelper.getGQLHeaders(this@ExoPlayerService),
                         ids = null,
@@ -4502,7 +4502,7 @@ class ExoPlayerService : BasePlaybackService() {
             while (true) {
                 if (!created || !started || type != STREAM || intentionalStopOrPause || streamEnded ||
                     quality?.name == VideoQuality.CHAT_ONLY_QUALITY ||
-                    com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.leaveMuted
+                    com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.leaveMuted
                 ) {
                     resetCounters()
                     softKickUsed = false
@@ -4513,7 +4513,7 @@ class ExoPlayerService : BasePlaybackService() {
                 if (!created || !started || type != STREAM || intentionalStopOrPause || streamEnded ||
                     waitingIntegrity || loadingStreamCount > 0 ||
                     quality?.name == VideoQuality.CHAT_ONLY_QUALITY ||
-                    com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.leaveMuted ||
+                    com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.leaveMuted ||
                     playingAds || videoSwapActive || proxyMediaPlaylist || hidden ||
                     adDelayJob?.isActive == true || secondaryLoadJob?.isActive == true ||
                     freezeWatchJob?.isActive == true || liveRecoveryJob?.isActive == true
@@ -4805,9 +4805,9 @@ class ExoPlayerService : BasePlaybackService() {
         val playing = player?.let { it.playWhenReady && it.playbackState != Player.STATE_IDLE && it.playbackState != Player.STATE_ENDED } == true ||
                 secondaryPlayer?.let { it.playWhenReady && it.playbackState != Player.STATE_IDLE && it.playbackState != Player.STATE_ENDED } == true
         if (playing) {
-            com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.hold(this, this) { pause() }
+            com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.hold(this, this) { pause() }
         } else {
-            com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.release(this, this)
+            com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.release(this, this)
         }
     }
 
@@ -4825,12 +4825,12 @@ class ExoPlayerService : BasePlaybackService() {
                         val scheme = url.toUri().scheme
                         val response = if (scheme == "https" || scheme == "http") {
                             when {
-                                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.HttpEngineTimeout()
-                                        val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                             url,
-                                            xtraModule.cronetExecutor.value,
+                                            twitchProModule.cronetExecutor.value,
                                             NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                                         ).build()
                                         timeout.start(request, continuation)
@@ -4844,13 +4844,13 @@ class ExoPlayerService : BasePlaybackService() {
                                         response.body
                                     } else null
                                 }
-                                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                                networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.CronetTimeout()
-                                        val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                             url,
                                             NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                            xtraModule.cronetExecutor.value
+                                            twitchProModule.cronetExecutor.value
                                         ).build()
                                         timeout.start(request, continuation)
                                         request.start()
@@ -4864,7 +4864,7 @@ class ExoPlayerService : BasePlaybackService() {
                                     } else null
                                 }
                                 else -> {
-                                    xtraModule.okHttpClient.value.newCall(Request.Builder().url(url).build()).executeAsync().use { response ->
+                                    twitchProModule.okHttpClient.value.newCall(Request.Builder().url(url).build()).executeAsync().use { response ->
                                         if (response.isSuccessful) {
                                             response.body.bytes()
                                         } else null
@@ -4935,12 +4935,12 @@ class ExoPlayerService : BasePlaybackService() {
                         val scheme = url.toUri().scheme
                         val response = if (scheme == "https" || scheme == "http") {
                             when {
-                                networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                                networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.HttpEngineTimeout()
-                                        val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                             url,
-                                            xtraModule.cronetExecutor.value,
+                                            twitchProModule.cronetExecutor.value,
                                             NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                                         ).build()
                                         timeout.start(request, continuation)
@@ -4954,13 +4954,13 @@ class ExoPlayerService : BasePlaybackService() {
                                         response.body
                                     } else null
                                 }
-                                networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                                networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                                     val response = suspendCancellableCoroutine { continuation ->
                                         val timeout = NetworkUtils.CronetTimeout()
-                                        val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                                        val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                             url,
                                             NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                            xtraModule.cronetExecutor.value
+                                            twitchProModule.cronetExecutor.value
                                         ).build()
                                         timeout.start(request, continuation)
                                         request.start()
@@ -4974,7 +4974,7 @@ class ExoPlayerService : BasePlaybackService() {
                                     } else null
                                 }
                                 else -> {
-                                    xtraModule.okHttpClient.value.newCall(Request.Builder().url(url).build()).executeAsync().use { response ->
+                                    twitchProModule.okHttpClient.value.newCall(Request.Builder().url(url).build()).executeAsync().use { response ->
                                         if (response.isSuccessful) {
                                             response.body.bytes()
                                         } else null
@@ -5240,18 +5240,18 @@ class ExoPlayerService : BasePlaybackService() {
                         when (type) {
                             VIDEO -> {
                                 videoId?.toLongOrNull()?.let {
-                                    xtraModule.playerRepository.saveVideoPosition(VideoPosition(it, position))
+                                    twitchProModule.playerRepository.saveVideoPosition(VideoPosition(it, position))
                                     saveTvResume(it, position)
                                 }
                             }
                             OFFLINE_VIDEO -> {
                                 offlineVideoId?.let {
-                                    xtraModule.offlineVideosRepository.updatePosition(it, position)
+                                    twitchProModule.offlineVideosRepository.updatePosition(it, position)
                                 }
                             }
                         }
                     }
-                    xtraModule.playerRepository.deletePlaybackStates()
+                    twitchProModule.playerRepository.deletePlaybackStates()
                 }
             }
         }
@@ -5259,9 +5259,9 @@ class ExoPlayerService : BasePlaybackService() {
 
     /** TV: the "Continue watching" row of the home, kept up to date while the video plays and when it stops. */
     private fun saveTvResume(id: Long, position: Long) {
-        com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.save(
+        com.endlessbum.twitchpro.ui.tv.TvResumeHistory.save(
             this,
-            com.github.andreyasadchy.xtra.ui.tv.TvResumeHistory.Item(
+            com.endlessbum.twitchpro.ui.tv.TvResumeHistory.Item(
                 id = id.toString(),
                 title = title,
                 channelId = channelId,
@@ -5296,13 +5296,13 @@ class ExoPlayerService : BasePlaybackService() {
                             when (type) {
                                 VIDEO -> {
                                     videoId?.toLongOrNull()?.let {
-                                        xtraModule.playerRepository.saveVideoPosition(VideoPosition(it, currentPosition))
+                                        twitchProModule.playerRepository.saveVideoPosition(VideoPosition(it, currentPosition))
                                         saveTvResume(it, currentPosition)
                                     }
                                 }
                                 OFFLINE_VIDEO -> {
                                     offlineVideoId?.let {
-                                        xtraModule.offlineVideosRepository.updatePosition(it, currentPosition)
+                                        twitchProModule.offlineVideosRepository.updatePosition(it, currentPosition)
                                     }
                                 }
                             }
@@ -5387,7 +5387,7 @@ class ExoPlayerService : BasePlaybackService() {
         sleepTimerEndTime = 0L
         stopServiceTimer?.cancel()
         stopServiceTimer = null
-        com.github.andreyasadchy.xtra.ui.tv.TvPlaybackSignals.release(this, this)
+        com.endlessbum.twitchpro.ui.tv.TvPlaybackSignals.release(this, this)
         runCatching { dynamicsProcessing?.release() }
         dynamicsProcessing = null
         runCatching { secondaryDynamicsProcessing?.release() }
@@ -5437,13 +5437,13 @@ class ExoPlayerService : BasePlaybackService() {
         /** Address of the playlist of a stream (access of Twitch included), with the settings of the player. Throws on failure. */
         suspend fun loadStreamPlaylistUrl(
             context: android.content.Context,
-            xtraModule: com.github.andreyasadchy.xtra.XtraModule,
+            twitchProModule: com.endlessbum.twitchpro.TwitchProModule,
             channelLogin: String,
             streamProxy: StreamProxy? = null,
             supportedCodecsOverride: String? = null,
         ): String {
             val prefs = context.prefs()
-            return xtraModule.playerRepository.loadStreamPlaylistUrl(
+            return twitchProModule.playerRepository.loadStreamPlaylistUrl(
                 context = context,
                 networkLibrary = prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP),
                 gqlHeaders = getStreamTokenHeaders(context, prefs.getString(C.TOKEN_PLATFORM, "web")),
@@ -5515,17 +5515,17 @@ class ExoPlayerService : BasePlaybackService() {
         const val MEDIA_PLAYLIST_REGEX = "^(?:[a-z0-9-]+\\.playlist\\.(?:live-video|ttvnw)\\.net|video-weaver\\.[a-z0-9-]+\\.hls\\.ttvnw\\.net)$"
 
         private const val NOTIFICATION_ID = 1001
-        private const val GROUP_KEY = "com.github.andreyasadchy.xtra.PLAYBACK_NOTIFICATIONS"
+        private const val GROUP_KEY = "com.endlessbum.twitchpro.PLAYBACK_NOTIFICATIONS"
 
         private const val REQUEST_CODE_RESUME = 0
         private const val REQUEST_CODE_REWIND = 1
         private const val REQUEST_CODE_PLAY_PAUSE = 2
         private const val REQUEST_CODE_FAST_FORWARD = 3
 
-        private const val INTENT_REWIND = "com.github.andreyasadchy.xtra.REWIND"
-        private const val INTENT_PLAY_PAUSE = "com.github.andreyasadchy.xtra.PLAY_PAUSE"
-        private const val INTENT_FAST_FORWARD = "com.github.andreyasadchy.xtra.FAST_FORWARD"
-        const val INTENT_START = "com.github.andreyasadchy.xtra.START_PLAYBACK_SERVICE"
+        private const val INTENT_REWIND = "com.endlessbum.twitchpro.REWIND"
+        private const val INTENT_PLAY_PAUSE = "com.endlessbum.twitchpro.PLAY_PAUSE"
+        private const val INTENT_FAST_FORWARD = "com.endlessbum.twitchpro.FAST_FORWARD"
+        const val INTENT_START = "com.endlessbum.twitchpro.START_PLAYBACK_SERVICE"
 
         data class PendingDvrResume(
             val channelLogin: String?,

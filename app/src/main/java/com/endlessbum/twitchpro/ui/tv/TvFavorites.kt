@@ -1,8 +1,8 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import androidx.core.content.edit
-import com.github.andreyasadchy.xtra.model.ui.Stream
+import com.endlessbum.twitchpro.model.ui.Stream
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONArray
 

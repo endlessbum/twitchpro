@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra
+package com.endlessbum.twitchpro
 
 import android.app.Application
 import android.net.http.HttpEngine
@@ -7,20 +7,20 @@ import android.os.ext.SdkExtensions
 import android.util.Log
 import androidx.room.Room
 import androidx.room.migration.Migration
-import com.github.andreyasadchy.xtra.db.AppDatabase
-import com.github.andreyasadchy.xtra.repository.AuthRepository
-import com.github.andreyasadchy.xtra.repository.BookmarksRepository
-import com.github.andreyasadchy.xtra.repository.ChannelSortRepository
-import com.github.andreyasadchy.xtra.repository.GameSortRepository
-import com.github.andreyasadchy.xtra.repository.GraphQLRepository
-import com.github.andreyasadchy.xtra.repository.HelixRepository
-import com.github.andreyasadchy.xtra.repository.LocalChannelFollowsRepository
-import com.github.andreyasadchy.xtra.repository.LocalGameFollowsRepository
-import com.github.andreyasadchy.xtra.repository.NotificationsRepository
-import com.github.andreyasadchy.xtra.repository.OfflineVideosRepository
-import com.github.andreyasadchy.xtra.repository.PlayerRepository
-import com.github.andreyasadchy.xtra.repository.RecentSearchesRepository
-import com.github.andreyasadchy.xtra.repository.SavedFiltersRepository
+import com.endlessbum.twitchpro.db.AppDatabase
+import com.endlessbum.twitchpro.repository.AuthRepository
+import com.endlessbum.twitchpro.repository.BookmarksRepository
+import com.endlessbum.twitchpro.repository.ChannelSortRepository
+import com.endlessbum.twitchpro.repository.GameSortRepository
+import com.endlessbum.twitchpro.repository.GraphQLRepository
+import com.endlessbum.twitchpro.repository.HelixRepository
+import com.endlessbum.twitchpro.repository.LocalChannelFollowsRepository
+import com.endlessbum.twitchpro.repository.LocalGameFollowsRepository
+import com.endlessbum.twitchpro.repository.NotificationsRepository
+import com.endlessbum.twitchpro.repository.OfflineVideosRepository
+import com.endlessbum.twitchpro.repository.PlayerRepository
+import com.endlessbum.twitchpro.repository.RecentSearchesRepository
+import com.endlessbum.twitchpro.repository.SavedFiltersRepository
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -30,7 +30,7 @@ import org.chromium.net.QuicOptions
 import org.chromium.net.RequestFinishedInfo
 import java.util.concurrent.Executors
 
-class XtraModule(application: Application) {
+class TwitchProModule(application: Application) {
 
     val httpEngine = lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {

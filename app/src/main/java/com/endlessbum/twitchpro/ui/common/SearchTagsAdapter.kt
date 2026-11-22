@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.databinding.FragmentSearchChannelsListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.Tag
+import com.endlessbum.twitchpro.databinding.FragmentSearchChannelsListItemBinding
+import com.endlessbum.twitchpro.model.ui.Tag
 
 class SearchTagsAdapter(
     private val selectTag: (Tag) -> Unit,

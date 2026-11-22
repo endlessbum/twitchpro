@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import android.content.Context
 import android.os.Bundle
@@ -14,7 +14,7 @@ import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.core.content.res.use
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

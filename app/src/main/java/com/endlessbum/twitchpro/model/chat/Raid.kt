@@ -1,6 +1,6 @@
-package com.github.andreyasadchy.xtra.model.chat
+package com.endlessbum.twitchpro.model.chat
 
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.TwitchApiHelper
 
 class Raid(
     val raidId: String? = null,

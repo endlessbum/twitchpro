@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.os.Build
@@ -25,16 +25,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.R
 
 /**
  * TV "About" side panel showing app version, fork credits, device info, and a QR code to the GitHub repository.
  */
 object TvAbout {
 
-    const val CREDIT_TEXT = "XtraTV forked from https://github.com/crackededed/Xtra by razeN with AI"
-    const val GITHUB_URL = "https://github.com/razeNFR/XtraATV"
+    const val CREDIT_TEXT = "TwitchPro forked from https://github.com/crackededed/Xtra by razeN with AI"
+    const val GITHUB_URL = "https://github.com/endlessbum/twitch"
     const val DISCORD_URL = "https://discord.gg/SgKqrW73P4"
 
     fun deviceSummary(): String {

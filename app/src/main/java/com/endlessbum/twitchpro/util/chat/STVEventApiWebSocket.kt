@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.util.chat
+package com.endlessbum.twitchpro.util.chat
 
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.util.WebSocket
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.util.WebSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,7 +19,7 @@ class STVEventApiWebSocket(
         webSocket = WebSocket(
             url = "wss://events.7tv.io/v3",
             listener = WebSocketListener(),
-            headers = mapOf("User-Agent" to "Xtra/" + BuildConfig.VERSION_NAME)
+            headers = mapOf("User-Agent" to "TwitchPro/" + BuildConfig.VERSION_NAME)
         )
         webSocket?.coroutineScope = coroutineScope
         return coroutineScope.launch(Dispatchers.IO) {

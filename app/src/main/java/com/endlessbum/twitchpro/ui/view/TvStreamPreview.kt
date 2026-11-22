@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.view
+package com.endlessbum.twitchpro.ui.view
 
 import android.view.TextureView
 import android.view.View
@@ -10,10 +10,10 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.ui.tv.TvPreviewSource
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.ui.tv.TvPreviewSource
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -133,7 +133,7 @@ class TvStreamPreview(
         loadJob?.cancel()
         loadJob = null
         // the last picture of the preview, shown while the stream opens
-        textureView?.takeIf { it.alpha > 0.5f }?.let { com.github.andreyasadchy.xtra.ui.tv.TvPreviewFrames.capture(playingLogin, it) }
+        textureView?.takeIf { it.alpha > 0.5f }?.let { com.endlessbum.twitchpro.ui.tv.TvPreviewFrames.capture(playingLogin, it) }
         playingLogin = null
         player?.stop()
         player?.clearVideoSurface()

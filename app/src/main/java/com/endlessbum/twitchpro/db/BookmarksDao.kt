@@ -1,11 +1,11 @@
-package com.github.andreyasadchy.xtra.db
+package com.endlessbum.twitchpro.db
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.github.andreyasadchy.xtra.model.ui.Bookmark
+import com.endlessbum.twitchpro.model.ui.Bookmark
 import kotlinx.coroutines.flow.Flow
 
 @Dao

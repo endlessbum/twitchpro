@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.content.Context
 import android.os.Build
@@ -22,16 +22,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.DialogCustomProxyEditBinding
-import com.github.andreyasadchy.xtra.databinding.FragmentProxySettingsBinding
-import com.github.andreyasadchy.xtra.databinding.FragmentProxySettingsListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.CustomProxy
-import com.github.andreyasadchy.xtra.ui.settings.CustomProxySettingsViewModel.Companion.CustomProxySettingsViewModelFactory
-import com.github.andreyasadchy.xtra.ui.view.TvReorder
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.DialogCustomProxyEditBinding
+import com.endlessbum.twitchpro.databinding.FragmentProxySettingsBinding
+import com.endlessbum.twitchpro.databinding.FragmentProxySettingsListItemBinding
+import com.endlessbum.twitchpro.model.ui.CustomProxy
+import com.endlessbum.twitchpro.ui.settings.CustomProxySettingsViewModel.Companion.CustomProxySettingsViewModelFactory
+import com.endlessbum.twitchpro.ui.view.TvReorder
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.repository
+package com.endlessbum.twitchpro.repository
 
-import com.github.andreyasadchy.xtra.db.LocalGameFollowsDao
-import com.github.andreyasadchy.xtra.model.ui.LocalGameFollow
+import com.endlessbum.twitchpro.db.LocalGameFollowsDao
+import com.endlessbum.twitchpro.model.ui.LocalGameFollow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

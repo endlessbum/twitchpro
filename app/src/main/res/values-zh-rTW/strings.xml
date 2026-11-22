@@ -539,7 +539,7 @@
     <string name="external_login_message">您可使用外部瀏覽器登入。\n\n請遵循這些步驟：\n• 按下「開啟 URL」以開啟登入頁面。\n• 登入您的帳號並按下「授權/Authorizet」。\n• 應該會出現一個錯誤網頁。複製該網頁的網址，將網址貼到下方框並按下「確定」。</string>
     <string name="loading">正在載入…</string>
     <string name="copy_code">複製 Code</string>
-    <string name="external_tv_login_message">若要存取所有功能，您需要登入為 Android TV 裝置。\n\n請遵循以下步驟：\n• 複製在螢幕上顯示的 Code。\n• 按下「開啟 URL」按鈕。\n• 輸入 Code 並按下「啟動/Activate」。\n• 按下「授權/Authorize」。\n• 返回 Xtra 並按下「下一步」。</string>
+    <string name="external_tv_login_message">若要存取所有功能，您需要登入為 Android TV 裝置。\n\n請遵循以下步驟：\n• 複製在螢幕上顯示的 Code。\n• 按下「開啟 URL」按鈕。\n• 輸入 Code 並按下「啟動/Activate」。\n• 按下「授權/Authorize」。\n• 返回 TwitchPro 並按下「下一步」。</string>
     <string name="activate_notifications_when_following">追隨時啟動通知</string>
     <string name="account">帳號</string>
     <string name="downloading_update_progress">正在下載更新… %1$s / %2$s</string>
@@ -587,8 +587,8 @@
     <string name="tv_more_actions">更多動作</string>
     <string name="tv_account">帳號</string>
     <string name="tv_stream_preview">所選直播的即時預覽（電視）</string>
-    <string name="xtratv_settings">Xtra TV 設定</string>
-    <string name="xtratv_settings_summary">廣告封鎖、影格率匹配、預覽、首頁和遙控器快捷鍵</string>
+    <string name="twitchpro_settings">TwitchPro 設定</string>
+    <string name="twitchpro_settings_summary">廣告封鎖、影格率匹配、預覽、首頁和遙控器快捷鍵</string>
     <string name="tv_preview_sound">預覽聲音</string>
     <string name="close_player">關閉</string>
     <string name="tv_back_minimizes_player">返回鍵將播放器縮小而不是關閉</string>
@@ -666,7 +666,7 @@
     <string name="tv_back_audio">僅音訊</string>
     <string name="tv_dpad_up_down">直播與 VOD 中的上下快捷鍵</string>
     <string name="tv_dpad_up_down_summary">控制項隱藏時：上鍵顯示其他直播，下鍵顯示或隱藏聊天</string>
-    <string name="tv_1440p_warning">⚠ 1440p 無法透過公共代理 (Luminous 等，最高 1080p) 使用。要觀看 1440p，請關閉自訂代理並使用廣告封鎖 (Xtra TV 設定)，或使用支援 1440p 的自有代理。</string>
+    <string name="tv_1440p_warning">⚠ 1440p 無法透過公共代理 (Luminous 等，最高 1080p) 使用。要觀看 1440p，請關閉自訂代理並使用廣告封鎖 (TwitchPro 設定)，或使用支援 1440p 的自有代理。</string>
     <string name="tv_login_with_code">在 twitch.tv/activate 輸入代碼</string>
     <string name="tv_login_with_page">使用 Twitch 登入頁面 (1440p 需要)</string>
     <string name="tv_login_code_help">在手機或電腦上開啟 twitch.tv/activate 並輸入此代碼，登入會自動完成。1440p 需要使用 Twitch 頁面登入。</string>
@@ -811,7 +811,7 @@
     <string name="tv_pip_pos_c">置中</string>
     <string name="tv_pip_pos_mr">右側置中</string>
     <string name="tv_pip_pos_bc">底部置中</string>
-    <string name="tv_enable_unknown_sources">請在安裝未知應用程式中允許 Xtra TV，然後按返回鍵開始更新</string>
+    <string name="tv_enable_unknown_sources">請在安裝未知應用程式中允許 TwitchPro，然後按返回鍵開始更新</string>
     <string name="tv_pip_size">大小</string>
     <string name="tv_pip_size_small">小</string>
     <string name="tv_pip_size_medium">中</string>
@@ -856,7 +856,7 @@
     <string name="tv_proxy_all_settings">所有代理設定…</string>
     <string name="tv_focus_switch">不用按 OK 切換頁面</string>
     <string name="tv_focus_switch_summary">分頁和側邊選單取得焦點後立即顯示對應頁面</string>
-    <string name="tv_update_title_version">Xtra TV %1$s 已推出</string>
+    <string name="tv_update_title_version">TwitchPro %1$s 已推出</string>
     <string name="tv_update_now">更新</string>
     <string name="tv_update_ignore">忽略</string>
     <string name="tv_proxy_add">新增代理</string>
@@ -1187,7 +1187,7 @@
     <string name="tv_remote_action_pip_close">小視窗：關閉</string>
     <string name="tv_adblock_and_proxies_title">廣告攔截與代理</string>
     <string name="tv_adblock_and_proxies_subtitle">用於直播的實驗性廣告攔截或自訂 HLS 代理</string>
-    <string name="tv_update_install_blocked">Android 封鎖了安裝。請在系統設定中允許 Xtra TV「安裝未知應用程式」，或透過瀏覽器下載更新。</string>
+    <string name="tv_update_install_blocked">Android 封鎖了安裝。請在系統設定中允許 TwitchPro「安裝未知應用程式」，或透過瀏覽器下載更新。</string>
     <string name="tv_update_try_again">重試</string>
     <string name="tv_remote_action_pip_swap_default">小視窗：交換直播（預設）</string>
     <string name="tv_remote_action_show_controls">顯示控制列</string>
@@ -1346,7 +1346,7 @@
     <string name="tv_osd_chat_shown">已顯示聊天室</string>
     <string name="tv_osd_chat_hidden">已隱藏聊天室</string>
     <string name="tv_backup_perm_title">需要檔案存取權限</string>
-    <string name="tv_backup_perm_summary">若要在下載資料夾中覆寫或讀取 XtraTV-backup.zip，請在下一個畫面允許檔案存取。</string>
+    <string name="tv_backup_perm_summary">若要在下載資料夾中覆寫或讀取 TwitchPro-backup.zip，請在下一個畫面允許檔案存取。</string>
     <string name="tv_backup_perm_grant">允許檔案存取</string>
     <string name="tv_backup_perm_continue_anyway">不授權繼續</string>
     <string name="tv_backup_save_failed">無法儲存備份檔案</string>

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.Manifest
 import android.app.Activity
@@ -50,13 +50,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.LocaleListCompat
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.tv.material3.Text
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.player.ExoPlayerService
-import com.github.andreyasadchy.xtra.ui.player.MediaPlayerService
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.player.ExoPlayerService
+import com.endlessbum.twitchpro.ui.player.MediaPlayerService
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -85,7 +85,7 @@ import androidx.compose.ui.graphics.Color as ComposeColor
  */
 object TvBackup {
 
-    const val FILE_NAME = "XtraTV-backup.zip"
+    const val FILE_NAME = "TwitchPro-backup.zip"
     const val REQ_STORAGE_PERMISSION = 4901
     private const val PREFS_ENTRY = "preferences.xml"
     private const val TV_FAVORITES_ENTRY = "tv_favorites.xml"
@@ -434,10 +434,10 @@ object TvBackup {
 
     /** Repairs a corrupted SQLite database file if an earlier broken restore overwrote it with non-SQLite bytes. */
     fun ensureHealthyDatabaseFile(context: Context): File {
-        val app = context.applicationContext as? XtraApp
+        val app = context.applicationContext as? TwitchProApp
         val dbFile = context.getDatabasePath(DB_ENTRY)
         if (dbFile.exists() && !isValidSqliteFile(dbFile)) {
-            app?.xtraModule?.closeDatabaseIfOpen()
+            app?.twitchProModule?.closeDatabaseIfOpen()
             runCatching { File(dbFile.parentFile, "database-shm").delete() }
             runCatching { File(dbFile.parentFile, "database-wal").delete() }
             runCatching { File(dbFile.parentFile, "database-journal").delete() }
@@ -491,10 +491,10 @@ object TvBackup {
     /** Builds the backup archive in memory (settings XML, TV favorites/stats XML, and Room database — never Twitch tokens). */
     fun buildBackupZip(context: Context): ByteArray {
         val appContext = context.applicationContext
-        val app = appContext as? XtraApp
+        val app = appContext as? TwitchProApp
         val dbFile = ensureHealthyDatabaseFile(appContext)
         runCatching {
-            app?.xtraModule?.database?.query(SimpleSQLiteQuery("PRAGMA wal_checkpoint(FULL)"))?.use {
+            app?.twitchProModule?.database?.query(SimpleSQLiteQuery("PRAGMA wal_checkpoint(FULL)"))?.use {
                 it.moveToPosition(-1)
             }
         }
@@ -653,7 +653,7 @@ object TvBackup {
             }
         }
         if (validatedDb != null) {
-            (appContext as? XtraApp)?.xtraModule?.closeDatabaseIfOpen()
+            (appContext as? TwitchProApp)?.twitchProModule?.closeDatabaseIfOpen()
             val dbTarget = appContext.getDatabasePath(DB_ENTRY)
             dbTarget.parentFile?.mkdirs()
             runCatching { File(dbTarget.parentFile, "database-shm").delete() }
@@ -726,7 +726,7 @@ object TvBackup {
                 MediaStore.Downloads.EXTERNAL_CONTENT_URI,
                 arrayOf(MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DISPLAY_NAME),
                 "${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ?",
-                arrayOf("XtraTV-backup%"),
+                arrayOf("TwitchPro-backup%"),
                 null,
             )?.use { cursor ->
                 val idCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
@@ -746,7 +746,7 @@ object TvBackup {
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun saveToMediaStoreDownloads(context: Context, bytes: ByteArray): String? {
         val resolver = context.contentResolver
-        // First try overwriting an existing MediaStore row named XtraTV-backup.zip owned by this app
+        // First try overwriting an existing MediaStore row named TwitchPro-backup.zip owned by this app
         val overwrittenExisting = runCatching {
             resolver.query(
                 MediaStore.Downloads.EXTERNAL_CONTENT_URI,
@@ -830,7 +830,7 @@ object TvBackup {
                     MediaStore.Downloads.EXTERNAL_CONTENT_URI,
                     arrayOf(MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DATE_MODIFIED),
                     "${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ?",
-                    arrayOf("XtraTV-backup%"),
+                    arrayOf("TwitchPro-backup%"),
                     "${MediaStore.MediaColumns.DATE_MODIFIED} DESC, ${MediaStore.MediaColumns._ID} DESC",
                 )?.use { cursor ->
                     val idCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
@@ -866,7 +866,7 @@ object TvBackup {
             dir.listFiles()?.forEach { f ->
                 if (f.isFile &&
                     f.absolutePath != keepFile.absolutePath &&
-                    f.name.startsWith("XtraTV-backup", ignoreCase = true) &&
+                    f.name.startsWith("TwitchPro-backup", ignoreCase = true) &&
                     (f.name.endsWith(".zip", ignoreCase = true) || f.name.endsWith(".tmp", ignoreCase = true))
                 ) {
                     runCatching { f.delete() }
@@ -875,7 +875,7 @@ object TvBackup {
         }
     }
 
-    /** Saves the backup archive to Download/XtraTV-backup.zip (checking/requesting file access first so existing files are overwritten). */
+    /** Saves the backup archive to Download/TwitchPro-backup.zip (checking/requesting file access first so existing files are overwritten). */
     fun saveToTv(context: Context, @Suppress("UNUSED_PARAMETER") scope: CoroutineScope, skipPermissionPrompt: Boolean = false) {
         val appContext = context.applicationContext
         if (!skipPermissionPrompt && !hasFullFileAccess(appContext)) {
@@ -908,7 +908,7 @@ object TvBackup {
                         }
                     }
 
-                    // 1. Direct atomic in-place overwrite of Download/XtraTV-backup.zip (works across Android 7..14+ when permission is granted)
+                    // 1. Direct atomic in-place overwrite of Download/TwitchPro-backup.zip (works across Android 7..14+ when permission is granted)
                     val pubDownloadDir = runCatching {
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                     }.getOrNull()
@@ -996,7 +996,7 @@ object TvBackup {
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                     }.getOrNull()
 
-                    // Prioritize public Download/XtraTV-backup.zip when accessible
+                    // Prioritize public Download/TwitchPro-backup.zip when accessible
                     if (pubDownloadDir != null) {
                         val exact = File(pubDownloadDir, FILE_NAME)
                         val exactBytes = runCatching {
@@ -1016,7 +1016,7 @@ object TvBackup {
                             add(File(dir, FILE_NAME))
                             runCatching {
                                 dir.listFiles()?.filter {
-                                    it.isFile && it.name.startsWith("XtraTV-backup", ignoreCase = true) && it.name.endsWith(".zip", ignoreCase = true)
+                                    it.isFile && it.name.startsWith("TwitchPro-backup", ignoreCase = true) && it.name.endsWith(".zip", ignoreCase = true)
                                 }?.let { addAll(it) }
                             }
                         }.distinctBy { it.absolutePath }
@@ -1239,10 +1239,10 @@ object TvBackup {
                 val body = """
                     <!DOCTYPE html><html><head><meta charset="utf-8">
                     <meta name="viewport" content="width=device-width,initial-scale=1">
-                    <title>Xtra TV</title>
+                    <title>TwitchPro</title>
                     <style>body{background:#121216;color:#fff;font-family:sans-serif;text-align:center;padding:40px 20px}
                     a.btn{display:inline-block;margin-top:24px;padding:14px 28px;background:#9147ff;color:#fff;text-decoration:none;border-radius:10px;font-weight:bold;font-size:17px}</style>
-                    </head><body><h2>Xtra TV</h2><p>$title</p>
+                    </head><body><h2>TwitchPro</h2><p>$title</p>
                     <a class="btn" href="/backup">$FILE_NAME</a>
                     <script>setTimeout(function(){location.href='/backup'},300);</script>
                     </body></html>
@@ -1292,11 +1292,11 @@ object TvBackup {
                 val html = """
                     <!DOCTYPE html><html><head><meta charset="utf-8">
                     <meta name="viewport" content="width=device-width,initial-scale=1">
-                    <title>Xtra TV</title>
+                    <title>TwitchPro</title>
                     <style>body{background:#121216;color:#fff;font-family:sans-serif;text-align:center;padding:40px 20px}
                     input[type=file]{display:block;margin:24px auto;color:#fff;font-size:16px}
                     button{padding:14px 28px;background:#9147ff;color:#fff;border:0;border-radius:10px;font-weight:bold;font-size:17px}</style>
-                    </head><body><h2>Xtra TV</h2><p>$title</p>
+                    </head><body><h2>TwitchPro</h2><p>$title</p>
                     <input type="file" id="f" accept=".zip,.xml,*/*">
                     <button onclick="send()">OK</button><p id="s"></p>
                     <script>

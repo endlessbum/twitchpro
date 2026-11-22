@@ -1,12 +1,12 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Request
@@ -71,14 +71,14 @@ object TvPreviewSource {
     fun hasSound(context: Context) = context.prefs().getBoolean(C.UI_TV_PREVIEW_SOUND, false)
 
     suspend fun getPlaylistUrl(context: Context, channelLogin: String): String? {
-        val xtraModule = (context.applicationContext as XtraApp).xtraModule
+        val twitchProModule = (context.applicationContext as TwitchProApp).twitchProModule
         val prefs = context.prefs()
         val adblock = prefs.getBoolean(C.PLAYER_ADBLOCK, true)
         val types = if (adblock) PLAYER_TYPES else listOf((prefs.getString(C.TOKEN_PLATFORM, "web") ?: "web") to (prefs.getString(C.TOKEN_PLAYER_TYPE, "site") ?: "site"))
         var fallback: String? = null
         for ((platform, playerType) in types) {
             val url = try {
-                xtraModule.playerRepository.loadStreamPlaylistUrl(
+                twitchProModule.playerRepository.loadStreamPlaylistUrl(
                     context = context,
                     networkLibrary = prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP),
                     gqlHeaders = if (platform == "web") {
@@ -107,7 +107,7 @@ object TvPreviewSource {
             if (fallback == null) {
                 fallback = url
             }
-            if (!hasAds(xtraModule.okHttpClient.value, url)) {
+            if (!hasAds(twitchProModule.okHttpClient.value, url)) {
                 return url
             }
         }
@@ -119,12 +119,12 @@ object TvPreviewSource {
      * video swap of the player (their qualities are limited, it is only for the time of the ad).
      */
     suspend fun getBackupPlaylistUrl(context: Context, channelLogin: String): String? {
-        val xtraModule = (context.applicationContext as XtraApp).xtraModule
+        val twitchProModule = (context.applicationContext as TwitchProApp).twitchProModule
         val prefs = context.prefs()
         var fallback: String? = null
         for ((platform, playerType) in listOf("android" to "autoplay", "web" to "embed")) {
             val url = try {
-                xtraModule.playerRepository.loadStreamPlaylistUrl(
+                twitchProModule.playerRepository.loadStreamPlaylistUrl(
                     context = context,
                     networkLibrary = prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP),
                     gqlHeaders = if (platform == "web") {
@@ -150,7 +150,7 @@ object TvPreviewSource {
             if (fallback == null) {
                 fallback = url
             }
-            if (!hasAds(xtraModule.okHttpClient.value, url)) {
+            if (!hasAds(twitchProModule.okHttpClient.value, url)) {
                 return url
             }
         }
@@ -159,7 +159,7 @@ object TvPreviewSource {
 
     /** True when the stream of this playlist plays an ad now. */
     suspend fun playlistHasAds(context: Context, multivariantUrl: String): Boolean {
-        return hasAds((context.applicationContext as XtraApp).xtraModule.okHttpClient.value, multivariantUrl)
+        return hasAds((context.applicationContext as TwitchProApp).twitchProModule.okHttpClient.value, multivariantUrl)
     }
 
     /** Looks at the media playlist of the lowest quality for the marks of an ad (VAFT does the same). */

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.util
+package com.endlessbum.twitchpro.util
 
 import android.app.Activity
 import android.app.AppOpsManager
@@ -18,7 +18,7 @@ import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.PreferenceManager
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.R
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -337,7 +337,7 @@ fun Activity.showInstallBlockedDialog(downloadUrl: String?, onRetry: (() -> Unit
             startActivity(intent)
             tokenPrefs().edit().putLong(C.UPDATE_LAST_CHECKED, System.currentTimeMillis()).apply()
         } catch (_: ActivityNotFoundException) {
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this, R.string.no_browser_found, Toast.LENGTH_LONG).show()
+            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this, R.string.no_browser_found, Toast.LENGTH_LONG).show()
         }
     }
     val builder = getAlertDialogBuilder()

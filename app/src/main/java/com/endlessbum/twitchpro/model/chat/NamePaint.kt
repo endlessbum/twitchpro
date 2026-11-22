@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.model.chat
+package com.endlessbum.twitchpro.model.chat
 
 class NamePaint(
     val id: String? = null,

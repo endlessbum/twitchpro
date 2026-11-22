@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.login
+package com.endlessbum.twitchpro.ui.login
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
@@ -29,16 +29,16 @@ import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewClientCompat
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.XtraModule
-import com.github.andreyasadchy.xtra.databinding.ActivityLoginBinding
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.applyTheme
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.TwitchProModule
+import com.endlessbum.twitchpro.databinding.ActivityLoginBinding
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.applyTheme
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -49,7 +49,7 @@ import kotlin.math.roundToInt
 
 class LoginActivity : AppCompatActivity() {
 
-    lateinit var xtraModule: XtraModule
+    lateinit var twitchProModule: TwitchProModule
 
     private val tokenPattern = Pattern.compile("token=(.+?)(?=&)")
     private var helixToken: String? = null
@@ -87,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
          */
         private val TV_AUTHORIZE_JS = """
             (function() {
-                if (window.__xtraTv) return;
+                if (window.__twitchPro) return;
                 var frame = document.createElement('div');
                 frame.style.cssText = 'position:fixed;z-index:2147483647;pointer-events:none;display:none;border:4px solid #9147ff;' +
                     'border-radius:8px;box-shadow:0 0 0 5px rgba(145,71,255,.35);box-sizing:border-box';
@@ -151,7 +151,7 @@ class LoginActivity : AppCompatActivity() {
                     if (bring) e.scrollIntoView({block: 'center', inline: 'nearest'});
                     place();
                 }
-                window.__xtraTv = {
+                window.__twitchPro = {
                     move: function(step) {
                         var list = items();
                         // the page (or left / right) moved the focus itself: from there
@@ -226,7 +226,7 @@ class LoginActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        xtraModule = (application as XtraApp).xtraModule
+        twitchProModule = (application as TwitchProApp).twitchProModule
         applyTheme()
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -493,7 +493,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupTvScreen(networkLibrary: String?, helixClientId: String?, helixAuthUrl: String) {
-        val view = com.github.andreyasadchy.xtra.ui.tv.TvDialogs.composeView(this) {
+        val view = com.endlessbum.twitchpro.ui.tv.TvDialogs.composeView(this) {
             TvLoginScreen(
                 status = tvStatus.value,
                 onCode = {
@@ -518,21 +518,21 @@ class LoginActivity : AppCompatActivity() {
                     startPageLogin?.invoke()
                 },
                 onLogout = {
-                    val activeKey = com.github.andreyasadchy.xtra.ui.tv.TvAccounts.activeAccountKey(this)
+                    val activeKey = com.endlessbum.twitchpro.ui.tv.TvAccounts.activeAccountKey(this)
                     if (activeKey != null) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvAccounts.removeAccount(this, activeKey)
+                        com.endlessbum.twitchpro.ui.tv.TvAccounts.removeAccount(this, activeKey)
                     } else {
                         logoutAll(networkLibrary)
                     }
                     tvChanged = true
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this, R.string.tv_login_logged_out, Toast.LENGTH_SHORT).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this, R.string.tv_login_logged_out, Toast.LENGTH_SHORT).show()
                     tvStatus.value = currentTvStatus()
                 },
                 onDone = { finishTv() },
                 onGuest = {
-                    com.github.andreyasadchy.xtra.ui.tv.TvAccounts.switchToGuest(this)
+                    com.endlessbum.twitchpro.ui.tv.TvAccounts.switchToGuest(this)
                     tvChanged = true
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this, R.string.tv_accounts_switched_guest, Toast.LENGTH_SHORT).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this, R.string.tv_accounts_switched_guest, Toast.LENGTH_SHORT).show()
                     finishTv()
                 },
             )
@@ -616,7 +616,7 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             if (!helixClientId.isNullOrBlank() && !oldHelixToken.isNullOrBlank()) {
                 try {
-                    xtraModule.authRepository.revoke(networkLibrary, "client_id=${helixClientId}&token=${oldHelixToken}")
+                    twitchProModule.authRepository.revoke(networkLibrary, "client_id=${helixClientId}&token=${oldHelixToken}")
                 } catch (e: Exception) {
 
                 }
@@ -624,7 +624,7 @@ class LoginActivity : AppCompatActivity() {
             val gqlClientId = gqlHeaders[C.HEADER_CLIENT_ID]
             if (!gqlClientId.isNullOrBlank() && !oldGQLToken.isNullOrBlank() && oldGQLToken != oldGQLWebToken) {
                 try {
-                    xtraModule.authRepository.revoke(networkLibrary, "client_id=${gqlClientId}&token=${oldGQLToken}")
+                    twitchProModule.authRepository.revoke(networkLibrary, "client_id=${gqlClientId}&token=${oldGQLToken}")
                 } catch (e: Exception) {
 
                 }
@@ -632,7 +632,7 @@ class LoginActivity : AppCompatActivity() {
             val gqlWebClientId = prefs().getString(C.GQL_CLIENT_ID_WEB, "kimne78kx3ncx6brgo4mv6wki5h1ko")
             if (!gqlWebClientId.isNullOrBlank() && !oldGQLWebToken.isNullOrBlank()) {
                 try {
-                    xtraModule.authRepository.revoke(networkLibrary, "client_id=${gqlWebClientId}&token=${oldGQLWebToken}")
+                    twitchProModule.authRepository.revoke(networkLibrary, "client_id=${gqlWebClientId}&token=${oldGQLWebToken}")
                 } catch (e: Exception) {
 
                 }
@@ -706,14 +706,14 @@ class LoginActivity : AppCompatActivity() {
                                                 }
                                                 .show()
                                         } else {
-                                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this@LoginActivity, R.string.invalid_url, Toast.LENGTH_SHORT).show()
+                                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this@LoginActivity, R.string.invalid_url, Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                 } else {
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this@LoginActivity, R.string.invalid_url, Toast.LENGTH_SHORT).show()
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this@LoginActivity, R.string.invalid_url, Toast.LENGTH_SHORT).show()
                                 }
                             } else {
-                                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this@LoginActivity, R.string.invalid_url, Toast.LENGTH_SHORT).show()
+                                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this@LoginActivity, R.string.invalid_url, Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -725,7 +725,7 @@ class LoginActivity : AppCompatActivity() {
                             startActivity(intent)
                             webView.reload()
                         } catch (e: ActivityNotFoundException) {
-                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this@LoginActivity, R.string.no_browser_found, Toast.LENGTH_LONG).show()
+                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this@LoginActivity, R.string.no_browser_found, Toast.LENGTH_LONG).show()
                         }
                     }
                     .setNegativeButton(android.R.string.cancel, null)
@@ -877,7 +877,7 @@ class LoginActivity : AppCompatActivity() {
             var userCode: String? = null
             lifecycleScope.launch {
                 try {
-                    val response = xtraModule.authRepository.getDeviceCode(networkLibrary, "client_id=${gqlClientId}&scopes=channel_read+chat%3Aread+user_blocks_edit+user_blocks_read+user_follows_edit+user_read")
+                    val response = twitchProModule.authRepository.getDeviceCode(networkLibrary, "client_id=${gqlClientId}&scopes=channel_read+chat%3Aread+user_blocks_edit+user_blocks_read+user_follows_edit+user_read")
                     if (isTv && tvStep != 1) {
                         return@launch
                     }
@@ -905,7 +905,7 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(intent)
                     webView.reload()
                 } catch (e: ActivityNotFoundException) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this@LoginActivity, R.string.no_browser_found, Toast.LENGTH_LONG).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this@LoginActivity, R.string.no_browser_found, Toast.LENGTH_LONG).show()
                 }
             }
             next.visibility = View.VISIBLE
@@ -916,7 +916,7 @@ class LoginActivity : AppCompatActivity() {
                     checking = true
                     lifecycleScope.launch {
                         try {
-                            val response = xtraModule.authRepository.getToken(networkLibrary, "client_id=${gqlClientId}&device_code=${deviceCode}&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code")
+                            val response = twitchProModule.authRepository.getToken(networkLibrary, "client_id=${gqlClientId}&device_code=${deviceCode}&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code")
                             val token = response.token
                             if (!token.isNullOrBlank()) {
                                 val valid = validateGQLToken(networkLibrary, gqlClientId, token)
@@ -928,7 +928,7 @@ class LoginActivity : AppCompatActivity() {
                                     if (!helixToken.isNullOrBlank()) {
                                         done()
                                     } else if (isTv) {
-                                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this@LoginActivity, R.string.connection_error, Toast.LENGTH_LONG).show()
+                                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this@LoginActivity, R.string.connection_error, Toast.LENGTH_LONG).show()
                                         showTvScreen()
                                     } else {
                                         deviceCode = null
@@ -945,7 +945,7 @@ class LoginActivity : AppCompatActivity() {
                                 }
                             } else if (manual) {
                                 response.message?.let {
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this@LoginActivity, it, Toast.LENGTH_SHORT).show()
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this@LoginActivity, it, Toast.LENGTH_SHORT).show()
                                 }
                             }
                         } catch (e: Exception) {
@@ -979,7 +979,7 @@ class LoginActivity : AppCompatActivity() {
 
     private suspend fun validateGQLToken(networkLibrary: String?, gqlClientId: String?, token: String): Boolean {
         return try {
-            val response = xtraModule.authRepository.validate(networkLibrary, TwitchApiHelper.addTokenPrefixGQL(token))
+            val response = twitchProModule.authRepository.validate(networkLibrary, TwitchApiHelper.addTokenPrefixGQL(token))
             if (response.clientId.isNotBlank() && response.clientId == gqlClientId) {
                 response.userId?.let { userId = it }
                 response.login?.let { userLogin = it }
@@ -992,7 +992,7 @@ class LoginActivity : AppCompatActivity() {
 
     private suspend fun validateHelixToken(networkLibrary: String?, helixClientId: String?, token: String): Boolean {
         return try {
-            val response = xtraModule.authRepository.validate(networkLibrary, TwitchApiHelper.addTokenPrefixHelix(token))
+            val response = twitchProModule.authRepository.validate(networkLibrary, TwitchApiHelper.addTokenPrefixHelix(token))
             if (response.clientId.isNotBlank() && response.clientId == helixClientId) {
                 response.userId?.let { userId = it }
                 response.login?.let { userLogin = it }
@@ -1005,7 +1005,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun error() {
         with(binding) {
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(this@LoginActivity, R.string.connection_error, Toast.LENGTH_LONG).show()
+            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(this@LoginActivity, R.string.connection_error, Toast.LENGTH_LONG).show()
             CookieManager.getInstance().removeAllCookies(null)
             helixToken = null
             gqlClientId = null
@@ -1099,9 +1099,9 @@ class LoginActivity : AppCompatActivity() {
                     putString(C.USERNAME, userLogin)
                 }
             }
-            com.github.andreyasadchy.xtra.ui.tv.TvAccounts.syncCurrentFromPrefs(this)
+            com.endlessbum.twitchpro.ui.tv.TvAccounts.syncCurrentFromPrefs(this)
             tvChanged = true
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(
+            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(
                 this,
                 if (otherAccount) R.string.tv_login_other_account else if (code) R.string.tv_login_code_ok else R.string.tv_login_page_ok,
                 Toast.LENGTH_LONG
@@ -1115,14 +1115,14 @@ class LoginActivity : AppCompatActivity() {
     private var tvRemotePageView: WebView? = null
 
     private fun checkTvRemotePage(view: WebView) {
-        view.evaluateJavascript("$TV_AUTHORIZE_JS window.__xtraTv.form();") { result ->
+        view.evaluateJavascript("$TV_AUTHORIZE_JS window.__twitchPro.form();") { result ->
             tvRemotePageView = view
             tvRemotePage = result == "false"
         }
     }
 
     /**
-     * TV, a web page without anything to type in ("Xtra wants to access your account"): up / down scroll the page
+     * TV, a web page without anything to type in ("TwitchPro wants to access your account"): up / down scroll the page
      * (whatever part of it scrolls) and select the links and buttons that come on the screen, OK presses the one
      * selected. Done here and not with a key listener on the web view: the web view sends the keys of the remote
      * straight to the page, its listener never gets them (so the page showed a frame and only moved once left or
@@ -1138,9 +1138,9 @@ class LoginActivity : AppCompatActivity() {
                 if (tvRemotePage && tvRemotePageView === view) {
                     if (upDown && event.action == android.view.KeyEvent.ACTION_DOWN) {
                         val step = if (event.keyCode == android.view.KeyEvent.KEYCODE_DPAD_DOWN) 1 else -1
-                        view.evaluateJavascript("$TV_AUTHORIZE_JS window.__xtraTv.move($step);", null)
+                        view.evaluateJavascript("$TV_AUTHORIZE_JS window.__twitchPro.move($step);", null)
                     } else if (ok && event.action == android.view.KeyEvent.ACTION_UP) {
-                        view.evaluateJavascript("$TV_AUTHORIZE_JS window.__xtraTv.click();", null)
+                        view.evaluateJavascript("$TV_AUTHORIZE_JS window.__twitchPro.click();", null)
                         // the page may change after it (authorized, another page): looked at again
                         view.postDelayed({ checkTvRemotePage(view) }, 800L)
                     }

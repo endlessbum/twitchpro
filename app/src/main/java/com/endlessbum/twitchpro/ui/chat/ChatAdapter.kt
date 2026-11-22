@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.chat
+package com.endlessbum.twitchpro.ui.chat
 
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.LayerDrawable
@@ -16,17 +16,17 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.core.text.getSpans
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.chat.CheerEmote
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.model.chat.NamePaint
-import com.github.andreyasadchy.xtra.model.chat.STVBadge
-import com.github.andreyasadchy.xtra.model.chat.STVUser
-import com.github.andreyasadchy.xtra.model.chat.TwitchBadge
-import com.github.andreyasadchy.xtra.model.chat.TwitchEmote
-import com.github.andreyasadchy.xtra.ui.view.NamePaintImageSpan
-import com.github.andreyasadchy.xtra.util.chat.ChatAdapterUtils
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.chat.ChatMessage
+import com.endlessbum.twitchpro.model.chat.CheerEmote
+import com.endlessbum.twitchpro.model.chat.Emote
+import com.endlessbum.twitchpro.model.chat.NamePaint
+import com.endlessbum.twitchpro.model.chat.STVBadge
+import com.endlessbum.twitchpro.model.chat.STVUser
+import com.endlessbum.twitchpro.model.chat.TwitchBadge
+import com.endlessbum.twitchpro.model.chat.TwitchEmote
+import com.endlessbum.twitchpro.ui.view.NamePaintImageSpan
+import com.endlessbum.twitchpro.util.chat.ChatAdapterUtils
 import java.util.Random
 
 class ChatAdapter(

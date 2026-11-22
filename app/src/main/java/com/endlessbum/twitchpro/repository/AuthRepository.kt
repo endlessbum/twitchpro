@@ -1,13 +1,13 @@
-package com.github.andreyasadchy.xtra.repository
+package com.endlessbum.twitchpro.repository
 
 import android.annotation.SuppressLint
 import android.net.http.HttpEngine
-import com.github.andreyasadchy.xtra.model.id.DeviceCodeResponse
-import com.github.andreyasadchy.xtra.model.id.TokenResponse
-import com.github.andreyasadchy.xtra.model.id.ValidationResponse
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.model.id.DeviceCodeResponse
+import com.endlessbum.twitchpro.model.id.TokenResponse
+import com.endlessbum.twitchpro.model.id.ValidationResponse
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext

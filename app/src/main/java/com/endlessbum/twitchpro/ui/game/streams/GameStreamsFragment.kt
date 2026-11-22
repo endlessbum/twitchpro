@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.game.streams
+package com.endlessbum.twitchpro.ui.game.streams
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,29 +17,29 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.CommonRecyclerViewLayoutBinding
-import com.github.andreyasadchy.xtra.databinding.SortBarBinding
-import com.github.andreyasadchy.xtra.model.ui.GameSort
-import com.github.andreyasadchy.xtra.model.ui.SavedFilter
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.common.FragmentHost
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.common.PagedListFragment
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.common.Sortable
-import com.github.andreyasadchy.xtra.ui.common.StreamsAdapter
-import com.github.andreyasadchy.xtra.ui.common.StreamsCompactAdapter
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog.Companion.RECENT
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog.Companion.SORT_RELEVANCE
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog.Companion.SORT_VIEWERS
-import com.github.andreyasadchy.xtra.ui.common.StreamsSortDialog.Companion.SORT_VIEWERS_ASC
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentArgs
-import com.github.andreyasadchy.xtra.ui.game.streams.GameStreamsViewModel.Companion.GameStreamsViewModelFactory
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.CommonRecyclerViewLayoutBinding
+import com.endlessbum.twitchpro.databinding.SortBarBinding
+import com.endlessbum.twitchpro.model.ui.GameSort
+import com.endlessbum.twitchpro.model.ui.SavedFilter
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.common.FragmentHost
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.common.PagedListFragment
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.common.Sortable
+import com.endlessbum.twitchpro.ui.common.StreamsAdapter
+import com.endlessbum.twitchpro.ui.common.StreamsCompactAdapter
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog.Companion.RECENT
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog.Companion.SORT_RELEVANCE
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog.Companion.SORT_VIEWERS
+import com.endlessbum.twitchpro.ui.common.StreamsSortDialog.Companion.SORT_VIEWERS_ASC
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentArgs
+import com.endlessbum.twitchpro.ui.game.streams.GameStreamsViewModel.Companion.GameStreamsViewModelFactory
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -81,7 +81,7 @@ class GameStreamsFragment : PagedListFragment(), Scrollable, Sortable, StreamsSo
                 viewModel.setFilter(
                     sort = sortValues?.streamSort,
                     tags = args.tags ?: sortValues?.streamTags?.split(',')?.toTypedArray(),
-                    // TV: the default language of the Xtra TV settings when the category has none of its own
+                    // TV: the default language of the TwitchPro settings when the category has none of its own
                     languages = args.languages ?: sortValues?.streamLanguages?.split(',')?.toTypedArray() ?: defaultLanguages(),
                 )
                 viewModel.sortText.value = getString(
@@ -137,7 +137,7 @@ class GameStreamsFragment : PagedListFragment(), Scrollable, Sortable, StreamsSo
                 binding.recyclerView.postDelayed({
                     val grid = _binding?.recyclerView ?: return@postDelayed
                     if (grid.isShown && grid.focusedChild == null) {
-                        com.github.andreyasadchy.xtra.ui.view.TvUi.focusFirstItem(grid)
+                        com.endlessbum.twitchpro.ui.view.TvUi.focusFirstItem(grid)
                     }
                 }, 150L)
             }

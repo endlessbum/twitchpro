@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import coil3.imageLoader
 import coil3.asDrawable
@@ -74,29 +74,29 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.TimeBar
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentPlayerBinding
-import com.github.andreyasadchy.xtra.model.VideoQuality
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.model.ui.Video
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.chat.ChatFragment
-import com.github.andreyasadchy.xtra.ui.common.BaseNetworkFragment
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.common.RadioButtonDialogFragment
-import com.github.andreyasadchy.xtra.ui.download.DownloadDialog
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.player.PlayerViewModel.Companion.PlayerViewModelFactory
-import com.github.andreyasadchy.xtra.ui.tv.FooterActionChip
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.isKeyboardShown
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentPlayerBinding
+import com.endlessbum.twitchpro.model.VideoQuality
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.model.ui.Video
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.chat.ChatFragment
+import com.endlessbum.twitchpro.ui.common.BaseNetworkFragment
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.common.RadioButtonDialogFragment
+import com.endlessbum.twitchpro.ui.download.DownloadDialog
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.player.PlayerViewModel.Companion.PlayerViewModelFactory
+import com.endlessbum.twitchpro.ui.tv.FooterActionChip
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.isKeyboardShown
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -122,7 +122,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
 
     private var isPortrait = false
     // read from the app, not from the screen: the activity asks a new player screen (a switch) before it is attached
-    protected val isTv by lazy { com.github.andreyasadchy.xtra.XtraApp.INSTANCE.resources.getBoolean(R.bool.isTv) }
+    protected val isTv by lazy { com.endlessbum.twitchpro.TwitchProApp.INSTANCE.resources.getBoolean(R.bool.isTv) }
     /** Controls stay longer on TV, moving between them with a remote takes more time than tapping. */
     protected val controllerHideDelay by lazy { if (isTv) 6000L else 3000L }
     protected var isMaximized = true
@@ -231,7 +231,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     fun isLiveOrDvrScreen(): Boolean = isStreamScreen() || isDvrScreen()
 
     private fun effectiveDpadAction(action: String, pipOpen: Boolean): String {
-        val Keys = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys
+        val Keys = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys
         if (!pipOpen && Keys.isPipOnlyAction(action)) {
             return Keys.ACTION_DEFAULT
         }
@@ -252,8 +252,8 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         if (_binding != null && binding.chatLayout.hasFocus()) {
             return null
         }
-        val appCtx = com.github.andreyasadchy.xtra.XtraApp.INSTANCE
-        val Keys = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys
+        val appCtx = com.endlessbum.twitchpro.TwitchProApp.INSTANCE
+        val Keys = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys
         val pipOpen = (activity as? MainActivity)?.isTvPipOpen() == true
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
             val shortAct = effectiveDpadAction(Keys.upAction(appCtx), pipOpen)
@@ -372,10 +372,10 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     /** Live: the time of Twitch of the picture shown (the delay of the chat follows it), null when not known. */
     open fun getLivePictureTime(): Long? = null
 
-    fun getStreamWatchMetadata(): com.github.andreyasadchy.xtra.ui.chat.ChatViewModel.StreamWatchMetadata? {
+    fun getStreamWatchMetadata(): com.endlessbum.twitchpro.ui.chat.ChatViewModel.StreamWatchMetadata? {
         val svc = playbackService ?: return null
         if (svc.type != BasePlaybackService.STREAM) return null
-        return com.github.andreyasadchy.xtra.ui.chat.ChatViewModel.StreamWatchMetadata(
+        return com.endlessbum.twitchpro.ui.chat.ChatViewModel.StreamWatchMetadata(
             streamId = svc.streamId,
             gameId = svc.gameId,
             gameName = svc.gameName,
@@ -882,7 +882,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                     progressBar.setOnKeyListener { _, keyCode, event ->
                         // the timeline focused without a HUD opened on purpose: left / right still run their hidden-HUD shortcut
                         if ((keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) && _binding != null && !hudOpenedByUser) {
-                            val Keys = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys
+                            val Keys = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys
                             val pipOpen = (activity as? MainActivity)?.isTvPipOpen() == true
                             val dpadAction = effectiveDpadAction(Keys.dpadForKeyCode(requireContext(), keyCode), pipOpen)
                             val isSwitch = dpadAction == Keys.ACTION_SWITCH_PREV || dpadAction == Keys.ACTION_SWITCH_NEXT
@@ -913,9 +913,9 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         onTimeBarKey(keyCode, event)
                     }
                     // discreet timeline: the scrubber and the accent color only show while it has the focus
-                    // the color of accent: the ambiance color of the Xtra TV settings
-                    val playedColor = if (com.github.andreyasadchy.xtra.ui.tv.TvAccent.current != null) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvAccent.color
+                    // the color of accent: the ambiance color of the TwitchPro settings
+                    val playedColor = if (com.endlessbum.twitchpro.ui.tv.TvAccent.current != null) {
+                        com.endlessbum.twitchpro.ui.tv.TvAccent.color
                     } else {
                         MaterialColors.getColor(progressBar, androidx.appcompat.R.attr.colorPrimary)
                     }
@@ -1293,7 +1293,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                             updateTvLiveTimeline()
                                         }
                                         if (!resumeLive) {
-                                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.video_not_found, Toast.LENGTH_SHORT).show()
+                                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.video_not_found, Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                     viewModel.unlistedVideoQualities.value = null
@@ -1541,12 +1541,12 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                         if (!errorMessage.isNullOrBlank()) {
                                             val rejected = errorMessage.startsWith(C.FOLLOW_REJECTED_PREFIX)
                                             val msg = if (rejected) getString(R.string.tv_follow_rejected_verification) else errorMessage
-                                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), msg, if (rejected) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
+                                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), msg, if (rejected) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
                                         } else {
                                             if (following) {
-                                                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), getString(R.string.now_following, displayName), Toast.LENGTH_SHORT).show()
+                                                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), getString(R.string.now_following, displayName), Toast.LENGTH_SHORT).show()
                                             } else {
-                                                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), getString(R.string.unfollowed, displayName), Toast.LENGTH_SHORT).show()
+                                                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), getString(R.string.unfollowed, displayName), Toast.LENGTH_SHORT).show()
                                             }
                                         }
                                         viewModel.follow.value = null
@@ -2093,10 +2093,10 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         val binding = _binding ?: return
         with(binding.playerControls) {
             if (uptimeMs != null && !streamOfflineReceived && requireContext().prefs().getBoolean(C.PLAYER_SHOW_UPTIME, true)) {
-                val rawElapsedMs = (com.github.andreyasadchy.xtra.util.TwitchClock.nowMs() - uptimeMs).coerceAtLeast(0L)
+                val rawElapsedMs = (com.endlessbum.twitchpro.util.TwitchClock.nowMs() - uptimeMs).coerceAtLeast(0L)
                 val effectiveElapsedMs = if (isExperimentalVodActive()) {
                     (playbackService as? ExoPlayerService)?.getExperimentalDisplayEdgeMs()?.takeIf { it > 0L }
-                        ?: (rawElapsedMs - com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS).coerceAtLeast(0L)
+                        ?: (rawElapsedMs - com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS).coerceAtLeast(0L)
                 } else {
                     rawElapsedMs
                 }
@@ -2383,7 +2383,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     fun shouldHoldExperimentalChat(): Boolean {
         if (isExperimentalVodActive()) return true
         val ctx = context ?: return false
-        if (!isTv || !com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(ctx)) {
+        if (!isTv || !com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(ctx)) {
             return false
         }
         val service = playbackService
@@ -2440,7 +2440,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     private fun getStreamUptime(): Long? {
         return playbackService?.createdAt
             ?.let { Instant.parseOrNull(it)?.toEpochMilliseconds() }
-            ?.let { com.github.andreyasadchy.xtra.util.TwitchClock.nowMs() - it }
+            ?.let { com.endlessbum.twitchpro.util.TwitchClock.nowMs() - it }
             ?.takeIf { it > 0 }
     }
 
@@ -2537,7 +2537,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             if (isExperimentalVodActive()) {
                 val exoService = playbackService as? ExoPlayerService
                 val vodEdge = exoService?.getExperimentalLiveEdgeMs()?.takeIf { it > 0L }
-                    ?: getStreamUptime()?.let { (it - com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS).coerceAtLeast(0L) }
+                    ?: getStreamUptime()?.let { (it - com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS).coerceAtLeast(0L) }
                 if (vodEdge == null || vodEdge <= 0L) {
                     syncPlayPauseButtonVisibility()
                     syncStreamSpeedButtonVisibility()
@@ -2785,7 +2785,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             createdAt = playbackService?.createdAt,
             viewerCount = playbackService?.viewerCount,
         )
-        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_looking_for_vod, Toast.LENGTH_SHORT).show()
+        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_looking_for_vod, Toast.LENGTH_SHORT).show()
         findUnlistedVideo()
     }
 
@@ -2951,7 +2951,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     /** Storyboard description of a video: the seekPreviewsURL of the video, else next to its animated preview. */
     private suspend fun getStoryboardUrl(videoId: String, animatedPreviewUrl: String?): String? {
         val seekPreviews = try {
-            val video = (requireContext().applicationContext as com.github.andreyasadchy.xtra.XtraApp).xtraModule.graphQLRepository.loadQueryVideo(
+            val video = (requireContext().applicationContext as com.endlessbum.twitchpro.TwitchProApp).twitchProModule.graphQLRepository.loadQueryVideo(
                 requireContext().prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
                 TwitchApiHelper.getGQLHeaders(requireContext()),
                 videoId
@@ -2982,7 +2982,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     private fun createSeekPreview(): TvSeekPreview {
         return TvSeekPreview(
             viewLifecycleOwner.lifecycleScope,
-            (requireContext().applicationContext as com.github.andreyasadchy.xtra.XtraApp).xtraModule.okHttpClient.value,
+            (requireContext().applicationContext as com.endlessbum.twitchpro.TwitchProApp).twitchProModule.okHttpClient.value,
             binding.playerControls.root,
             binding.playerControls.progressBar,
         ).also {
@@ -2995,13 +2995,13 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     /** Storyboards of the VOD being recorded of a live stream: the last archive of the channel, started with the stream. */
     private suspend fun getLiveStoryboardUrl(login: String, streamCreatedAt: String?): String? {
         val video = try {
-            (requireContext().applicationContext as com.github.andreyasadchy.xtra.XtraApp).xtraModule.graphQLRepository.loadQueryUserVideos(
+            (requireContext().applicationContext as com.endlessbum.twitchpro.TwitchProApp).twitchProModule.graphQLRepository.loadQueryUserVideos(
                 requireContext().prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
                 TwitchApiHelper.getGQLHeaders(requireContext(), true),
                 null,
                 login,
-                com.github.andreyasadchy.xtra.graphql.type.VideoSort.TIME,
-                listOf(com.github.andreyasadchy.xtra.graphql.type.BroadcastType.ARCHIVE),
+                com.endlessbum.twitchpro.graphql.type.VideoSort.TIME,
+                listOf(com.endlessbum.twitchpro.graphql.type.BroadcastType.ARCHIVE),
                 1,
                 null
             ).data?.user?.videos?.edges?.firstOrNull()?.node
@@ -3011,7 +3011,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         val streamStart = streamCreatedAt?.let { Instant.parseOrNull(it)?.toEpochMilliseconds() }
         val videoStart = video?.createdAt?.toString()?.let { Instant.parseOrNull(it)?.toEpochMilliseconds() }
         if (BuildConfig.DEBUG) {
-            android.util.Log.d("XtraTv", "seekPreview live video=${video?.id} videoStart=$videoStart streamStart=$streamStart")
+            android.util.Log.d("TwitchPro", "seekPreview live video=${video?.id} videoStart=$videoStart streamStart=$streamStart")
         }
         // only the VOD of the current broadcast
         if (video?.id == null || view == null || (streamStart != null && videoStart != null && kotlin.math.abs(videoStart - streamStart) > 15 * 60_000L)) {
@@ -3028,7 +3028,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         (activity as? MainActivity)?.dvrChatVideoId = video.id
         val url = getStoryboardUrl(video.id, video.animatedPreviewURL)
         if (BuildConfig.DEBUG) {
-            android.util.Log.d("XtraTv", "seekPreview live storyboard=$url")
+            android.util.Log.d("TwitchPro", "seekPreview live storyboard=$url")
         }
         return url
     }
@@ -3188,7 +3188,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             background = android.graphics.drawable.GradientDrawable().apply {
                 setColor(0xE6141318.toInt())
                 cornerRadius = 999 * density
-                setStroke((2 * density).toInt(), com.github.andreyasadchy.xtra.ui.tv.TvAccent.color)
+                setStroke((2 * density).toInt(), com.endlessbum.twitchpro.ui.tv.TvAccent.color)
             }
             val padH = (16 * density).toInt()
             val padV = (8 * density).toInt()
@@ -3252,7 +3252,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                     tvChatFreeCenterDown = true
                 } else if (event.action == KeyEvent.ACTION_UP && tvChatFreeCenterDown) {
                     exitTvChatFreeMove(restorePrevious = false)
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_free_move_saved, Toast.LENGTH_SHORT).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_free_move_saved, Toast.LENGTH_SHORT).show()
                 }
                 return true
             }
@@ -3432,7 +3432,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             if (tvChatFreeMoving) {
                 chatLayout.foreground = android.graphics.drawable.GradientDrawable().apply {
                     cornerRadius = if (rounded) 12f * metrics.density else 0f
-                    setStroke((3f * metrics.density).toInt().coerceAtLeast(2), com.github.andreyasadchy.xtra.ui.tv.TvAccent.color)
+                    setStroke((3f * metrics.density).toInt().coerceAtLeast(2), com.endlessbum.twitchpro.ui.tv.TvAccent.color)
                 }
             } else if (chatLayout.foreground != null) {
                 chatLayout.foreground = null
@@ -3526,7 +3526,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             R.drawable.tv_ic_palette to getString(R.string.tv_panel_tab_appearance),
             R.drawable.tv_ic_tune to getString(R.string.tv_panel_tab_options),
         )
-        com.github.andreyasadchy.xtra.ui.tv.TvDialogs.show(context) { dismiss ->
+        com.endlessbum.twitchpro.ui.tv.TvDialogs.show(context) { dismiss ->
             val initialMode = prefs.getInt(C.TV_CHAT_MODE, 0)
             val mode = androidx.compose.runtime.remember { androidx.compose.runtime.mutableIntStateOf(initialMode) }
             val position = androidx.compose.runtime.remember { androidx.compose.runtime.mutableIntStateOf(getTvChatPosForMode(prefs, initialMode)) }
@@ -3548,14 +3548,14 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             }
             val alignEnd = chatOnLeft && mode.intValue != 2
 
-            com.github.andreyasadchy.xtra.ui.tv.SidePanel(
+            com.endlessbum.twitchpro.ui.tv.SidePanel(
                 title = getString(R.string.tv_chat_layout),
                 width = 392.dp,
                 compactHeader = true,
                 scrollable = true,
                 alignEnd = alignEnd,
                 headerExtra = {
-                    com.github.andreyasadchy.xtra.ui.tv.PanelTabs(
+                    com.endlessbum.twitchpro.ui.tv.PanelTabs(
                         tabs = tabs,
                         selectedTab = selectedTab.intValue,
                         tabRequesters = tabRequesters,
@@ -3575,7 +3575,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             rightTarget = footerRestartReq,
                             upTarget = lastRowReq,
                         ) {
-                            com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.showPlayerBlockPanel(
+                            com.endlessbum.twitchpro.util.chat.ChatBlocklist.showPlayerBlockPanel(
                                 context = context,
                                 alignEnd = alignEnd,
                                 recentChatters = chatFragment?.getRecentChatters().orEmpty(),
@@ -3652,7 +3652,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
 
                 when (selectedTab.intValue) {
                     0 -> {
-                        com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                        com.endlessbum.twitchpro.ui.tv.SelectorRow(
                             label = getString(R.string.tv_chat_mode),
                             options = modes,
                             selected = mode.intValue,
@@ -3679,7 +3679,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             when (mode.intValue) {
                                 1 -> {
                                     val sideLeft = position.intValue == 2 || position.intValue == 3 || position.intValue == 5
-                                    com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                                    com.endlessbum.twitchpro.ui.tv.SelectorRow(
                                         label = getString(R.string.tv_chat_position),
                                         options = sides,
                                         selected = if (sideLeft) 1 else 0,
@@ -3691,7 +3691,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 }
                                 2 -> {
                                     val top = position.intValue == 1 || position.intValue == 3 || position.intValue == 6
-                                    com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                                    com.endlessbum.twitchpro.ui.tv.SelectorRow(
                                         label = getString(R.string.tv_chat_position),
                                         options = bands,
                                         selected = if (top) 1 else 0,
@@ -3704,7 +3704,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 else -> {
                                     val posOptions = if (freePosState.value) corners + getString(R.string.tv_position_free) else corners
                                     val posSelected = if (freePosState.value) corners.size else position.intValue.coerceIn(0, corners.lastIndex)
-                                    com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                                    com.endlessbum.twitchpro.ui.tv.SelectorRow(
                                         label = getString(R.string.tv_chat_position),
                                         options = posOptions,
                                         selected = posSelected,
@@ -3719,7 +3719,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             }
                         }
                         val hasFourthPlacementRow = (mode.intValue == 0 && !freePosState.value) || mode.intValue == 2
-                        com.github.andreyasadchy.xtra.ui.tv.ButtonRow(
+                        com.endlessbum.twitchpro.ui.tv.ButtonRow(
                             label = getString(R.string.tv_free_move_button),
                             icon = R.drawable.tv_ic_move,
                             compact = true,
@@ -3729,7 +3729,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             startTvChatFreeMove()
                         }
                         if (mode.intValue == 0 && !freePosState.value) {
-                            com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                            com.endlessbum.twitchpro.ui.tv.SliderRow(
                                 label = getString(R.string.tv_chat_margin),
                                 value = prefs.getInt(C.TV_CHAT_MARGIN, 0),
                                 range = 0..64,
@@ -3742,7 +3742,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 update(C.TV_CHAT_MARGIN, it)
                             }
                         } else if (mode.intValue == 2) {
-                            com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                            com.endlessbum.twitchpro.ui.tv.SelectorRow(
                                 label = getString(R.string.tv_chat_band),
                                 options = listOf(getString(R.string.tv_chat_band_separate), getString(R.string.tv_chat_band_overlay)),
                                 selected = if (prefs.getBoolean(C.TV_CHAT_BAND_OVERLAY, false)) 1 else 0,
@@ -3765,7 +3765,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         )
                         when (mode.intValue) {
                             1 -> {
-                                com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                                com.endlessbum.twitchpro.ui.tv.SliderRow(
                                     label = getString(R.string.tv_chat_width),
                                     value = prefs.getInt(C.TV_CHAT_WIDTH, 30),
                                     range = 5..60,
@@ -3777,7 +3777,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 }
                             }
                             2 -> {
-                                com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                                com.endlessbum.twitchpro.ui.tv.SliderRow(
                                     label = getString(R.string.tv_chat_height),
                                     value = prefs.getInt(C.TV_CHAT_LINES, 3),
                                     range = 1..12,
@@ -3789,7 +3789,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 }
                             }
                             else -> {
-                                com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                                com.endlessbum.twitchpro.ui.tv.SliderRow(
                                     label = getString(R.string.tv_chat_width),
                                     value = prefs.getInt(C.TV_CHAT_WIDTH, 30),
                                     range = 5..60,
@@ -3799,7 +3799,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 ) {
                                     update(C.TV_CHAT_WIDTH, it)
                                 }
-                                com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                                com.endlessbum.twitchpro.ui.tv.SliderRow(
                                     label = getString(R.string.tv_chat_height),
                                     value = prefs.getInt(C.TV_CHAT_HEIGHT, 50),
                                     range = 20..100,
@@ -3812,7 +3812,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 }
                             }
                         }
-                        com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                        com.endlessbum.twitchpro.ui.tv.SliderRow(
                             label = getString(R.string.tv_chat_opacity),
                             value = prefs.getInt(C.TV_CHAT_OPACITY, 55),
                             range = 0..100,
@@ -3831,7 +3831,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         if (activePin != null) {
                             val pinSender = activePin.senderName ?: activePin.senderLogin
                             val pinPreview = if (!pinSender.isNullOrBlank()) "$pinSender: ${activePin.messageText}" else activePin.messageText
-                            com.github.andreyasadchy.xtra.ui.tv.ButtonRow(
+                            com.endlessbum.twitchpro.ui.tv.ButtonRow(
                                 label = "${getString(R.string.tv_chat_pinned_active)} — ${pinPreview.take(32)}",
                                 icon = R.drawable.tv_ic_pin,
                                 compact = true,
@@ -3845,7 +3845,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         val delayMode = androidx.compose.runtime.remember(expVodChat) {
                             androidx.compose.runtime.mutableIntStateOf(if (expVodChat) 1 else savedDelayMode)
                         }
-                        com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                        com.endlessbum.twitchpro.ui.tv.SelectorRow(
                             label = getString(R.string.tv_chat_delay),
                             options = listOf(getString(R.string.tv_chat_delay_off), getString(R.string.tv_chat_delay_auto), getString(R.string.tv_chat_delay_manual)),
                             selected = delayMode.intValue,
@@ -3855,7 +3855,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         ) {
                             if (isExperimentalVodActive()) {
                                 delayMode.intValue = 1
-                                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_chat_auto_locked, Toast.LENGTH_SHORT).show()
+                                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.tv_adblock_exp_chat_auto_locked, Toast.LENGTH_SHORT).show()
                             } else {
                                 delayMode.intValue = it
                                 prefs.edit { putString(C.CHAT_DELAY_MODE, it.toString()) }
@@ -3889,12 +3889,12 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                         lineHeight = 16.sp,
                                         maxLines = 2,
                                         overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                                        color = com.github.andreyasadchy.xtra.ui.tv.TvColors.secondaryText,
+                                        color = com.endlessbum.twitchpro.ui.tv.TvColors.secondaryText,
                                         modifier = androidx.compose.ui.Modifier.padding(start = 15.dp, end = 15.dp, top = 1.dp, bottom = 3.dp),
                                     )
                                 }
                                 2 -> {
-                                    com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                                    com.endlessbum.twitchpro.ui.tv.SliderRow(
                                         label = getString(R.string.tv_chat_delay_seconds),
                                         value = prefs.getInt(C.CHAT_DELAY_SECONDS, 5).coerceIn(1, 60),
                                         range = 1..60,
@@ -3915,7 +3915,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             getString(R.string.tv_chat_slow_rate, 4),
                             getString(R.string.tv_chat_slow_rate, 6),
                         )
-                        com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                        com.endlessbum.twitchpro.ui.tv.SelectorRow(
                             label = getString(R.string.tv_chat_slow),
                             options = slowRateLabels,
                             selected = slowRateValues.indexOf(prefs.getString(C.CHAT_SLOW_RATE, "0")).coerceAtLeast(0),
@@ -3927,7 +3927,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         val pinnedMode = androidx.compose.runtime.remember {
                             androidx.compose.runtime.mutableIntStateOf(prefs.getInt(C.TV_CHAT_PINNED_MODE, 1).coerceIn(0, 2))
                         }
-                        com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                        com.endlessbum.twitchpro.ui.tv.SelectorRow(
                             label = getString(R.string.tv_chat_pinned),
                             options = listOf(
                                 getString(R.string.tv_chat_pinned_hidden),
@@ -3945,7 +3945,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         val predPopup = androidx.compose.runtime.remember {
                             androidx.compose.runtime.mutableIntStateOf(C.getTvPredictionsPopupMode(prefs))
                         }
-                        com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                        com.endlessbum.twitchpro.ui.tv.SelectorRow(
                             label = getString(R.string.tv_chat_predictions_popup),
                             options = listOf(
                                 getString(R.string.tv_chat_delay_off),
@@ -3974,7 +3974,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         val sharedBadges = androidx.compose.runtime.remember {
                             androidx.compose.runtime.mutableIntStateOf(if (prefs.getBoolean(C.CHAT_SHARED_BADGES, true)) 1 else 0)
                         }
-                        com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                        com.endlessbum.twitchpro.ui.tv.SelectorRow(
                             label = getString(R.string.tv_chat_shared_badges),
                             options = listOf(getString(R.string.tv_chat_delay_off), getString(R.string.tv_option_on)),
                             selected = sharedBadges.intValue,
@@ -3993,15 +3993,15 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     }
 
     private fun showPinnedMessageDetailPanel(
-        pin: com.github.andreyasadchy.xtra.util.chat.PubSubUtils.PinnedChatData,
+        pin: com.endlessbum.twitchpro.util.chat.PubSubUtils.PinnedChatData,
         alignEnd: Boolean,
     ) {
         val context = context ?: return
-        com.github.andreyasadchy.xtra.ui.tv.TvDialogs.show(context) { dismiss ->
+        com.endlessbum.twitchpro.ui.tv.TvDialogs.show(context) { dismiss ->
             val requester = androidx.compose.runtime.remember { androidx.compose.ui.focus.FocusRequester() }
             val sender = pin.senderName ?: pin.senderLogin
             val subtitle = pin.pinnedByName?.let { getString(R.string.tv_chat_pinned_by, it) }
-            com.github.andreyasadchy.xtra.ui.tv.SidePanel(
+            com.endlessbum.twitchpro.ui.tv.SidePanel(
                 title = "📌 ${sender ?: getString(R.string.tv_chat_pinned_active)}",
                 subtitle = subtitle,
                 alignEnd = alignEnd,
@@ -4015,7 +4015,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                     modifier = androidx.compose.ui.Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
                 val hidden = chatFragment?.isCurrentPinnedHidden() == true
-                com.github.andreyasadchy.xtra.ui.tv.ButtonRow(
+                com.endlessbum.twitchpro.ui.tv.ButtonRow(
                     if (hidden) getString(R.string.tv_chat_pinned_show_now) else getString(R.string.tv_chat_pinned_hide_now),
                     androidx.compose.ui.Modifier.focusRequester(requester),
                 ) {
@@ -4074,17 +4074,17 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             return
         }
         val context = context ?: return
-        com.github.andreyasadchy.xtra.ui.tv.TvDim.apply(binding.aspectRatioFrameLayout)
-        com.github.andreyasadchy.xtra.ui.tv.TvDim.apply(binding.chatLayout)
+        com.endlessbum.twitchpro.ui.tv.TvDim.apply(binding.aspectRatioFrameLayout)
+        com.endlessbum.twitchpro.ui.tv.TvDim.apply(binding.chatLayout)
         binding.playerControls.tvDim?.setImageResource(
-            if (com.github.andreyasadchy.xtra.ui.tv.TvDim.isEffectivelyOn(context)) R.drawable.tv_ic_dim_on else R.drawable.tv_ic_dim
+            if (com.endlessbum.twitchpro.ui.tv.TvDim.isEffectivelyOn(context)) R.drawable.tv_ic_dim_on else R.drawable.tv_ic_dim
         )
     }
 
     /** TV: the icon of the adblock & proxy button lights up when Experimental Adblock, Custom Proxy, or HTTP Proxy is enabled. */
     private fun updateTvProxyIcon() {
         val context = context ?: return
-        val expOn = com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(context)
+        val expOn = com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(context)
         val customOn = !expOn && context.prefs().getBoolean(C.PLAYER_USE_CUSTOM_PROXY, false)
         val streamProxyOn = !expOn && context.prefs().getBoolean(C.PLAYER_USE_STREAM_PROXY, false)
         _binding?.playerControls?.tvProxy?.apply {
@@ -4096,20 +4096,20 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     /** TV: unified Ad blocker & proxies panel, restarting the stream when closed if settings changed. */
     private fun showTvProxyPanel() {
         val activity = activity as? MainActivity ?: return
-        val repository = (activity.application as com.github.andreyasadchy.xtra.XtraApp).xtraModule.playerRepository
+        val repository = (activity.application as com.endlessbum.twitchpro.TwitchProApp).twitchProModule.playerRepository
         viewLifecycleOwner.lifecycleScope.launch {
             val proxies = repository.getCustomProxies()
             val streamProxies = repository.getStreamProxies()
             if (_binding == null) {
                 return@launch
             }
-            val swapBefore = com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isSwapAdblockEnabled(activity)
-            val expBefore = com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(activity)
+            val swapBefore = com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isSwapAdblockEnabled(activity)
+            val expBefore = com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(activity)
             val useBefore = activity.prefs().getBoolean(C.PLAYER_USE_CUSTOM_PROXY, false)
             val useStreamBefore = activity.prefs().getBoolean(C.PLAYER_USE_STREAM_PROXY, false)
             val modeBefore = activity.prefs().getString(C.PLAYER_CUSTOM_PROXY_MODE, "0")
             var streamListChanged = false
-            com.github.andreyasadchy.xtra.ui.tv.TvProxyPanel.show(
+            com.endlessbum.twitchpro.ui.tv.TvProxyPanel.show(
                 activity,
                 proxies,
                 openSettings = { activity.openCustomProxySettings() },
@@ -4128,8 +4128,8 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 if (changed != null) {
                     activity.lifecycleScope.launch {
                         repository.updateCustomProxies(changed)
-                        val swapNow = com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isSwapAdblockEnabled(activity)
-                        val expNow = com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(activity)
+                        val swapNow = com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isSwapAdblockEnabled(activity)
+                        val expNow = com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.isExperimentalEnabled(activity)
                         val useNow = activity.prefs().getBoolean(C.PLAYER_USE_CUSTOM_PROXY, false)
                         val useStreamNow = activity.prefs().getBoolean(C.PLAYER_USE_STREAM_PROXY, false)
                         val modeNow = activity.prefs().getString(C.PLAYER_CUSTOM_PROXY_MODE, "0")
@@ -4150,33 +4150,33 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     private fun showTvDimPanel() {
         val context = requireContext()
         // set while choosing it: seen at once
-        com.github.andreyasadchy.xtra.ui.tv.TvDim.setActive(true)
-        com.github.andreyasadchy.xtra.ui.tv.TvDialogs.show(context) { dismiss ->
-            com.github.andreyasadchy.xtra.ui.tv.SidePanel(title = getString(R.string.tv_dim), scrollable = true) {
+        com.endlessbum.twitchpro.ui.tv.TvDim.setActive(true)
+        com.endlessbum.twitchpro.ui.tv.TvDialogs.show(context) { dismiss ->
+            com.endlessbum.twitchpro.ui.tv.SidePanel(title = getString(R.string.tv_dim), scrollable = true) {
                 val requester = androidx.compose.runtime.remember { androidx.compose.ui.focus.FocusRequester() }
-                com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                com.endlessbum.twitchpro.ui.tv.SliderRow(
                     getString(R.string.tv_dim_level),
-                    com.github.andreyasadchy.xtra.ui.tv.TvDim.level(context),
+                    com.endlessbum.twitchpro.ui.tv.TvDim.level(context),
                     0..90,
                     step = 10,
                     valueText = { "$it %" },
                     modifier = androidx.compose.ui.Modifier.focusRequester(requester),
                 ) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvDim.setLevel(context, it)
+                    com.endlessbum.twitchpro.ui.tv.TvDim.setLevel(context, it)
                 }
                 androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(10.dp))
-                com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                com.endlessbum.twitchpro.ui.tv.SliderRow(
                     getString(R.string.tv_night_shift_level),
-                    com.github.andreyasadchy.xtra.ui.tv.TvDim.warmLevel(context),
+                    com.endlessbum.twitchpro.ui.tv.TvDim.warmLevel(context),
                     0..80,
                     step = 10,
                     valueText = { "$it %" },
                 ) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvDim.setWarmLevel(context, it)
+                    com.endlessbum.twitchpro.ui.tv.TvDim.setWarmLevel(context, it)
                 }
                 androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(12.dp))
-                com.github.andreyasadchy.xtra.ui.tv.ButtonRow(getString(R.string.tv_dim_off)) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvDim.setActive(false)
+                com.endlessbum.twitchpro.ui.tv.ButtonRow(getString(R.string.tv_dim_off)) {
+                    com.endlessbum.twitchpro.ui.tv.TvDim.setActive(false)
                     dismiss()
                 }
                 androidx.compose.runtime.LaunchedEffect(Unit) { requester.requestFocus() }
@@ -4236,7 +4236,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             R.drawable.tv_ic_volume to getString(R.string.tv_panel_tab_audio),
         )
 
-        com.github.andreyasadchy.xtra.ui.tv.TvDialogs.show(activity) { dismiss ->
+        com.endlessbum.twitchpro.ui.tv.TvDialogs.show(activity) { dismiss ->
             val selectedSlotState = androidx.compose.runtime.remember {
                 androidx.compose.runtime.mutableIntStateOf(if (twoOpen) 0 else activeIndices.first())
             }
@@ -4301,7 +4301,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 (twoOpen && soundValues.getOrNull(sound.intValue) == "mix")
             val footerUpTarget = if (selectedTab.intValue == 1 && !hasExtraAudioRows) firstRowReq else lastRowReq
 
-            com.github.andreyasadchy.xtra.ui.tv.SidePanel(
+            com.endlessbum.twitchpro.ui.tv.SidePanel(
                 title = getString(R.string.tv_pip_settings),
                 width = 392.dp,
                 compactHeader = true,
@@ -4309,7 +4309,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 scrollable = true,
                 headerExtra = {
                     if (twoOpen) {
-                        com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                        com.endlessbum.twitchpro.ui.tv.SelectorRow(
                             label = getString(R.string.tv_pip_settings),
                             options = windowOptions,
                             selected = currentSlot.coerceIn(0, 1),
@@ -4334,7 +4334,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         }
                         androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(6.dp))
                     }
-                    com.github.andreyasadchy.xtra.ui.tv.PanelTabs(
+                    com.endlessbum.twitchpro.ui.tv.PanelTabs(
                         tabs = tabs,
                         selectedTab = selectedTab.intValue,
                         tabRequesters = tabRequesters,
@@ -4439,7 +4439,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             } else {
                                 cornerValues.indexOf(slotCornerPos).let { if (it >= 0) it else if (currentSlot == 1) 0 else 2 }
                             }
-                            com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                            com.endlessbum.twitchpro.ui.tv.SelectorRow(
                                 label = getString(R.string.tv_pip_position),
                                 options = posOptions,
                                 selected = posSelected,
@@ -4454,7 +4454,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                     activity.applyTvPipSettings()
                                 }
                             }
-                            com.github.andreyasadchy.xtra.ui.tv.ButtonRow(
+                            com.endlessbum.twitchpro.ui.tv.ButtonRow(
                                 label = getString(R.string.tv_free_move_button),
                                 icon = R.drawable.tv_ic_move,
                                 compact = true,
@@ -4462,7 +4462,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 dismiss()
                                 activity.startTvPipFreeMove(currentSlot)
                             }
-                            com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                            com.endlessbum.twitchpro.ui.tv.SelectorRow(
                                 label = getString(R.string.tv_pip_size),
                                 options = sizes,
                                 selected = prefs.getInt(sizeKey, 1).coerceIn(0, 2),
@@ -4480,7 +4480,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             getString(R.string.tv_pip_margin_flush),
                         )
                         val currentMarginIdx = marginValues.indexOf(prefs.getString(C.TV_PIP_EDGE_MARGIN, "reduced")).let { if (it >= 0) it else 1 }
-                        com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                        com.endlessbum.twitchpro.ui.tv.SelectorRow(
                             label = getString(R.string.tv_pip_edge_margin),
                             options = marginLabels,
                             selected = currentMarginIdx,
@@ -4491,7 +4491,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             activity.applyTvPipSettings()
                         }
                         androidx.compose.runtime.key("op_$currentSlot") {
-                            com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                            com.endlessbum.twitchpro.ui.tv.SliderRow(
                                 label = getString(R.string.tv_pip_opacity),
                                 value = prefs.getInt(opacityKey, 100).coerceIn(5, 100),
                                 range = 5..100,
@@ -4511,7 +4511,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             getString(R.string.tv_pip_label_hidden),
                         )
                         val currentLabelModeIdx = labelModeValues.indexOf(prefs.getString(C.TV_PIP_LABEL_MODE, "auto")).let { if (it >= 0) it else 0 }
-                        com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                        com.endlessbum.twitchpro.ui.tv.SelectorRow(
                             label = getString(R.string.tv_pip_streamer_name),
                             options = labelModeLabels,
                             selected = currentLabelModeIdx,
@@ -4528,7 +4528,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         val soundMod = androidx.compose.ui.Modifier
                             .panelFirstRow(firstRowReq) { tabRequesters[selectedTab.intValue] }
                             .let { if (!hasExtraAudioRows) it.panelLastRow(null, footer0Req) else it }
-                        com.github.andreyasadchy.xtra.ui.tv.SelectorRow(
+                        com.endlessbum.twitchpro.ui.tv.SelectorRow(
                             label = getString(R.string.tv_pip_sound),
                             options = sounds,
                             selected = sound.intValue,
@@ -4541,7 +4541,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             activity.applyTvPipSettings()
                         }
                         if (!twoOpen && soundValues.getOrNull(sound.intValue) == "both") {
-                            com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                            com.endlessbum.twitchpro.ui.tv.SliderRow(
                                 label = getString(R.string.tv_pip_balance),
                                 value = prefs.getInt(C.TV_PIP_BALANCE, 0).coerceIn(-100, 100),
                                 range = -100..100,
@@ -4559,7 +4559,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 activity.applyTvPipSettings()
                             }
                         } else if (twoOpen && soundValues.getOrNull(sound.intValue) == "mix") {
-                            com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                            com.endlessbum.twitchpro.ui.tv.SliderRow(
                                 label = getString(R.string.tv_pip_vol_main),
                                 value = prefs.getInt(C.TV_PIP_VOL_MAIN, 100).coerceIn(0, 100),
                                 range = 0..100,
@@ -4571,7 +4571,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 prefs.edit { putInt(C.TV_PIP_VOL_MAIN, it) }
                                 activity.applyTvPipSettings()
                             }
-                            com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                            com.endlessbum.twitchpro.ui.tv.SliderRow(
                                 label = getString(R.string.tv_pip_vol_1),
                                 value = prefs.getInt(C.TV_PIP_VOL_1, 80).coerceIn(0, 100),
                                 range = 0..100,
@@ -4583,7 +4583,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                                 prefs.edit { putInt(C.TV_PIP_VOL_1, it) }
                                 activity.applyTvPipSettings()
                             }
-                            com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+                            com.endlessbum.twitchpro.ui.tv.SliderRow(
                                 label = getString(R.string.tv_pip_vol_2),
                                 value = prefs.getInt(C.TV_PIP_VOL_2, 80).coerceIn(0, 100),
                                 range = 0..100,
@@ -4611,7 +4611,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         prefs: android.content.SharedPreferences,
         modifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier,
     ) {
-        com.github.andreyasadchy.xtra.ui.tv.SliderRow(
+        com.endlessbum.twitchpro.ui.tv.SliderRow(
             label = getString(R.string.tv_chat_text_size),
             value = prefs.getInt(C.CHAT_SIZE_MODIFIER, 100),
             range = 60..200,
@@ -4633,14 +4633,14 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     /** TV: write a chat message, with voice input and visual emote picker in the field (no system popup). */
     private fun showChatComposer() {
         val emoteGroupsState = androidx.compose.runtime.mutableStateOf(chatFragment?.getTvEmoteGroups().orEmpty())
-        com.github.andreyasadchy.xtra.ui.tv.TvDialogs.show(requireContext()) { dismiss ->
+        com.endlessbum.twitchpro.ui.tv.TvDialogs.show(requireContext()) { dismiss ->
             androidx.compose.runtime.LaunchedEffect(Unit) {
                 emoteGroupsState.value = chatFragment?.getTvEmoteGroups().orEmpty()
                 chatFragment?.observeEmoteUpdates()?.collect {
                     emoteGroupsState.value = chatFragment?.getTvEmoteGroups().orEmpty()
                 }
             }
-            com.github.andreyasadchy.xtra.ui.tv.ChatComposer(
+            com.endlessbum.twitchpro.ui.tv.ChatComposer(
                 title = getString(R.string.tv_write_message),
                 hint = getString(R.string.tv_message_hint),
                 sendLabel = getString(R.string.tv_send),
@@ -4687,7 +4687,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         if (!isTv || _binding == null) {
             return
         }
-        com.github.andreyasadchy.xtra.ui.tv.TvClockSettings.apply(
+        com.endlessbum.twitchpro.ui.tv.TvClockSettings.apply(
             context = requireContext(),
             hudClock = binding.playerControls.tvClock,
             alwaysClock = binding.tvAlwaysClock,
@@ -4740,13 +4740,13 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         val ctx = context ?: return null
         val density = resources.displayMetrics.density
         val existing = tvOsdContainer
-        val borderColor = if (com.github.andreyasadchy.xtra.ui.tv.TvAccent.current != null) {
-            androidx.core.graphics.ColorUtils.setAlphaComponent(com.github.andreyasadchy.xtra.ui.tv.TvAccent.onDark, 0x59)
+        val borderColor = if (com.endlessbum.twitchpro.ui.tv.TvAccent.current != null) {
+            androidx.core.graphics.ColorUtils.setAlphaComponent(com.endlessbum.twitchpro.ui.tv.TvAccent.onDark, 0x59)
         } else {
             0x38FFFFFF
         }
-        val iconTint = if (com.github.andreyasadchy.xtra.ui.tv.TvAccent.current != null) {
-            com.github.andreyasadchy.xtra.ui.tv.TvAccent.onDark
+        val iconTint = if (com.endlessbum.twitchpro.ui.tv.TvAccent.current != null) {
+            com.endlessbum.twitchpro.ui.tv.TvAccent.onDark
         } else {
             Color.WHITE
         }
@@ -4861,7 +4861,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         }
         if (!isMaximized || _binding == null) {
             val dur = if (durationMs > 2400L) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.show(ctx, message, dur, iconRes)
+            com.endlessbum.twitchpro.ui.tv.TvToast.show(ctx, message, dur, iconRes)
             return
         }
         val osd = ensureTvOsdView() ?: return
@@ -5022,7 +5022,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         if (!isTv || isMaximized || isRemoving || playbackService == null) {
             return false
         }
-        val Keys = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys
+        val Keys = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys
         return when (action) {
             Keys.ACTION_OPEN_MINI_PLAYER -> {
                 (activity as? MainActivity)?.reopenTvMiniPlayer()
@@ -5054,7 +5054,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     }
 
     fun executeTvRemoteAction(action: String): Boolean {
-        val Keys = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys
+        val Keys = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys
         if (hudPeek && action != Keys.ACTION_SWITCH_PREV && action != Keys.ACTION_SWITCH_NEXT && action != Keys.ACTION_LAST_STREAM) {
             endHudPeek()
             hideController()
@@ -5171,7 +5171,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         val ctx = context ?: return
         val dvrStream = getTvDvrStream()
         val current = (activity as? MainActivity)?.currentPlayingStream()
-        com.github.andreyasadchy.xtra.ui.tv.TvRewardsPanel.show(
+        com.endlessbum.twitchpro.ui.tv.TvRewardsPanel.show(
             context = ctx,
             channelId = playbackService?.channelId ?: dvrStream?.channelId ?: current?.channelId,
             channelLogin = playbackService?.channelLogin ?: dvrStream?.channelLogin ?: current?.channelLogin,
@@ -5192,13 +5192,13 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                     val edge = exo?.getExperimentalLiveEdgeMs() ?: 0L
                     val pos = getCurrentPosition() ?: edge
                     if (edge > 0L && edge - pos >= 12_000L && archiveVid != null) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvQrShare.buildVideoUrl(archiveVid, pos)
+                        com.endlessbum.twitchpro.ui.tv.TvQrShare.buildVideoUrl(archiveVid, pos)
                     } else null
                 } else {
                     val behind = exo?.getLiveTimeShiftBehindMs() ?: 0L
                     val uptime = getStreamUptime()
                     if (behind >= 12_000L && uptime != null && archiveVid != null) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvQrShare.buildVideoUrl(archiveVid, (uptime - behind).coerceAtLeast(0L))
+                        com.endlessbum.twitchpro.ui.tv.TvQrShare.buildVideoUrl(archiveVid, (uptime - behind).coerceAtLeast(0L))
                     } else null
                 }
                 archiveShareUrl ?: (playbackService?.channelLogin ?: dvrStream?.channelLogin)
@@ -5208,7 +5208,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             BasePlaybackService.VIDEO -> {
                 val vid = playbackService?.videoId?.takeIf { it.isNotBlank() } ?: archiveVid
                 if (vid != null) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvQrShare.buildVideoUrl(vid, getCurrentPosition())
+                    com.endlessbum.twitchpro.ui.tv.TvQrShare.buildVideoUrl(vid, getCurrentPosition())
                 } else {
                     (playbackService?.channelLogin ?: dvrStream?.channelLogin)
                         ?.takeIf { it.isNotBlank() }
@@ -5229,7 +5229,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             ?: playbackService?.channelName?.takeIf { it.isNotBlank() }
             ?: playbackService?.channelLogin
             ?: getString(R.string.tv_share_qr)
-        com.github.andreyasadchy.xtra.ui.tv.TvQrShare.showQrModal(
+        com.endlessbum.twitchpro.ui.tv.TvQrShare.showQrModal(
             context = ctx,
             title = title,
             subtitle = getString(R.string.tv_share_qr_subtitle),
@@ -5250,7 +5250,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                     val edge = exo?.getExperimentalLiveEdgeMs() ?: 0L
                     val pos = getCurrentPosition() ?: edge
                     if (edge > 0L && edge - pos >= 12_000L && archiveVid != null) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvQrShare.createAndShowClipQr(
+                        com.endlessbum.twitchpro.ui.tv.TvQrShare.createAndShowClipQr(
                             context = ctx,
                             broadcasterId = broadcasterId,
                             channelLogin = channelLogin,
@@ -5259,7 +5259,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             offsetSeconds = (pos / 1000.0).coerceAtLeast(1.0),
                         )
                     } else {
-                        com.github.andreyasadchy.xtra.ui.tv.TvQrShare.createAndShowClipQr(
+                        com.endlessbum.twitchpro.ui.tv.TvQrShare.createAndShowClipQr(
                             context = ctx,
                             broadcasterId = broadcasterId,
                             channelLogin = channelLogin,
@@ -5272,7 +5272,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                     val behind = exo?.getLiveTimeShiftBehindMs() ?: 0L
                     val uptime = getStreamUptime()
                     if (behind >= 12_000L && uptime != null && archiveVid != null) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvQrShare.createAndShowClipQr(
+                        com.endlessbum.twitchpro.ui.tv.TvQrShare.createAndShowClipQr(
                             context = ctx,
                             broadcasterId = broadcasterId,
                             channelLogin = channelLogin,
@@ -5281,7 +5281,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                             offsetSeconds = ((uptime - behind) / 1000.0).coerceAtLeast(1.0),
                         )
                     } else {
-                        com.github.andreyasadchy.xtra.ui.tv.TvQrShare.createAndShowClipQr(
+                        com.endlessbum.twitchpro.ui.tv.TvQrShare.createAndShowClipQr(
                             context = ctx,
                             broadcasterId = broadcasterId,
                             channelLogin = channelLogin,
@@ -5295,7 +5295,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             BasePlaybackService.VIDEO -> {
                 val vid = playbackService?.videoId?.takeIf { it.isNotBlank() } ?: archiveVid
                 val posSec = getCurrentPosition()?.let { (it / 1000.0).coerceAtLeast(1.0) }
-                com.github.andreyasadchy.xtra.ui.tv.TvQrShare.createAndShowClipQr(
+                com.endlessbum.twitchpro.ui.tv.TvQrShare.createAndShowClipQr(
                     context = ctx,
                     broadcasterId = broadcasterId,
                     channelLogin = channelLogin,
@@ -5306,7 +5306,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             }
             else -> {
                 if (!channelLogin.isNullOrBlank()) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvQrShare.createAndShowClipQr(
+                    com.endlessbum.twitchpro.ui.tv.TvQrShare.createAndShowClipQr(
                         context = ctx,
                         broadcasterId = broadcasterId,
                         channelLogin = channelLogin,
@@ -5340,7 +5340,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             return false
         }
         val ctx = context ?: return false
-        val Keys = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys
+        val Keys = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys
         if (isMaximized && binding.chatLayout.hasFocus()) {
             return false
         }
@@ -5488,12 +5488,12 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         binding.root.viewTreeObserver.removeOnGlobalFocusChangeListener(hudFocusListener)
         binding.root.viewTreeObserver.addOnGlobalFocusChangeListener(hudFocusListener)
         // loading circle in the color of accent
-        if (com.github.andreyasadchy.xtra.ui.tv.TvAccent.current != null) {
-            (binding.bufferingIndicator as? android.widget.ProgressBar)?.indeterminateTintList = com.github.andreyasadchy.xtra.ui.tv.TvAccent.colorList
+        if (com.endlessbum.twitchpro.ui.tv.TvAccent.current != null) {
+            (binding.bufferingIndicator as? android.widget.ProgressBar)?.indeterminateTintList = com.endlessbum.twitchpro.ui.tv.TvAccent.colorList
         }
         // the dimming of the streams, as it is now and when it changes
-        com.github.andreyasadchy.xtra.ui.tv.TvDim.removeListener(tvDimListener)
-        com.github.andreyasadchy.xtra.ui.tv.TvDim.addListener(tvDimListener)
+        com.endlessbum.twitchpro.ui.tv.TvDim.removeListener(tvDimListener)
+        com.endlessbum.twitchpro.ui.tv.TvDim.addListener(tvDimListener)
         binding.root.post { applyTvDim() }
         with(binding.playerControls) {
             // seeking is done on the timeline on TV
@@ -5568,7 +5568,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 multiStream?.let { btn ->
                     btn.visibility = View.VISIBLE
                     val badge = tvMultiStreamBadge
-                        ?: com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.MultiStreamBadgeDrawable(resources.displayMetrics.density).also { d ->
+                        ?: com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.MultiStreamBadgeDrawable(resources.displayMetrics.density).also { d ->
                             tvMultiStreamBadge = d
                             btn.overlay.add(d)
                             btn.addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
@@ -5608,7 +5608,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 button.visibility = if (prefs.getBoolean(C.TV_BUTTON_DIM, false)) View.VISIBLE else View.GONE
                 button.setOnClickListener {
                     showController(force = true)
-                    com.github.andreyasadchy.xtra.ui.tv.TvDim.toggle(requireContext())
+                    com.endlessbum.twitchpro.ui.tv.TvDim.toggle(requireContext())
                 }
                 button.setOnLongClickListener {
                     showController(force = true)
@@ -5653,7 +5653,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                     showController(force = true)
                     val lock = computeTvChatLockState()
                     if (lock != null) {
-                        com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), lock.message, Toast.LENGTH_SHORT).show()
+                        com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), lock.message, Toast.LENGTH_SHORT).show()
                     } else {
                         showChatComposer()
                     }
@@ -5685,7 +5685,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             updateTvClockVisibility()
             tvClockObserverJob?.cancel()
             tvClockObserverJob = viewLifecycleOwner.lifecycleScope.launch {
-                com.github.andreyasadchy.xtra.ui.tv.TvClockSettings.changes.collect {
+                com.endlessbum.twitchpro.ui.tv.TvClockSettings.changes.collect {
                     updateTvClockVisibility()
                 }
             }
@@ -5698,7 +5698,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 duration.viewTreeObserver.addOnGlobalLayoutListener { updateSeparator() }
             }
             // Nuvio style: the focused button is a white disc, its icon takes the color of accent (ambiance color)
-            val focusedIcon = com.github.andreyasadchy.xtra.ui.tv.TvAccent.onLight
+            val focusedIcon = com.endlessbum.twitchpro.ui.tv.TvAccent.onLight
             buttons.forEach { button ->
                 val previous = button.onFocusChangeListener
                 button.setOnFocusChangeListener { v, hasFocus ->
@@ -5766,14 +5766,14 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         }
         val roomState = chatFragment?.getEffectiveRoomState()?.value ?: return null
         if (roomState.subs == "1" && badges != null && "subscriber" !in badges && "founder" !in badges) {
-            return TvChatLock(com.github.andreyasadchy.xtra.util.chat.TvChatNotices.restrictionMessage(ctx, "SUBSCRIBERS_ONLY"))
+            return TvChatLock(com.endlessbum.twitchpro.util.chat.TvChatNotices.restrictionMessage(ctx, "SUBSCRIBERS_ONLY"))
         }
         val followersMin = roomState.followers?.toIntOrNull()
         if (followersMin != null && followersMin >= 0 && viewModel.accountFollowKnown.value) {
             val followedAt = viewModel.accountFollowedAtMs.value
             if (followedAt == null) {
                 return TvChatLock(
-                    com.github.andreyasadchy.xtra.util.chat.TvChatNotices.restrictionMessage(
+                    com.endlessbum.twitchpro.util.chat.TvChatNotices.restrictionMessage(
                         ctx,
                         "FOLLOWERS_ONLY",
                         followersMinutes = followersMin
@@ -5786,7 +5786,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 if (now < unlockAt) {
                     val remSec = (unlockAt - now + 999L) / 1000L
                     return TvChatLock(
-                        com.github.andreyasadchy.xtra.util.chat.TvChatNotices.restrictionMessage(
+                        com.endlessbum.twitchpro.util.chat.TvChatNotices.restrictionMessage(
                             ctx,
                             "msg_followersonly_followed",
                             followersMinutes = followersMin,
@@ -5810,7 +5810,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 button.setImageResource(if (locked) R.drawable.tv_ic_chat_send_locked else R.drawable.tv_ic_chat_send)
                 button.setColorFilter(
                     when {
-                        button.hasFocus() -> com.github.andreyasadchy.xtra.ui.tv.TvAccent.onLight
+                        button.hasFocus() -> com.endlessbum.twitchpro.ui.tv.TvAccent.onLight
                         button.isEnabled -> Color.WHITE
                         else -> Color.GRAY
                     }
@@ -5849,8 +5849,8 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             chip.visibility = View.GONE
             return
         }
-        com.github.andreyasadchy.xtra.ui.tv.TvFavorites.load(ctx)
-        val isFav = com.github.andreyasadchy.xtra.ui.tv.TvFavorites.isFavorite(login)
+        com.endlessbum.twitchpro.ui.tv.TvFavorites.load(ctx)
+        val isFav = com.endlessbum.twitchpro.ui.tv.TvFavorites.isFavorite(login)
         val density = resources.displayMetrics.density
         chip.visibility = View.VISIBLE
         (chip.layoutParams as? ViewGroup.MarginLayoutParams)?.let { lp ->
@@ -5873,22 +5873,22 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         applyStarTint(chip.hasFocus(), isFav)
         chip.contentDescription = getString(if (isFav) R.string.tv_favorite_remove else R.string.tv_favorite_add)
         chip.setOnFocusChangeListener { _, hasFocus ->
-            val nowFav = com.github.andreyasadchy.xtra.ui.tv.TvFavorites.isFavorite(login)
+            val nowFav = com.endlessbum.twitchpro.ui.tv.TvFavorites.isFavorite(login)
             applyStarTint(hasFocus, nowFav)
         }
         chip.setOnClickListener {
             val label = chName ?: login
-            val currentlyFav = com.github.andreyasadchy.xtra.ui.tv.TvFavorites.isFavorite(login)
+            val currentlyFav = com.endlessbum.twitchpro.ui.tv.TvFavorites.isFavorite(login)
             if (currentlyFav) {
-                com.github.andreyasadchy.xtra.ui.tv.TvFavorites.remove(ctx, login)
-                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(
+                com.endlessbum.twitchpro.ui.tv.TvFavorites.remove(ctx, login)
+                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(
                     ctx,
                     getString(R.string.tv_favorite_removed, label),
                     Toast.LENGTH_SHORT,
                 ).show()
             } else {
-                com.github.andreyasadchy.xtra.ui.tv.TvFavorites.add(ctx, login, chName)
-                com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(
+                com.endlessbum.twitchpro.ui.tv.TvFavorites.add(ctx, login, chName)
+                com.endlessbum.twitchpro.ui.tv.TvToast.makeText(
                     ctx,
                     getString(R.string.tv_favorite_added, label),
                     Toast.LENGTH_SHORT,
@@ -5938,7 +5938,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         }
         if (tvFavoritesObserverJob?.isActive != true && view != null) {
             tvFavoritesObserverJob = viewLifecycleOwner.lifecycleScope.launch {
-                com.github.andreyasadchy.xtra.ui.tv.TvFavorites.items.collectLatest {
+                com.endlessbum.twitchpro.ui.tv.TvFavorites.items.collectLatest {
                     if (_binding != null) {
                         updateTvFavoriteChip()
                     }
@@ -6017,7 +6017,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         val root = binding.playerControls.root
         tooltip.text = anchor.contentDescription
         // the name of the button in the color of accent, like its icon
-        tooltip.setTextColor(com.github.andreyasadchy.xtra.ui.tv.TvAccent.onLight)
+        tooltip.setTextColor(com.endlessbum.twitchpro.ui.tv.TvAccent.onLight)
         tooltip.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val rootLocation = IntArray(2)
         val anchorLocation = IntArray(2)
@@ -6043,7 +6043,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     private var tvTopRightStack: LinearLayout? = null
     private var tvAdblockView: TextView? = null
     private var tvPredictionView: TextView? = null
-    private var tvPredictionCurrent: com.github.andreyasadchy.xtra.model.chat.Prediction? = null
+    private var tvPredictionCurrent: com.endlessbum.twitchpro.model.chat.Prediction? = null
     private var tvPredictionSeconds: Int? = null
     private var tvPredictionStartShownId: String? = null
     private var tvPredictionEndShownId: String? = null
@@ -6204,9 +6204,9 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         }
     }
 
-    private val tvActivePoll = kotlinx.coroutines.flow.MutableStateFlow<com.github.andreyasadchy.xtra.model.chat.Poll?>(null)
+    private val tvActivePoll = kotlinx.coroutines.flow.MutableStateFlow<com.endlessbum.twitchpro.model.chat.Poll?>(null)
     private val tvActivePollSeconds = kotlinx.coroutines.flow.MutableStateFlow<Int?>(null)
-    private val tvActivePrediction = kotlinx.coroutines.flow.MutableStateFlow<com.github.andreyasadchy.xtra.model.chat.Prediction?>(null)
+    private val tvActivePrediction = kotlinx.coroutines.flow.MutableStateFlow<com.endlessbum.twitchpro.model.chat.Prediction?>(null)
     private val tvActivePredictionSeconds = kotlinx.coroutines.flow.MutableStateFlow<Int?>(null)
     private val tvSelfBetOutcomeId = kotlinx.coroutines.flow.MutableStateFlow<String?>(null)
     private val tvSelfBetPoints = kotlinx.coroutines.flow.MutableStateFlow(0)
@@ -6275,11 +6275,11 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         resetTvLiveEventsState()
         tvLiveEventsLookupJob?.cancel()
         val ctx = requireContext().applicationContext
-        val app = ctx as? com.github.andreyasadchy.xtra.XtraApp ?: return
+        val app = ctx as? com.endlessbum.twitchpro.TwitchProApp ?: return
         tvLiveEventsLookupJob = viewLifecycleOwner.lifecycleScope.launch {
             val netLib = ctx.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
             val headers = TwitchApiHelper.getGQLHeaders(ctx, true)
-            val loaded = app.xtraModule.graphQLRepository.loadActivePollAndPrediction(netLib, headers, clogin)
+            val loaded = app.twitchProModule.graphQLRepository.loadActivePollAndPrediction(netLib, headers, clogin)
             if (tvLiveEventsLookupKey != key) return@launch
             if (loaded.poll != null && tvActivePoll.value == null) {
                 tvActivePoll.value = loaded.poll
@@ -6324,7 +6324,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     fun showTvPollsPredictionsPanel() {
         val ctx = context ?: return
         val (_, clogin, _) = currentCoStreamIdentity()
-        com.github.andreyasadchy.xtra.ui.tv.TvPollsPredictionsPanel.show(
+        com.endlessbum.twitchpro.ui.tv.TvPollsPredictionsPanel.show(
             context = ctx,
             channelLogin = clogin,
             pollFlow = tvActivePoll,
@@ -6339,7 +6339,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         )
     }
 
-    fun onTvPollEvent(poll: com.github.andreyasadchy.xtra.model.chat.Poll) {
+    fun onTvPollEvent(poll: com.endlessbum.twitchpro.model.chat.Poll) {
         if (!isTv) return
         if (poll.status == "ACTIVE") {
             tvActivePoll.value = poll
@@ -6366,7 +6366,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         syncTvPollsPredictionsButton()
     }
 
-    fun onTvPredictionEvent(prediction: com.github.andreyasadchy.xtra.model.chat.Prediction) {
+    fun onTvPredictionEvent(prediction: com.endlessbum.twitchpro.model.chat.Prediction) {
         val ctx = context ?: return
         if (isTv) {
             when (prediction.status) {
@@ -6497,7 +6497,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         val sb = android.text.SpannableStringBuilder()
         sb.append(header)
         sb.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        sb.setSpan(android.text.style.ForegroundColorSpan(com.github.andreyasadchy.xtra.ui.tv.TvAccent.color), 0, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        sb.setSpan(android.text.style.ForegroundColorSpan(com.endlessbum.twitchpro.ui.tv.TvAccent.color), 0, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (!prediction.title.isNullOrBlank()) {
             sb.append("\n")
             val titleStart = sb.length
@@ -6565,7 +6565,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             val top = bottom - 2.5f * density
             val radius = 1.25f * density
             canvas.drawRoundRect(left, top, right, bottom, radius, radius, track)
-            bar.color = com.github.andreyasadchy.xtra.ui.tv.TvAccent.color
+            bar.color = com.endlessbum.twitchpro.ui.tv.TvAccent.color
             canvas.drawRoundRect(left, top, left + (right - left) * value, bottom, radius, radius, bar)
         }
     }
@@ -6599,7 +6599,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 badge.setPadding((12 * density).toInt(), (6 * density).toInt(), (12 * density).toInt(), padBottom)
             }
             val text = android.text.SpannableStringBuilder()
-            com.github.andreyasadchy.xtra.util.chat.TvChatNotices.appendIcon(requireContext(), text, R.drawable.tv_ic_shield, com.github.andreyasadchy.xtra.ui.tv.TvAccent.color, badge.textSize * 1.1f)
+            com.endlessbum.twitchpro.util.chat.TvChatNotices.appendIcon(requireContext(), text, R.drawable.tv_ic_shield, com.endlessbum.twitchpro.ui.tv.TvAccent.color, badge.textSize * 1.1f)
             val titleStart = text.length
             text.append(info.title)
             text.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), titleStart, text.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -6817,7 +6817,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         takeSwitchFrame()?.let { image.setImageBitmap(it) } ?: run {
             switchFrameListener = { frame -> if (loadingPicture === image && image.drawable == null) image.setImageBitmap(frame) }
         }
-        com.github.andreyasadchy.xtra.ui.tv.TvLoadingPicture.show(image, picture.channelLogin, picture.thumbnail, picture.fallback, viewLifecycleOwner.lifecycleScope) {
+        com.endlessbum.twitchpro.ui.tv.TvLoadingPicture.show(image, picture.channelLogin, picture.thumbnail, picture.fallback, viewLifecycleOwner.lifecycleScope) {
             loadingPicture === image && view != null
         }
         // never kept for long: an error or the sound only mode has no first picture
@@ -6920,7 +6920,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         dpadKeyDownSeen = 0
         dpadPendingLongAction = null
         heldLongKeyCode = key
-        if (act != com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys.ACTION_DEFAULT) {
+        if (act != com.endlessbum.twitchpro.ui.tv.TvRemoteKeys.ACTION_DEFAULT) {
             executeTvRemoteAction(act)
         } else {
             openHudFromDpad()
@@ -6928,7 +6928,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     }
 
     private fun handleDpadShortOrLongKey(keyCode: Int, event: KeyEvent, shortAction: String, longAction: String): Boolean {
-        val Keys = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys
+        val Keys = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys
         val longPressMs = android.view.ViewConfiguration.getLongPressTimeout().toLong().coerceIn(350L, 550L)
         fun runDpadAction(act: String) {
             if (act != Keys.ACTION_DEFAULT) {
@@ -6977,7 +6977,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     /** Handles D-pad keys while the player itself (and not one of its controls) has focus. */
     private fun onPlayerKey(keyCode: Int, event: KeyEvent): Boolean {
         if (BuildConfig.DEBUG) {
-            android.util.Log.d("XtraTv", "playerKey ${KeyEvent.keyCodeToString(keyCode)} action=${event.action} animating=$isAnimating maximized=$isMaximized useController=$useController controlsVisible=${_binding?.playerControls?.root?.isVisible} controllerAnimating=$controllerIsAnimating")
+            android.util.Log.d("TwitchPro", "playerKey ${KeyEvent.keyCodeToString(keyCode)} action=${event.action} animating=$isAnimating maximized=$isMaximized useController=$useController controlsVisible=${_binding?.playerControls?.root?.isVisible} controllerAnimating=$controllerIsAnimating")
         }
         if (_binding == null || isAnimating) {
             return false
@@ -7004,7 +7004,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         if (!useController) {
             return false
         }
-        val Keys = com.github.andreyasadchy.xtra.ui.tv.TvRemoteKeys
+        val Keys = com.endlessbum.twitchpro.ui.tv.TvRemoteKeys
         val hudHiddenOrPeek = !binding.playerControls.root.isVisible || hudPeek
         val pipOpen = (activity as? MainActivity)?.isTvPipOpen() == true
         return when (keyCode) {
@@ -7302,8 +7302,8 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     private var tvMinimizedBorderAnimator: android.animation.ValueAnimator? = null
 
     private fun currentTvMinimizedBorderColor(): Int {
-        val baseColor = if (com.github.andreyasadchy.xtra.ui.tv.TvAccent.current != null) {
-            com.github.andreyasadchy.xtra.ui.tv.TvAccent.onDark
+        val baseColor = if (com.endlessbum.twitchpro.ui.tv.TvAccent.current != null) {
+            com.endlessbum.twitchpro.ui.tv.TvAccent.onDark
         } else {
             Color.WHITE
         }
@@ -7359,7 +7359,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         val vto = activity?.window?.decorView?.viewTreeObserver?.takeIf { it.isAlive } ?: return
         vto.addOnGlobalFocusChangeListener(tvMiniGhostFocusListener)
         vto.addOnScrollChangedListener(tvMiniGhostScrollListener)
-        com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.onChanged = tvMiniGhostComposeCallback
+        com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.onChanged = tvMiniGhostComposeCallback
         tvMiniGhostListenersAttached = true
     }
 
@@ -7372,8 +7372,8 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             }
             tvMiniGhostListenersAttached = false
         }
-        if (com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.onChanged === tvMiniGhostComposeCallback) {
-            com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.onChanged = null
+        if (com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.onChanged === tvMiniGhostComposeCallback) {
+            com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.onChanged = null
         }
     }
 
@@ -7420,8 +7420,8 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
 
         val focus = act.currentFocus ?: return false
         if (isComposeBackedView(focus)) {
-            if (!com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.hasFocusedCard) return false
-            return android.graphics.Rect.intersects(com.github.andreyasadchy.xtra.ui.tv.TvMiniPlayerFocus.focusedCardRect, miniRect)
+            if (!com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.hasFocusedCard) return false
+            return android.graphics.Rect.intersects(com.endlessbum.twitchpro.ui.tv.TvMiniPlayerFocus.focusedCardRect, miniRect)
         }
         if (focus.width <= 0 || focus.height <= 0 ||
             focus.width > (fullW * 0.85f).toInt() || focus.height > (fullH * 0.75f).toInt()
@@ -7765,8 +7765,8 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
 
         val followed = runCatching {
             kotlinx.coroutines.withTimeoutOrNull(4_500L) {
-                com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.loadPages(
-                    { com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.followed(activity) },
+                com.endlessbum.twitchpro.ui.tv.TvStreamSources.loadPages(
+                    { com.endlessbum.twitchpro.ui.tv.TvStreamSources.followed(activity) },
                     24,
                 )
             }
@@ -7774,7 +7774,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         if (followed.isNotEmpty()) {
             return followed.sortedWith(
                 compareByDescending<Stream> { s ->
-                    s.channelLogin?.let { com.github.andreyasadchy.xtra.ui.tv.TvFavorites.isFavorite(it) } == true
+                    s.channelLogin?.let { com.endlessbum.twitchpro.ui.tv.TvFavorites.isFavorite(it) } == true
                 }.thenByDescending { it.viewerCount ?: 0 }
             ).first()
         }
@@ -7790,8 +7790,8 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         val homeLangs = activity.prefs().getStringSet(C.TV_HOME_LANGUAGES, null)?.filter { it.isNotBlank() }?.ifEmpty { null }
         val preferred = runCatching {
             kotlinx.coroutines.withTimeoutOrNull(4_500L) {
-                com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.loadPages(
-                    { com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.game(activity, gameId, gameSlug, gameName, fallbackLanguages = homeLangs) },
+                com.endlessbum.twitchpro.ui.tv.TvStreamSources.loadPages(
+                    { com.endlessbum.twitchpro.ui.tv.TvStreamSources.game(activity, gameId, gameSlug, gameName, fallbackLanguages = homeLangs) },
                     24,
                 )
             }
@@ -7801,14 +7801,14 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         }
         val anyLang = runCatching {
             kotlinx.coroutines.withTimeoutOrNull(4_500L) {
-                com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.loadPages(
+                com.endlessbum.twitchpro.ui.tv.TvStreamSources.loadPages(
                     {
-                        com.github.andreyasadchy.xtra.ui.tv.TvStreamSources.game(
+                        com.endlessbum.twitchpro.ui.tv.TvStreamSources.game(
                             activity,
                             gameId,
                             gameSlug,
                             gameName,
-                            langMode = com.github.andreyasadchy.xtra.ui.tv.home.TvHomeRows.LANG_MODE_ALL,
+                            langMode = com.endlessbum.twitchpro.ui.tv.home.TvHomeRows.LANG_MODE_ALL,
                         )
                     },
                     24,
@@ -7903,7 +7903,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
 
     /**
      * TV: leaving the app (Home, or Back on the first screen) keeps the sound of the mini player and of the sound only
-     * mode ("minimized"), and also of the full screen player ("always"), as chosen in the Xtra TV settings.
+     * mode ("minimized"), and also of the full screen player ("always"), as chosen in the TwitchPro settings.
      */
     fun keepsPlayingWhenAppLeft(): Boolean {
         if (!isTv || _binding == null || playbackService == null) {
@@ -7927,9 +7927,9 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     open fun setVideoHidden(hidden: Boolean) {}
 
     /** The stream of the player, for the "Now playing" entry of the side menu. */
-    fun getTvNowPlaying(): com.github.andreyasadchy.xtra.ui.tv.TvNowPlaying? {
+    fun getTvNowPlaying(): com.endlessbum.twitchpro.ui.tv.TvNowPlaying? {
         val service = playbackService ?: return null
-        return com.github.andreyasadchy.xtra.ui.tv.TvNowPlaying(
+        return com.endlessbum.twitchpro.ui.tv.TvNowPlaying(
             channelName = service.channelName ?: service.channelLogin,
             title = service.title,
             image = service.thumbnail?.takeIf { it.isNotBlank() } ?: service.channelImage,
@@ -8229,7 +8229,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
 
     fun onSleepTimerChanged(durationMs: Long, hours: Int, minutes: Int, lockScreen: Boolean) {
         if (durationMs > 0L) {
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(
+            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(
                 requireContext(),
                 when {
                     hours == 0 -> getString(
@@ -8249,7 +8249,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 Toast.LENGTH_LONG
             ).show()
         } else if (((activity as? MainActivity)?.getSleepTimerTimeLeft() ?: 0) > 0L) {
-            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.timer_canceled, Toast.LENGTH_LONG).show()
+            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.timer_canceled, Toast.LENGTH_LONG).show()
         }
         if (lockScreen != requireContext().prefs().getBoolean(C.SLEEP_TIMER_LOCK, false)) {
             requireContext().prefs().edit { putBoolean(C.SLEEP_TIMER_LOCK, lockScreen) }
@@ -8353,7 +8353,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         }
     }
 
-    private var tvMultiStreamBadge: com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.MultiStreamBadgeDrawable? = null
+    private var tvMultiStreamBadge: com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.MultiStreamBadgeDrawable? = null
     private var tvCoStreamLookupKey: String? = null
     private var tvCoStreamLookupJob: Job? = null
     private var tvCoStreamObserveJob: Job? = null
@@ -8379,7 +8379,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
 
         if (tvCoStreamObserveJob?.isActive != true) {
             tvCoStreamObserveJob = viewLifecycleOwner.lifecycleScope.launch {
-                com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.version.collectLatest {
+                com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.version.collectLatest {
                     updateTvMultiStreamBadge()
                 }
             }
@@ -8393,7 +8393,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
             tvCoStreamLookupJob?.cancel()
             val ctx = requireContext().applicationContext
             tvCoStreamLookupJob = viewLifecycleOwner.lifecycleScope.launch {
-                val found = com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.loadForChannel(ctx, cid, clogin, ctitle)
+                val found = com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.loadForChannel(ctx, cid, clogin, ctitle)
                 if (tvCoStreamLookupKey == key) {
                     playerCoStreamers = found
                     updateTvMultiStreamBadge()
@@ -8414,7 +8414,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         }
         val (cid, clogin, _) = currentCoStreamIdentity()
         val partnersCount = getCoStreamers().size
-        val cachedCount = com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.getCount(cid, clogin)
+        val cachedCount = com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.getCount(cid, clogin)
         badge.count = max(partnersCount, cachedCount)
         _binding?.playerControls?.multiStream?.invalidate()
     }
@@ -8452,7 +8452,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         tvFavoritesObserverJob = null
         isTvChatLocked = null
         chatLockObservedFragment = null
-        com.github.andreyasadchy.xtra.ui.tv.TvDim.removeListener(tvDimListener)
+        com.endlessbum.twitchpro.ui.tv.TvDim.removeListener(tvDimListener)
         _binding?.playerLayout?.removeOnLayoutChangeListener(tvHeaderLayoutListener)
         tvHeaderLayoutListenerAdded = false
         _binding?.root?.removeCallbacks(tvHudTicker)
@@ -8506,7 +8506,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         }
         addAllFrom(playerCoStreamers)
         addAllFrom(chatFragment?.getCoStreamers().orEmpty())
-        addAllFrom(com.github.andreyasadchy.xtra.ui.tv.TvCoStreamCache.getPartners(cid, clogin))
+        addAllFrom(com.endlessbum.twitchpro.ui.tv.TvCoStreamCache.getPartners(cid, clogin))
         return merged.values.toList()
     }
 

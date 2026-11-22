@@ -1,6 +1,6 @@
-package com.github.andreyasadchy.xtra.ui.channel.about
+package com.endlessbum.twitchpro.ui.channel.about
 
-import com.github.andreyasadchy.xtra.ui.tv.tvTopFade
+import com.endlessbum.twitchpro.ui.tv.tvTopFade
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Typeface
@@ -85,25 +85,25 @@ import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentAboutBinding
-import com.github.andreyasadchy.xtra.model.ui.ChannelPanel
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentArgs
-import com.github.andreyasadchy.xtra.ui.channel.about.ChannelAboutViewModel.Companion.ChannelAboutViewModelFactory
-import com.github.andreyasadchy.xtra.ui.common.BaseNetworkFragment
-import com.github.andreyasadchy.xtra.ui.common.IntegrityDialog
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.team.TeamFragmentDirections
-import com.github.andreyasadchy.xtra.ui.tv.ButtonRow
-import com.github.andreyasadchy.xtra.ui.tv.QrCode
-import com.github.andreyasadchy.xtra.ui.tv.SidePanel
-import com.github.andreyasadchy.xtra.ui.tv.TvColors
-import com.github.andreyasadchy.xtra.ui.tv.TvDialogs
-import com.github.andreyasadchy.xtra.ui.view.TvHeader
-import com.github.andreyasadchy.xtra.ui.view.TvUi
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentAboutBinding
+import com.endlessbum.twitchpro.model.ui.ChannelPanel
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentArgs
+import com.endlessbum.twitchpro.ui.channel.about.ChannelAboutViewModel.Companion.ChannelAboutViewModelFactory
+import com.endlessbum.twitchpro.ui.common.BaseNetworkFragment
+import com.endlessbum.twitchpro.ui.common.IntegrityDialog
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.team.TeamFragmentDirections
+import com.endlessbum.twitchpro.ui.tv.ButtonRow
+import com.endlessbum.twitchpro.ui.tv.QrCode
+import com.endlessbum.twitchpro.ui.tv.SidePanel
+import com.endlessbum.twitchpro.ui.tv.TvColors
+import com.endlessbum.twitchpro.ui.tv.TvDialogs
+import com.endlessbum.twitchpro.ui.view.TvHeader
+import com.endlessbum.twitchpro.ui.view.TvUi
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -202,7 +202,7 @@ class ChannelAboutFragment : BaseNetworkFragment(), IntegrityDialog.Listener {
                                                             }
                                                             startActivity(intent)
                                                         } catch (e: ActivityNotFoundException) {
-                                                            com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), R.string.no_browser_found, Toast.LENGTH_LONG).show()
+                                                            com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), R.string.no_browser_found, Toast.LENGTH_LONG).show()
                                                         }
                                                     }
                                                 }, 0, string.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

@@ -1,7 +1,7 @@
-package com.github.andreyasadchy.xtra.model.gql.game
+package com.endlessbum.twitchpro.model.gql.game
 
-import com.github.andreyasadchy.xtra.model.gql.Error
-import com.github.andreyasadchy.xtra.model.gql.PageInfo
+import com.endlessbum.twitchpro.model.gql.Error
+import com.endlessbum.twitchpro.model.gql.PageInfo
 import kotlinx.serialization.Serializable
 
 @Serializable

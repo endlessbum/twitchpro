@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.os.Build
 import android.os.Bundle
@@ -9,9 +9,9 @@ import android.widget.LinearLayout
 import androidx.core.content.res.use
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.ui.Game
-import com.github.andreyasadchy.xtra.ui.view.GridRecyclerView
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.ui.Game
+import com.endlessbum.twitchpro.ui.view.GridRecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

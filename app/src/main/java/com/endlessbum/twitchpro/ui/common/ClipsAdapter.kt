@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.common
+package com.endlessbum.twitchpro.ui.common
 
 import android.content.Intent
 import android.text.format.DateUtils
@@ -18,16 +18,16 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentVideosListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.Clip
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentVideosListItemBinding
+import com.endlessbum.twitchpro.model.ui.Clip
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlin.time.Instant
 
 class ClipsAdapter(
@@ -64,7 +64,7 @@ class ClipsAdapter(
             with(binding) {
                 if (item != null) {
                     val context = fragment.requireContext()
-                    val isTv = com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(context)
+                    val isTv = com.endlessbum.twitchpro.ui.view.TvUi.isTv(context)
                     root.setOnClickListener {
                         (fragment.activity as MainActivity).startClip(item, snapshot().items.filterNotNull())
                     }
@@ -74,7 +74,7 @@ class ClipsAdapter(
                             val channelLabel = item.channelName ?: item.channelLogin.orEmpty()
                             val actions = buildList {
                                 add(
-                                    com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                    com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                         context.getString(R.string.tv_multistream_watch),
                                         R.drawable.tv_ic_play,
                                     ) {
@@ -83,13 +83,13 @@ class ClipsAdapter(
                                 )
                                 if (!item.videoId.isNullOrBlank()) {
                                     add(
-                                        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                        com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                             context.getString(R.string.watch_video),
                                             R.drawable.tv_ic_video_library,
                                         ) {
                                             val offsetMs = item.videoOffsetSeconds?.toLong()?.times(1000L)
                                             activity.startVideo(
-                                                com.github.andreyasadchy.xtra.model.ui.Video(
+                                                com.endlessbum.twitchpro.model.ui.Video(
                                                     id = item.videoId,
                                                     channelId = item.channelId,
                                                     channelLogin = item.channelLogin,
@@ -110,12 +110,12 @@ class ClipsAdapter(
                                 }
                                 if (showChannel && (!item.channelLogin.isNullOrBlank() || !item.channelId.isNullOrBlank())) {
                                     add(
-                                        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                        com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                             context.getString(R.string.tv_open_channel, channelLabel),
                                             R.drawable.tv_ic_person,
                                         ) {
                                             activity.openTvChannel(
-                                                com.github.andreyasadchy.xtra.model.ui.Stream(
+                                                com.endlessbum.twitchpro.model.ui.Stream(
                                                     channelId = item.channelId,
                                                     channelLogin = item.channelLogin,
                                                     channelName = item.channelName,
@@ -128,7 +128,7 @@ class ClipsAdapter(
                                 }
                                 if (showGame && !item.gameName.isNullOrBlank()) {
                                     add(
-                                        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                        com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                             context.getString(R.string.tv_open_category, item.gameName),
                                             R.drawable.tv_ic_gamepad,
                                         ) {
@@ -137,7 +137,7 @@ class ClipsAdapter(
                                     )
                                 }
                                 add(
-                                    com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                    com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                         context.getString(R.string.download),
                                         R.drawable.tv_ic_download,
                                     ) {
@@ -145,7 +145,7 @@ class ClipsAdapter(
                                     }
                                 )
                             }
-                            com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.show(
+                            com.endlessbum.twitchpro.ui.tv.TvActionPanel.show(
                                 activity,
                                 item.title?.trim()?.takeIf { it.isNotEmpty() } ?: channelLabel,
                                 actions,
@@ -270,7 +270,7 @@ class ClipsAdapter(
                         gameName.visibility = View.GONE
                     }
                     options.setOnClickListener { it ->
-                        if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(context)) {
+                        if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(context)) {
                             // TV: the 3 dots open the panel of the actions, like OK held on the card
                             root.performLongClick()
                             return@setOnClickListener

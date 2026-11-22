@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.graphics.Rect
 import androidx.compose.ui.layout.LayoutCoordinates

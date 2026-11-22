@@ -540,7 +540,7 @@
     <string name="external_login_message">You can log in using an external browser.\n\nFollow these steps:\n• Press \"Open URL\" to open the login page.\n• Login to your account and press \"Authorize\".\n• A page with an error should appear. Copy the URL of that page, paste the URL into the box below and press \"OK\".</string>
     <string name="loading">Yükleniyor…</string>
     <string name="copy_code">Kodu kopyala</string>
-    <string name="external_tv_login_message">Tüm özelliklere erişmek için Android TV cihazı olarak giriş yap.\n\nAdımlar:\n• Ekrandaki kodu kopyala.\n• \"URL\'yi aç\" düğmesine bas.\n• Kodu gir ve \"Etkinleştir\"e bas.\n• \"Yetkilendir\"e bas.\n• Xtra\'ya dön ve \"İleri\"ye bas.</string>
+    <string name="external_tv_login_message">Tüm özelliklere erişmek için Android TV cihazı olarak giriş yap.\n\nAdımlar:\n• Ekrandaki kodu kopyala.\n• \"URL\'yi aç\" düğmesine bas.\n• Kodu gir ve \"Etkinleştir\"e bas.\n• \"Yetkilendir\"e bas.\n• TwitchPro\'ya dön ve \"İleri\"ye bas.</string>
     <string name="activate_notifications_when_following">Takip ederken bildirimleri aç</string>
     <string name="account">Hesap</string>
     <string name="downloading_update_progress">Güncelleme indiriliyor… %1$s / %2$s</string>
@@ -588,8 +588,8 @@
     <string name="tv_more_actions">Diğer işlemler</string>
     <string name="tv_account">Hesap</string>
     <string name="tv_stream_preview">Seçili yayının canlı önizlemesi (TV)</string>
-    <string name="xtratv_settings">Xtra TV ayarları</string>
-    <string name="xtratv_settings_summary">Reklam engelleyici, kare hızı eşleme, önizlemeler, ana sayfa ve kumanda kısayolları</string>
+    <string name="twitchpro_settings">TwitchPro ayarları</string>
+    <string name="twitchpro_settings_summary">Reklam engelleyici, kare hızı eşleme, önizlemeler, ana sayfa ve kumanda kısayolları</string>
     <string name="tv_preview_sound">Önizleme sesi</string>
     <string name="close_player">Kapat</string>
     <string name="tv_back_minimizes_player">Geri tuşu oynatıcıyı kapatmak yerine küçültür</string>
@@ -667,7 +667,7 @@
     <string name="tv_back_audio">Yalnızca ses</string>
     <string name="tv_dpad_up_down">Yayınlarda ve VOD\'larda yukarı / aşağı kısayolları</string>
     <string name="tv_dpad_up_down_summary">Kontroller gizliyken: yukarı diğer yayınları gösterir, aşağı sohbeti gösterir veya gizler</string>
-    <string name="tv_1440p_warning">⚠ 1440p, 1080p ile sınırlı genel proxylerle (Luminous vb.) çalışmaz. 1440p için özel proxyyi kapatıp reklam engelleyiciyi (Xtra TV ayarları) kullanın veya 1440p destekleyen kendi proxynizi kullanın.</string>
+    <string name="tv_1440p_warning">⚠ 1440p, 1080p ile sınırlı genel proxylerle (Luminous vb.) çalışmaz. 1440p için özel proxyyi kapatıp reklam engelleyiciyi (TwitchPro ayarları) kullanın veya 1440p destekleyen kendi proxynizi kullanın.</string>
     <string name="tv_login_with_code">twitch.tv/activate üzerinde kodla</string>
     <string name="tv_login_with_page">Twitch giriş sayfasıyla (1440p için gerekli)</string>
     <string name="tv_login_code_help">Telefonunuzda veya bilgisayarınızda twitch.tv/activate adresine gidip bu kodu yazın. Giriş kendiliğinden devam eder. 1440p için Twitch sayfasıyla giriş gerekir.</string>
@@ -812,7 +812,7 @@
     <string name="tv_pip_pos_c">Orta</string>
     <string name="tv_pip_pos_mr">Sağ orta</string>
     <string name="tv_pip_pos_bc">Alt orta</string>
-    <string name="tv_enable_unknown_sources">Bilinmeyen uygulamaları yükle bölümünden Xtra TV iznini açın, ardından güncellemeyi başlatmak için Geri tuşuna basın</string>
+    <string name="tv_enable_unknown_sources">Bilinmeyen uygulamaları yükle bölümünden TwitchPro iznini açın, ardından güncellemeyi başlatmak için Geri tuşuna basın</string>
     <string name="tv_pip_size">Boyut</string>
     <string name="tv_pip_size_small">Küçük</string>
     <string name="tv_pip_size_medium">Orta</string>
@@ -857,7 +857,7 @@
     <string name="tv_proxy_all_settings">Tüm proxy ayarları…</string>
     <string name="tv_focus_switch">OK olmadan sayfa değiştir</string>
     <string name="tv_focus_switch_summary">Sekmeler ve yan menü odak alır almaz sayfalarını gösterir</string>
-    <string name="tv_update_title_version">Xtra TV %1$s mevcut</string>
+    <string name="tv_update_title_version">TwitchPro %1$s mevcut</string>
     <string name="tv_update_now">Güncelle</string>
     <string name="tv_update_ignore">Yoksay</string>
     <string name="tv_proxy_add">Proxy ekle</string>
@@ -1188,7 +1188,7 @@
     <string name="tv_remote_action_pip_close">Küçük pencere: kapat</string>
     <string name="tv_adblock_and_proxies_title">Reklam engelleyici ve proxyler</string>
     <string name="tv_adblock_and_proxies_subtitle">Canlı yayınlar için deneysel reklam engelleyici veya özel HLS proxyleri</string>
-    <string name="tv_update_install_blocked">Android yüklemeyi engelledi. Sistem ayarlarından Xtra TV için \"Bilinmeyen uygulamaları yükle\" iznini verin veya güncellemeyi tarayıcıdan indirin.</string>
+    <string name="tv_update_install_blocked">Android yüklemeyi engelledi. Sistem ayarlarından TwitchPro için \"Bilinmeyen uygulamaları yükle\" iznini verin veya güncellemeyi tarayıcıdan indirin.</string>
     <string name="tv_update_try_again">Tekrar dene</string>
     <string name="tv_remote_action_pip_swap_default">Küçük pencere: yayınları değiştir (varsayılan)</string>
     <string name="tv_remote_action_show_controls">Kontrolleri göster</string>
@@ -1347,7 +1347,7 @@
     <string name="tv_osd_chat_shown">Sohbet gösterildi</string>
     <string name="tv_osd_chat_hidden">Sohbet gizlendi</string>
     <string name="tv_backup_perm_title">Dosya erişimi gerekli</string>
-    <string name="tv_backup_perm_summary">İndirilenler klasöründeki XtraTV-backup.zip dosyasının üzerine yazmak veya okumak için sonraki ekranda dosya erişimine izin verin.</string>
+    <string name="tv_backup_perm_summary">İndirilenler klasöründeki TwitchPro-backup.zip dosyasının üzerine yazmak veya okumak için sonraki ekranda dosya erişimine izin verin.</string>
     <string name="tv_backup_perm_grant">Dosya erişimine izin ver</string>
     <string name="tv_backup_perm_continue_anyway">İzin olmadan devam et</string>
     <string name="tv_backup_save_failed">Yedekleme dosyası kaydedilemedi</string>

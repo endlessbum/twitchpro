@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.util.chat
+package com.endlessbum.twitchpro.util.chat
 
 import android.content.Context
 import android.graphics.Canvas
@@ -8,7 +8,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ReplacementSpan
 import androidx.appcompat.content.res.AppCompatResources
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.R
 import java.text.NumberFormat
 
 /**
@@ -128,7 +128,7 @@ object TvChatNotices {
     const val USER_HIGHLIGHT_COLOR = 0xFFF5B638.toInt()
 
     /** Background of an answer to the user or a mention of the user: the accent color over it and a bar of it on its left. */
-    fun highlight(context: Context): Drawable = coloredHighlight(context, com.github.andreyasadchy.xtra.ui.tv.TvAccent.color, 0x40)
+    fun highlight(context: Context): Drawable = coloredHighlight(context, com.endlessbum.twitchpro.ui.tv.TvAccent.color, 0x40)
 
     /** Background of a message sent by a user on the custom Highlighted Users list: warm gold tint and left accent bar. */
     fun userHighlight(context: Context): Drawable = coloredHighlight(context, USER_HIGHLIGHT_COLOR, 0x38)
@@ -188,7 +188,7 @@ object TvChatNotices {
         remainingSeconds: Long? = null,
     ): String {
         if (remainingSeconds != null && remainingSeconds > 0L) {
-            val waitText = com.github.andreyasadchy.xtra.util.TwitchApiHelper.getDurationFromSeconds(
+            val waitText = com.endlessbum.twitchpro.util.TwitchApiHelper.getDurationFromSeconds(
                 context,
                 remainingSeconds.coerceAtLeast(1L).toString()
             )
@@ -197,7 +197,7 @@ object TvChatNotices {
         return when (code?.trim()) {
             "FOLLOWERS_ONLY", "msg_followersonly", "msg_followersonly_zero" -> {
                 if (followersMinutes != null && followersMinutes > 0) {
-                    val duration = com.github.andreyasadchy.xtra.util.TwitchApiHelper.getDurationFromSeconds(
+                    val duration = com.endlessbum.twitchpro.util.TwitchApiHelper.getDurationFromSeconds(
                         context,
                         (followersMinutes * 60).toString()
                     )
@@ -208,7 +208,7 @@ object TvChatNotices {
             }
             "msg_followersonly_followed" -> {
                 if (followersMinutes != null && followersMinutes > 0) {
-                    val duration = com.github.andreyasadchy.xtra.util.TwitchApiHelper.getDurationFromSeconds(
+                    val duration = com.endlessbum.twitchpro.util.TwitchApiHelper.getDurationFromSeconds(
                         context,
                         (followersMinutes * 60).toString()
                     )

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.view
+package com.endlessbum.twitchpro.ui.view
 
 import android.content.Context
 import android.view.View
@@ -17,12 +17,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.chat.Chatter
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.chat.Chatter
+import com.endlessbum.twitchpro.model.chat.Emote
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import java.util.regex.Pattern
 
 class AutoCompleteAdapter<T>(
@@ -56,7 +56,7 @@ class AutoCompleteAdapter<T>(
                                 )
                                 if (item.thirdParty) {
                                     httpHeaders(NetworkHeaders.Builder().apply {
-                                        add("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                                        add("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                                     }.build())
                                 }
                                 crossfade(true)
@@ -73,7 +73,7 @@ class AutoCompleteAdapter<T>(
                                     else -> item.url1x
                                 }.let {
                                     if (item.thirdParty) {
-                                        GlideUrl(it) { mapOf("User-Agent" to "Xtra/" + BuildConfig.VERSION_NAME) }
+                                        GlideUrl(it) { mapOf("User-Agent" to "TwitchPro/" + BuildConfig.VERSION_NAME) }
                                     } else it
                                 }
                             )

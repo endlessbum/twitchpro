@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.chat
+package com.endlessbum.twitchpro.ui.chat
 
 import android.content.Context
 import android.os.Build
@@ -37,23 +37,23 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentChatBinding
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.chat.ChatViewModel.Companion.ChatViewModelFactory
-import com.github.andreyasadchy.xtra.ui.common.BaseNetworkFragment
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.player.PlayerFragment
-import com.github.andreyasadchy.xtra.ui.view.AutoCompleteAdapter
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.reduceDragSensitivity
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentChatBinding
+import com.endlessbum.twitchpro.model.chat.ChatMessage
+import com.endlessbum.twitchpro.model.chat.Emote
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.chat.ChatViewModel.Companion.ChatViewModelFactory
+import com.endlessbum.twitchpro.ui.common.BaseNetworkFragment
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.player.PlayerFragment
+import com.endlessbum.twitchpro.ui.view.AutoCompleteAdapter
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.reduceDragSensitivity
+import com.endlessbum.twitchpro.util.tokenPrefs
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.mlkit.nl.languageid.LanguageIdentification
@@ -121,27 +121,27 @@ class ChatFragment : BaseNetworkFragment(), MessageClickedDialog.OnButtonClickLi
         val delayLogin = arguments?.getString(KEY_CHANNEL_LOGIN)
         viewModel.programTime = {
             when (val parent = parentFragment) {
-                is com.github.andreyasadchy.xtra.ui.player.PlayerFragment -> parent.getLivePictureTime()
+                is com.endlessbum.twitchpro.ui.player.PlayerFragment -> parent.getLivePictureTime()
                 // multi-stream: each chat with the picture of its own stream
-                is com.github.andreyasadchy.xtra.ui.player.MultiStreamFragment -> parent.getLivePictureTime(delayLogin)
+                is com.endlessbum.twitchpro.ui.player.MultiStreamFragment -> parent.getLivePictureTime(delayLogin)
                 else -> null
             }
         }
         viewModel.forceAutoDelay = {
             when (val parent = parentFragment) {
-                is com.github.andreyasadchy.xtra.ui.player.PlayerFragment -> parent.shouldHoldExperimentalChat()
-                is com.github.andreyasadchy.xtra.ui.player.MultiStreamFragment -> parent.shouldHoldExperimentalChat(delayLogin)
+                is com.endlessbum.twitchpro.ui.player.PlayerFragment -> parent.shouldHoldExperimentalChat()
+                is com.endlessbum.twitchpro.ui.player.MultiStreamFragment -> parent.shouldHoldExperimentalChat(delayLogin)
                 else -> false
             }
         }
         viewModel.streamMetadataProvider = {
             when (val parent = parentFragment) {
-                is com.github.andreyasadchy.xtra.ui.player.PlayerFragment -> parent.getStreamWatchMetadata()
-                is com.github.andreyasadchy.xtra.ui.player.MultiStreamFragment -> parent.getStreamWatchMetadata(delayLogin)
+                is com.endlessbum.twitchpro.ui.player.PlayerFragment -> parent.getStreamWatchMetadata()
+                is com.endlessbum.twitchpro.ui.player.MultiStreamFragment -> parent.getStreamWatchMetadata(delayLogin)
                 else -> null
             }
         }
-        (parentFragment as? com.github.andreyasadchy.xtra.ui.player.PlayerFragment)?.onChatFragmentReady(this)
+        (parentFragment as? com.endlessbum.twitchpro.ui.player.PlayerFragment)?.onChatFragmentReady(this)
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.integrity.collect {
@@ -277,7 +277,7 @@ class ChatFragment : BaseNetworkFragment(), MessageClickedDialog.OnButtonClickLi
                     }
                     viewLifecycleOwner.lifecycleScope.launch {
                         repeatOnLifecycle(Lifecycle.State.STARTED) {
-                            com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.version.collect {
+                            com.endlessbum.twitchpro.util.chat.ChatBlocklist.version.collect {
                                 viewModel.purgeFilteredMessages()
                                 adapter?.notifyDataSetChanged()
                             }
@@ -349,7 +349,7 @@ class ChatFragment : BaseNetworkFragment(), MessageClickedDialog.OnButtonClickLi
                         send.setOnClickListener { sendMessage() }
                         if (((view.parent?.parent?.parent?.parent as? View)?.id == R.id.slidingLayout && (!requireContext().prefs().getBoolean(C.KEY_CHAT_BAR_VISIBLE, true) || resources.getBoolean(R.bool.isTv))) ||
                             // TV multi-stream: the chats are read only, no message bar under them
-                            (resources.getBoolean(R.bool.isTv) && parentFragment is com.github.andreyasadchy.xtra.ui.player.MultiStreamFragment)
+                            (resources.getBoolean(R.bool.isTv) && parentFragment is com.endlessbum.twitchpro.ui.player.MultiStreamFragment)
                         ) {
                             messageView.visibility = View.GONE
                         } else {
@@ -448,7 +448,7 @@ class ChatFragment : BaseNetworkFragment(), MessageClickedDialog.OnButtonClickLi
                         viewLifecycleOwner.lifecycleScope.launch {
                             repeatOnLifecycle(Lifecycle.State.STARTED) {
                                 viewModel.chatRestrictionToast.collect { reason ->
-                                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), reason, android.widget.Toast.LENGTH_LONG).show()
+                                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), reason, android.widget.Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
@@ -513,7 +513,7 @@ class ChatFragment : BaseNetworkFragment(), MessageClickedDialog.OnButtonClickLi
                                                     channelImageURL = raid.targetImageURL,
                                                 )
                                                 raidAutoSwitchJob = viewLifecycleOwner.lifecycleScope.launch {
-                                                    kotlinx.coroutines.delay(com.github.andreyasadchy.xtra.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS)
+                                                    kotlinx.coroutines.delay(com.endlessbum.twitchpro.ui.tv.TvExperimentalAdblock.TARGET_OFFSET_MS)
                                                     _binding?.raidLayout?.visibility = View.GONE
                                                     viewModel.raidClosed = true
                                                     if (isAdded && requireContext().prefs().getBoolean(C.CHAT_RAIDS_AUTO_SWITCH, true) && parentFragment is PlayerFragment) {
@@ -609,7 +609,7 @@ class ChatFragment : BaseNetworkFragment(), MessageClickedDialog.OnButtonClickLi
                         }
                     }
                     if (resources.getBoolean(R.bool.isTv)) {
-                        val accentColor = com.github.andreyasadchy.xtra.ui.tv.TvAccent.onDark
+                        val accentColor = com.endlessbum.twitchpro.ui.tv.TvAccent.onDark
                         pollStatus.setTextColor(accentColor)
                         predictionStatus.setTextColor(accentColor)
                     }
@@ -1229,7 +1229,7 @@ class ChatFragment : BaseNetworkFragment(), MessageClickedDialog.OnButtonClickLi
         return sendMessage()
     }
 
-    fun getEffectiveRoomState(): kotlinx.coroutines.flow.StateFlow<com.github.andreyasadchy.xtra.model.chat.RoomState>? =
+    fun getEffectiveRoomState(): kotlinx.coroutines.flow.StateFlow<com.endlessbum.twitchpro.model.chat.RoomState>? =
         if (isAdded) viewModel.effectiveRoomState else null
 
     fun getUserRoomBadges(): kotlinx.coroutines.flow.StateFlow<Set<String>?>? =
@@ -1624,10 +1624,10 @@ class ChatFragment : BaseNetworkFragment(), MessageClickedDialog.OnButtonClickLi
         }
     }
 
-    fun getRecentChatters(): List<com.github.andreyasadchy.xtra.util.chat.ChatBlocklist.BlockedUser> =
+    fun getRecentChatters(): List<com.endlessbum.twitchpro.util.chat.ChatBlocklist.BlockedUser> =
         if (isAdded) viewModel.getRecentChatters() else emptyList()
 
-    fun getPinnedMessage(): com.github.andreyasadchy.xtra.util.chat.PubSubUtils.PinnedChatData? =
+    fun getPinnedMessage(): com.endlessbum.twitchpro.util.chat.PubSubUtils.PinnedChatData? =
         if (isAdded) viewModel.pinnedMessage.value else null
 
     fun getCoStreamers(): List<Stream> =
@@ -1670,7 +1670,7 @@ class ChatFragment : BaseNetworkFragment(), MessageClickedDialog.OnButtonClickLi
         val sizeModifier = ctx.prefs().getInt(C.CHAT_SIZE_MODIFIER, 100).toFloat() / 100f
         val baseSize = (ctx.prefs().getString(C.CHAT_TEXT_SIZE, "14")?.toFloatOrNull() ?: 14f) * sizeModifier
         binding.pinnedMessageText.textSize = (baseSize * 0.92f).coerceIn(11f, 22f)
-        binding.pinnedMessageIcon.setColorFilter(com.github.andreyasadchy.xtra.ui.tv.TvAccent.color)
+        binding.pinnedMessageIcon.setColorFilter(com.endlessbum.twitchpro.ui.tv.TvAccent.color)
         val sb = android.text.SpannableStringBuilder()
         val author = pin.senderName ?: pin.senderLogin
         if (!author.isNullOrBlank()) {

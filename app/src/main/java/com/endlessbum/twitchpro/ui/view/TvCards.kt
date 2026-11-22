@@ -1,10 +1,10 @@
-package com.github.andreyasadchy.xtra.ui.view
+package com.endlessbum.twitchpro.ui.view
 
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.github.andreyasadchy.xtra.R
+import com.endlessbum.twitchpro.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**

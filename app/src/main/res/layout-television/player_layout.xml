@@ -310,7 +310,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.github.andreyasadchy.xtra.ui.view.XtraTimeBar
+            <com.endlessbum.twitchpro.ui.view.TwitchProTimeBar
                 android:id="@+id/progressBar"
                 android:layout_width="match_parent"
                 android:layout_height="26dp"

@@ -1,13 +1,13 @@
-package com.github.andreyasadchy.xtra.util.chat
+package com.endlessbum.twitchpro.util.chat
 
 import android.content.Context
 import androidx.core.content.ContextCompat
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.chat.Badge
-import com.github.andreyasadchy.xtra.model.chat.ChannelPointReward
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.chat.RoomState
-import com.github.andreyasadchy.xtra.model.chat.TwitchEmote
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.chat.Badge
+import com.endlessbum.twitchpro.model.chat.ChannelPointReward
+import com.endlessbum.twitchpro.model.chat.ChatMessage
+import com.endlessbum.twitchpro.model.chat.RoomState
+import com.endlessbum.twitchpro.model.chat.TwitchEmote
 import org.json.JSONObject
 import kotlin.time.Instant
 
@@ -84,7 +84,7 @@ object EventSubUtils {
         val messageText = if (messageObj?.isNull("text") == false) messageObj.optString("text").takeIf { it.isNotBlank() } else null
         // our short translated line (TvChatNotices) when the kind is known, else the sentence of Twitch
         val systemMsg = notice?.first ?: if (!json.isNull("system_message")) json.optString("system_message").takeIf { it.isNotBlank() } else null
-        val noticeIcon = notice?.second ?: com.github.andreyasadchy.xtra.R.drawable.tv_ic_info
+        val noticeIcon = notice?.second ?: com.endlessbum.twitchpro.R.drawable.tv_ic_info
         val roomId = if (!json.isNull("broadcaster_user_id")) json.optString("broadcaster_user_id").takeIf { it.isNotBlank() } else null
         val sourceRoomId = if (!json.isNull("source_broadcaster_user_id")) json.optString("source_broadcaster_user_id").takeIf { it.isNotBlank() } else null
         val sourceChannelName = if (!json.isNull("source_broadcaster_user_name")) json.optString("source_broadcaster_user_name").takeIf { it.isNotBlank() } else null

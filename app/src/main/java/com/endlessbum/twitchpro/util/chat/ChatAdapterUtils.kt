@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.util.chat
+package com.endlessbum.twitchpro.util.chat
 
 import android.content.Context
 import android.graphics.Color
@@ -30,23 +30,23 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.chat.CheerEmote
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.model.chat.Image
-import com.github.andreyasadchy.xtra.model.chat.NamePaint
-import com.github.andreyasadchy.xtra.model.chat.STVBadge
-import com.github.andreyasadchy.xtra.model.chat.STVUser
-import com.github.andreyasadchy.xtra.model.chat.TwitchBadge
-import com.github.andreyasadchy.xtra.model.chat.TwitchEmote
-import com.github.andreyasadchy.xtra.ui.view.CenteredImageSpan
-import com.github.andreyasadchy.xtra.ui.view.NamePaintImageSpan
-import com.github.andreyasadchy.xtra.ui.view.NamePaintSpan
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.BuildConfig
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.chat.ChatMessage
+import com.endlessbum.twitchpro.model.chat.CheerEmote
+import com.endlessbum.twitchpro.model.chat.Emote
+import com.endlessbum.twitchpro.model.chat.Image
+import com.endlessbum.twitchpro.model.chat.NamePaint
+import com.endlessbum.twitchpro.model.chat.STVBadge
+import com.endlessbum.twitchpro.model.chat.STVUser
+import com.endlessbum.twitchpro.model.chat.TwitchBadge
+import com.endlessbum.twitchpro.model.chat.TwitchEmote
+import com.endlessbum.twitchpro.ui.view.CenteredImageSpan
+import com.endlessbum.twitchpro.ui.view.NamePaintImageSpan
+import com.endlessbum.twitchpro.ui.view.NamePaintSpan
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import java.text.NumberFormat
 import java.util.Random
 import kotlin.math.floor
@@ -115,7 +115,7 @@ object ChatAdapterUtils {
                     val noticeStart = builderIndex
                     // a notice of Twitch (subscription, raid, timeout...): a small grey line with its icon
                     chatMessage.noticeIcon?.let {
-                        TvChatNotices.appendIcon(context, builder, it, com.github.andreyasadchy.xtra.ui.tv.TvAccent.color, textSizePx)
+                        TvChatNotices.appendIcon(context, builder, it, com.endlessbum.twitchpro.ui.tv.TvAccent.color, textSizePx)
                         builderIndex = builder.length
                     }
                     builder.append(chatMessage.systemMsg)
@@ -179,7 +179,7 @@ object ChatAdapterUtils {
                 if (chatMessage.systemMsg != null) {
                     val noticeStart = builderIndex
                     chatMessage.noticeIcon?.let {
-                        TvChatNotices.appendIcon(context, builder, it, com.github.andreyasadchy.xtra.ui.tv.TvAccent.color, textSizePx)
+                        TvChatNotices.appendIcon(context, builder, it, com.endlessbum.twitchpro.ui.tv.TvAccent.color, textSizePx)
                         builderIndex = builder.length
                     }
                     builder.append("${chatMessage.systemMsg}\n")
@@ -938,7 +938,7 @@ object ChatAdapterUtils {
                     ImageRequest.Builder(ctx).apply {
                         data(imagePaint.imageUrl)
                         httpHeaders(NetworkHeaders.Builder().apply {
-                            add("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                            add("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                         }.build())
                         target(
                             onSuccess = {
@@ -979,7 +979,7 @@ object ChatAdapterUtils {
                 )
             } else {
                 Glide.with(fragment)
-                    .load(GlideUrl(imagePaint.imageUrl) { mapOf("User-Agent" to "Xtra/" + BuildConfig.VERSION_NAME) })
+                    .load(GlideUrl(imagePaint.imageUrl) { mapOf("User-Agent" to "TwitchPro/" + BuildConfig.VERSION_NAME) })
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .into(object : CustomTarget<Drawable>() {
                         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
@@ -1126,7 +1126,7 @@ object ChatAdapterUtils {
                 }
                 if (image.thirdParty) {
                     httpHeaders(NetworkHeaders.Builder().apply {
-                        add("User-Agent", "Xtra/" + BuildConfig.VERSION_NAME)
+                        add("User-Agent", "TwitchPro/" + BuildConfig.VERSION_NAME)
                     }.build())
                 }
                 target(
@@ -1149,7 +1149,7 @@ object ChatAdapterUtils {
                 else -> image.url1x
             }.let {
                 if (image.thirdParty) {
-                    GlideUrl(it) { mapOf("User-Agent" to "Xtra/" + BuildConfig.VERSION_NAME) }
+                    GlideUrl(it) { mapOf("User-Agent" to "TwitchPro/" + BuildConfig.VERSION_NAME) }
                 } else it
             })
             .let { if (image.circleCrop) it.circleCrop() else it }

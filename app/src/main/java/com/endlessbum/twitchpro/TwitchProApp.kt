@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra
+package com.endlessbum.twitchpro
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -15,10 +15,10 @@ import coil3.network.NetworkResponse
 import coil3.network.NetworkResponseBody
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.util.DebugLogger
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.coil.CacheControlCacheStrategy
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.coil.CacheControlCacheStrategy
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
 import okio.buffer
@@ -27,7 +27,7 @@ import org.chromium.net.apihelpers.UploadDataProviders
 import org.conscrypt.Conscrypt
 import java.security.Security
 
-class XtraApp : Application(), SingletonImageLoader.Factory {
+class TwitchProApp : Application(), SingletonImageLoader.Factory {
 
     companion object {
         lateinit var INSTANCE: Application
@@ -36,18 +36,18 @@ class XtraApp : Application(), SingletonImageLoader.Factory {
         const val CRASH_FILE = "last_crash.txt"
     }
 
-    lateinit var xtraModule: XtraModule
+    lateinit var twitchProModule: TwitchProModule
 
     override fun onCreate() {
         super.onCreate()
-        // TV: the color of accent of the app, the ambiance color of the Xtra TV settings
-        com.github.andreyasadchy.xtra.ui.tv.TvAccent.init(this)
+        // TV: the color of accent of the app, the ambiance color of the TwitchPro settings
+        com.endlessbum.twitchpro.ui.tv.TvAccent.init(this)
         INSTANCE = this
-        xtraModule = XtraModule(this)
-        com.github.andreyasadchy.xtra.ui.tv.TvToast.init(this)
-        if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(this)) {
-            com.github.andreyasadchy.xtra.ui.tv.TvBlacklist.load(this)
-            com.github.andreyasadchy.xtra.ui.tv.TvLauncherSyncWorker.schedule(this)
+        twitchProModule = TwitchProModule(this)
+        com.endlessbum.twitchpro.ui.tv.TvToast.init(this)
+        if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(this)) {
+            com.endlessbum.twitchpro.ui.tv.TvBlacklist.load(this)
+            com.endlessbum.twitchpro.ui.tv.TvLauncherSyncWorker.schedule(this)
         }
         if (BuildConfig.DEBUG) {
             // debug builds: the error of a crash is kept, the app shows it when it starts again (no logcat needed)
@@ -76,10 +76,10 @@ class XtraApp : Application(), SingletonImageLoader.Factory {
             }
             components {
                 // a stream thumbnail Twitch has not made yet (grey picture): the picture of the channel instead
-                add(com.github.andreyasadchy.xtra.ui.tv.TvThumbnails.PreviewInterceptor { xtraModule.okHttpClient.value })
+                add(com.endlessbum.twitchpro.ui.tv.TvThumbnails.PreviewInterceptor { twitchProModule.okHttpClient.value })
                 val networkLibrary = prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
                 when {
-                    networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+                    networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                         add(NetworkFetcher.Factory(
                             networkClient = {
                                 object : NetworkClient {
@@ -92,9 +92,9 @@ class XtraApp : Application(), SingletonImageLoader.Factory {
                                         val requestMillis = System.currentTimeMillis()
                                         val response = suspendCancellableCoroutine { continuation ->
                                             val timeout = NetworkUtils.HttpEngineTimeout()
-                                            val request = xtraModule.httpEngine.value!!.newUrlRequestBuilder(
+                                            val request = twitchProModule.httpEngine.value!!.newUrlRequestBuilder(
                                                 request.url,
-                                                xtraModule.cronetExecutor.value,
+                                                twitchProModule.cronetExecutor.value,
                                                 NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                                             ).apply {
                                                 request.headers.asMap().forEach { entry ->
@@ -103,7 +103,7 @@ class XtraApp : Application(), SingletonImageLoader.Factory {
                                                     }
                                                 }
                                                 requestBody?.let {
-                                                    setUploadDataProvider(NetworkUtils.ByteArrayUploadProvider(requestBody), xtraModule.cronetExecutor.value)
+                                                    setUploadDataProvider(NetworkUtils.ByteArrayUploadProvider(requestBody), twitchProModule.cronetExecutor.value)
                                                 }
                                                 setHttpMethod(request.method)
                                             }.build()
@@ -134,7 +134,7 @@ class XtraApp : Application(), SingletonImageLoader.Factory {
                             cacheStrategy = { CacheControlCacheStrategy() }
                         ))
                     }
-                    networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+                    networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                         add(NetworkFetcher.Factory(
                             networkClient = {
                                 object : NetworkClient {
@@ -147,10 +147,10 @@ class XtraApp : Application(), SingletonImageLoader.Factory {
                                         val requestMillis = System.currentTimeMillis()
                                         val response = suspendCancellableCoroutine { continuation ->
                                             val timeout = NetworkUtils.CronetTimeout()
-                                            val request = xtraModule.cronetEngine.value!!.newUrlRequestBuilder(
+                                            val request = twitchProModule.cronetEngine.value!!.newUrlRequestBuilder(
                                                 request.url,
                                                 NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                                                xtraModule.cronetExecutor.value
+                                                twitchProModule.cronetExecutor.value
                                             ).apply {
                                                 request.headers.asMap().forEach { entry ->
                                                     entry.value.forEach {
@@ -158,7 +158,7 @@ class XtraApp : Application(), SingletonImageLoader.Factory {
                                                     }
                                                 }
                                                 requestBody?.let {
-                                                    setUploadDataProvider(UploadDataProviders.create(requestBody), xtraModule.cronetExecutor.value)
+                                                    setUploadDataProvider(UploadDataProviders.create(requestBody), twitchProModule.cronetExecutor.value)
                                                 }
                                                 setHttpMethod(request.method)
                                             }.build()
@@ -191,7 +191,7 @@ class XtraApp : Application(), SingletonImageLoader.Factory {
                     }
                     else -> {
                         add(OkHttpNetworkFetcherFactory(
-                            callFactory = { xtraModule.okHttpClient.value },
+                            callFactory = { twitchProModule.okHttpClient.value },
                             cacheStrategy = { CacheControlCacheStrategy() }
                         ))
                     }

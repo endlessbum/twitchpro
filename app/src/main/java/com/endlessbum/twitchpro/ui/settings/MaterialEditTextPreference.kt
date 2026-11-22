@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.settings
+package com.endlessbum.twitchpro.ui.settings
 
 import android.app.Dialog
 import android.content.Context
@@ -10,9 +10,9 @@ import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.preference.EditTextPreferenceDialogFragmentCompat
-import com.github.andreyasadchy.xtra.ui.view.TvUi
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.ui.view.TvUi
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MaterialEditTextPreference : EditTextPreferenceDialogFragmentCompat() {

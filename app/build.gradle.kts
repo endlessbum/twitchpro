@@ -21,12 +21,12 @@ android {
             storePassword = "123456"
         }
     }
-    namespace = "com.github.andreyasadchy.xtra"
+    namespace = "com.endlessbum.twitchpro"
     compileSdk = 37
 
     defaultConfig {
-        // own package: installs next to the original Xtra
-        applicationId = "com.github.razenfr.xtratv"
+        // own package: installs next to the original TwitchPro
+        applicationId = "com.endlessbum.twitchpro"
         minSdk = 24
         targetSdk = 37
         versionCode = 165
@@ -132,7 +132,7 @@ dependencies {
 apollo {
     @Suppress("ApolloEndpointNotConfigured")
     service("service") {
-        packageName.set("com.github.andreyasadchy.xtra.graphql")
+        packageName.set("com.endlessbum.twitchpro.graphql")
     }
 }
 

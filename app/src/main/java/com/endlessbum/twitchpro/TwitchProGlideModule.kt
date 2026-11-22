@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra
+package com.endlessbum.twitchpro
 
 import android.content.Context
 import com.bumptech.glide.Glide
@@ -10,13 +10,13 @@ import com.bumptech.glide.module.AppGlideModule
 import java.io.InputStream
 
 @GlideModule
-class XtraGlideModule : AppGlideModule() {
+class TwitchProGlideModule : AppGlideModule() {
 
     override fun isManifestParsingEnabled(): Boolean = false
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        val xtraModule = (context as XtraApp).xtraModule
-        registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(xtraModule.okHttpClient.value))
+        val twitchProModule = (context as TwitchProApp).twitchProModule
+        registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(twitchProModule.okHttpClient.value))
         super.registerComponents(context, glide, registry)
     }
 }

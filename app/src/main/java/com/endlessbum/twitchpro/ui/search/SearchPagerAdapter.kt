@@ -1,11 +1,11 @@
-package com.github.andreyasadchy.xtra.ui.search
+package com.endlessbum.twitchpro.ui.search
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.github.andreyasadchy.xtra.ui.search.channels.ChannelSearchFragment
-import com.github.andreyasadchy.xtra.ui.search.games.GameSearchFragment
-import com.github.andreyasadchy.xtra.ui.search.streams.StreamSearchFragment
-import com.github.andreyasadchy.xtra.ui.search.videos.VideoSearchFragment
+import com.endlessbum.twitchpro.ui.search.channels.ChannelSearchFragment
+import com.endlessbum.twitchpro.ui.search.games.GameSearchFragment
+import com.endlessbum.twitchpro.ui.search.streams.StreamSearchFragment
+import com.endlessbum.twitchpro.ui.search.videos.VideoSearchFragment
 import kotlin.math.max
 
 class SearchPagerAdapter(

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.saved.bookmarks
+package com.endlessbum.twitchpro.ui.saved.bookmarks
 
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -17,20 +17,20 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentVideosListItemBinding
-import com.github.andreyasadchy.xtra.model.VideoPosition
-import com.github.andreyasadchy.xtra.model.ui.Bookmark
-import com.github.andreyasadchy.xtra.model.ui.BookmarkIgnoredUser
-import com.github.andreyasadchy.xtra.model.ui.Video
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper.getDurationFromSeconds
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentVideosListItemBinding
+import com.endlessbum.twitchpro.model.VideoPosition
+import com.endlessbum.twitchpro.model.ui.Bookmark
+import com.endlessbum.twitchpro.model.ui.BookmarkIgnoredUser
+import com.endlessbum.twitchpro.model.ui.Video
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.TwitchApiHelper.getDurationFromSeconds
+import com.endlessbum.twitchpro.util.prefs
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Instant
@@ -118,7 +118,7 @@ class BookmarksAdapter(
                     val durationSeconds = item.duration?.let { duration -> duration.toIntOrNull() ?: TwitchApiHelper.getDuration(duration) }
                     val position = item.videoId?.toLongOrNull()?.let { id -> positions?.find { it.id == id }?.position }
                     val ignore = ignored?.find { it.userId == item.userId } != null
-                    val isTv = com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(context)
+                    val isTv = com.endlessbum.twitchpro.ui.view.TvUi.isTv(context)
                     val bookmarkVideo = Video(
                         id = item.videoId,
                         channelId = item.userId,
@@ -149,7 +149,7 @@ class BookmarksAdapter(
                             val channelLabel = item.userName ?: item.userLogin.orEmpty()
                             val actions = buildList {
                                 add(
-                                    com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                    com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                         context.getString(if (hasProgress) R.string.tv_resume else R.string.tv_multistream_watch),
                                         R.drawable.tv_ic_play,
                                     ) {
@@ -158,7 +158,7 @@ class BookmarksAdapter(
                                 )
                                 if (hasProgress) {
                                     add(
-                                        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                        com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                             context.getString(R.string.tv_watch_from_start),
                                             R.drawable.tv_ic_replay,
                                         ) {
@@ -168,7 +168,7 @@ class BookmarksAdapter(
                                 }
                                 if (!item.videoId.isNullOrBlank()) {
                                     add(
-                                        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                        com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                             context.getString(R.string.refresh),
                                             R.drawable.tv_ic_refresh,
                                         ) {
@@ -178,12 +178,12 @@ class BookmarksAdapter(
                                 }
                                 if (!item.userLogin.isNullOrBlank() || !item.userId.isNullOrBlank()) {
                                     add(
-                                        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                        com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                             context.getString(R.string.tv_open_channel, channelLabel),
                                             R.drawable.tv_ic_person,
                                         ) {
                                             activity.openTvChannel(
-                                                com.github.andreyasadchy.xtra.model.ui.Stream(
+                                                com.endlessbum.twitchpro.model.ui.Stream(
                                                     channelId = item.userId,
                                                     channelLogin = item.userLogin,
                                                     channelName = item.userName,
@@ -196,7 +196,7 @@ class BookmarksAdapter(
                                 }
                                 if (!item.gameName.isNullOrBlank()) {
                                     add(
-                                        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                        com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                             context.getString(R.string.tv_open_category, item.gameName),
                                             R.drawable.tv_ic_gamepad,
                                         ) {
@@ -206,7 +206,7 @@ class BookmarksAdapter(
                                 }
                                 if (!item.videoId.isNullOrBlank()) {
                                     add(
-                                        com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                        com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                             context.getString(R.string.download),
                                             R.drawable.tv_ic_download,
                                         ) {
@@ -215,7 +215,7 @@ class BookmarksAdapter(
                                     )
                                 }
                                 add(
-                                    com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.Action(
+                                    com.endlessbum.twitchpro.ui.tv.TvActionPanel.Action(
                                         context.getString(R.string.remove_bookmark),
                                         R.drawable.tv_ic_delete,
                                     ) {
@@ -223,7 +223,7 @@ class BookmarksAdapter(
                                     }
                                 )
                             }
-                            com.github.andreyasadchy.xtra.ui.tv.TvActionPanel.show(
+                            com.endlessbum.twitchpro.ui.tv.TvActionPanel.show(
                                 activity,
                                 item.title?.trim()?.takeIf { it.isNotEmpty() } ?: channelLabel,
                                 actions,
@@ -353,7 +353,7 @@ class BookmarksAdapter(
                         gameName.visibility = View.GONE
                     }
                     options.setOnClickListener { it ->
-                        if (com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(context)) {
+                        if (com.endlessbum.twitchpro.ui.view.TvUi.isTv(context)) {
                             // TV: the 3 dots open the panel of the actions, like OK held on the card
                             root.performLongClick()
                             return@setOnClickListener

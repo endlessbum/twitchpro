@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,17 +15,17 @@ import androidx.media3.exoplayer.hls.playlist.HlsMultivariantPlaylist
 import androidx.media3.exoplayer.hls.playlist.HlsPlaylist
 import androidx.media3.exoplayer.hls.playlist.HlsPlaylistParserFactory
 import androidx.media3.exoplayer.upstream.ParsingLoadable
-import com.github.andreyasadchy.xtra.XtraModule
-import com.github.andreyasadchy.xtra.player.lowlatency.CronetDataSource
-import com.github.andreyasadchy.xtra.player.lowlatency.HlsPlaylistParser
-import com.github.andreyasadchy.xtra.player.lowlatency.HttpEngineDataSource
-import com.github.andreyasadchy.xtra.player.lowlatency.OkHttpDataSource
-import com.github.andreyasadchy.xtra.ui.view.TvUi
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.NetworkUtils
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProModule
+import com.endlessbum.twitchpro.player.lowlatency.CronetDataSource
+import com.endlessbum.twitchpro.player.lowlatency.HlsPlaylistParser
+import com.endlessbum.twitchpro.player.lowlatency.HttpEngineDataSource
+import com.endlessbum.twitchpro.player.lowlatency.OkHttpDataSource
+import com.endlessbum.twitchpro.ui.view.TvUi
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.NetworkUtils
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -189,17 +189,17 @@ object TvExperimentalAdblock {
     @OptIn(UnstableApi::class)
     fun buildMediaSource(
         context: Context,
-        xtraModule: XtraModule,
+        twitchProModule: TwitchProModule,
         uri: Uri,
         slidingWindowOnly: Boolean = false,
         createdAtMs: Long? = null,
     ): HlsMediaSource {
         val networkLibrary = context.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP)
         val httpFactory = when {
-            networkLibrary == C.HTTP_ENGINE && xtraModule.httpEngine.value != null -> @SuppressLint("NewApi") {
+            networkLibrary == C.HTTP_ENGINE && twitchProModule.httpEngine.value != null -> @SuppressLint("NewApi") {
                 HttpEngineDataSource.Factory(
-                    xtraModule.httpEngine.value,
-                    xtraModule.cronetExecutor.value,
+                    twitchProModule.httpEngine.value,
+                    twitchProModule.cronetExecutor.value,
                     null,
                     0,
                     false,
@@ -209,10 +209,10 @@ object TvExperimentalAdblock {
                     null
                 ) { false }
             }
-            networkLibrary == C.CRONET && xtraModule.cronetEngine.value != null -> {
+            networkLibrary == C.CRONET && twitchProModule.cronetEngine.value != null -> {
                 CronetDataSource.Factory(
-                    xtraModule.cronetEngine.value,
-                    xtraModule.cronetExecutor.value,
+                    twitchProModule.cronetEngine.value,
+                    twitchProModule.cronetExecutor.value,
                     null,
                     0,
                     false,
@@ -224,7 +224,7 @@ object TvExperimentalAdblock {
             }
             else -> {
                 OkHttpDataSource.Factory(
-                    xtraModule.okHttpClient.value,
+                    twitchProModule.okHttpClient.value,
                     null,
                     null,
                     null,
@@ -498,7 +498,7 @@ object TvExperimentalAdblock {
      */
     suspend fun resolveLiveVod(
         context: Context,
-        xtraModule: XtraModule,
+        twitchProModule: TwitchProModule,
         channelLogin: String,
         streamIdHint: String? = null,
         createdAtHint: String? = null,
@@ -515,7 +515,7 @@ object TvExperimentalAdblock {
         var createdAtMs = createdAtIso?.let { parseEpochMs(it) }
 
         if (streamId == null || createdAtMs == null) {
-            val fetched = fetchLiveStreamMeta(context, xtraModule, networkLibrary, login)
+            val fetched = fetchLiveStreamMeta(context, twitchProModule, networkLibrary, login)
                 ?: return@withContext LiveVodOutcome(null, null, null, null, null, false)
             streamId = fetched.first
             createdAtIso = fetched.second
@@ -531,7 +531,7 @@ object TvExperimentalAdblock {
         // Fast path: reuse cached CDN baseDir & variants for this streamId if already discovered
         cachedVods[cacheKey]?.let { cached ->
             val chunkedUrl = "${cached.baseDir}/chunked/index-dvr.m3u8"
-            val playlistSnippet = fetchPlaylistIfValid(xtraModule, networkLibrary, chunkedUrl, headerOnly = true)
+            val playlistSnippet = fetchPlaylistIfValid(twitchProModule, networkLibrary, chunkedUrl, headerOnly = true)
             if (playlistSnippet != null) {
                 val durationMs = parseVodDurationMs(playlistSnippet)
                 val filteredVariants = selectVariants(cached.variants, fallbackH264)
@@ -560,8 +560,8 @@ object TvExperimentalAdblock {
 
         val createdAtSeconds = resolvedCreatedAtMs / 1000L
         // Probe primary offsets (0, -1) first; only try wider clock-skew offsets (1, -2, 2) if needed
-        val found = probeDomainsForOffsets(xtraModule, networkLibrary, login, resolvedStreamId, createdAtSeconds, listOf(0L, -1L))
-            ?: probeDomainsForOffsets(xtraModule, networkLibrary, login, resolvedStreamId, createdAtSeconds, listOf(1L, -2L, 2L))
+        val found = probeDomainsForOffsets(twitchProModule, networkLibrary, login, resolvedStreamId, createdAtSeconds, listOf(0L, -1L))
+            ?: probeDomainsForOffsets(twitchProModule, networkLibrary, login, resolvedStreamId, createdAtSeconds, listOf(1L, -2L, 2L))
 
         if (found == null) {
             return@withContext LiveVodOutcome(
@@ -576,7 +576,7 @@ object TvExperimentalAdblock {
 
         val (baseDir, chunkedSnippet) = found
         val durationMs = parseVodDurationMs(chunkedSnippet)
-        val variants = probeAvailableVariants(xtraModule, networkLibrary, baseDir)
+        val variants = probeAvailableVariants(twitchProModule, networkLibrary, baseDir)
         cachedVods[cacheKey] = CachedVod(baseDir, variants, resolvedCreatedAtIso, resolvedCreatedAtMs)
 
         val filteredVariants = selectVariants(variants, fallbackH264)
@@ -627,13 +627,13 @@ object TvExperimentalAdblock {
 
     private suspend fun fetchLiveStreamMeta(
         context: Context,
-        xtraModule: XtraModule,
+        twitchProModule: TwitchProModule,
         networkLibrary: String?,
         login: String,
     ): Triple<String, String, Long>? {
         try {
             val gqlHeaders = TwitchApiHelper.getGQLHeaders(context)
-            val response = xtraModule.graphQLRepository.loadQueryUsersStream(
+            val response = twitchProModule.graphQLRepository.loadQueryUsersStream(
                 networkLibrary = networkLibrary,
                 headers = gqlHeaders,
                 logins = listOf(login),
@@ -656,7 +656,7 @@ object TvExperimentalAdblock {
         try {
             val helixHeaders = TwitchApiHelper.getHelixHeaders(context)
             if (!helixHeaders[C.HEADER_TOKEN].isNullOrBlank()) {
-                val item = xtraModule.helixRepository.getStreams(
+                val item = twitchProModule.helixRepository.getStreams(
                     networkLibrary = networkLibrary,
                     headers = helixHeaders,
                     logins = listOf(login),
@@ -676,7 +676,7 @@ object TvExperimentalAdblock {
     }
 
     private suspend fun probeDomainsForOffsets(
-        xtraModule: XtraModule,
+        twitchProModule: TwitchProModule,
         networkLibrary: String?,
         login: String,
         streamId: String,
@@ -706,7 +706,7 @@ object TvExperimentalAdblock {
                 jobs.add(
                     launch(Dispatchers.IO) {
                         try {
-                            val body = fetchPlaylistIfValid(xtraModule, networkLibrary, url, headerOnly = true)
+                            val body = fetchPlaylistIfValid(twitchProModule, networkLibrary, url, headerOnly = true)
                             if (body != null && found.compareAndSet(null, baseDir to body)) {
                                 jobs.forEach { it.cancel() }
                             }
@@ -725,14 +725,14 @@ object TvExperimentalAdblock {
     }
 
     private suspend fun probeAvailableVariants(
-        xtraModule: XtraModule,
+        twitchProModule: TwitchProModule,
         networkLibrary: String?,
         baseDir: String,
     ): List<TranscodeSpec> = coroutineScope {
         val deferreds = transcodeSpecs.map { spec ->
             async(Dispatchers.IO) {
                 val url = "$baseDir/${spec.folder}/index-dvr.m3u8"
-                if (fetchPlaylistIfValid(xtraModule, networkLibrary, url, headerOnly = true) != null) spec else null
+                if (fetchPlaylistIfValid(twitchProModule, networkLibrary, url, headerOnly = true) != null) spec else null
             }
         }
         val available = deferreds.awaitAll().filterNotNull()
@@ -808,7 +808,7 @@ object TvExperimentalAdblock {
     }
 
     private suspend fun fetchPlaylistIfValid(
-        xtraModule: XtraModule,
+        twitchProModule: TwitchProModule,
         networkLibrary: String?,
         url: String,
         headerOnly: Boolean = false,
@@ -816,8 +816,8 @@ object TvExperimentalAdblock {
         val rangeHeader = "bytes=0-${PROBE_RANGE_BYTES - 1}"
         // captured once: the engine can be torn down between the check and the use, and a null
         // engine simply falls through to the next network library
-        val httpEngine = if (networkLibrary == C.HTTP_ENGINE) xtraModule.httpEngine.value else null
-        val cronetEngine = if (networkLibrary == C.CRONET) xtraModule.cronetEngine.value else null
+        val httpEngine = if (networkLibrary == C.HTTP_ENGINE) twitchProModule.httpEngine.value else null
+        val cronetEngine = if (networkLibrary == C.CRONET) twitchProModule.cronetEngine.value else null
         try {
             when {
                 httpEngine != null -> @SuppressLint("NewApi") {
@@ -825,7 +825,7 @@ object TvExperimentalAdblock {
                         val timeout = NetworkUtils.HttpEngineTimeout()
                         val request = httpEngine.newUrlRequestBuilder(
                             url,
-                            xtraModule.cronetExecutor.value,
+                            twitchProModule.cronetExecutor.value,
                             NetworkUtils.ByteArrayUrlCallback(continuation, timeout)
                         ).apply {
                             if (headerOnly) {
@@ -851,7 +851,7 @@ object TvExperimentalAdblock {
                         val request = cronetEngine.newUrlRequestBuilder(
                             url,
                             NetworkUtils.ByteArrayCronetCallback(continuation, timeout),
-                            xtraModule.cronetExecutor.value
+                            twitchProModule.cronetExecutor.value
                         ).apply {
                             if (headerOnly) {
                                 addHeader("Range", rangeHeader)
@@ -876,7 +876,7 @@ object TvExperimentalAdblock {
                             header("Range", rangeHeader)
                         }
                     }.build()
-                    xtraModule.okHttpClient.value.newCall(request).executeAsync().use { response ->
+                    twitchProModule.okHttpClient.value.newCall(request).executeAsync().use { response ->
                         if (response.isSuccessful) {
                             val text = if (headerOnly) {
                                 val buf = ByteArray(PROBE_RANGE_BYTES)

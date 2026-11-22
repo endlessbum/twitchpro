@@ -1,10 +1,10 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.content.Context
 import android.os.SystemClock
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,7 @@ object TvStreamPrefetch {
     /** The streams of left / right while a stream plays: their access only. */
     fun prepareNeighbors(context: Context, channelLogins: List<String?>) {
         val keep = channelLogins.filterNotNull().toSet()
-        val app = context.applicationContext as XtraApp
+        val app = context.applicationContext as TwitchProApp
         synchronized(entries) {
             // the streams that are no longer next to the one watched are forgotten, and their
             // requests cancelled: a dropped prefetch must not finish its token request
@@ -51,7 +51,7 @@ object TvStreamPrefetch {
     }
 
     private fun prepare(context: Context, channelLogin: String?, warmUp: Boolean) {
-        if (channelLogin.isNullOrBlank() || !context.resources.getBoolean(com.github.andreyasadchy.xtra.R.bool.isTv)) {
+        if (channelLogin.isNullOrBlank() || !context.resources.getBoolean(com.endlessbum.twitchpro.R.bool.isTv)) {
             return
         }
         val prefs = context.prefs()
@@ -59,7 +59,7 @@ object TvStreamPrefetch {
         if (prefs.getBoolean(C.ENABLE_INTEGRITY, false) || prefs.getBoolean(C.PLAYER_USE_STREAM_PROXY, false)) {
             return
         }
-        val app = context.applicationContext as XtraApp
+        val app = context.applicationContext as TwitchProApp
         val useCustomProxy = prefs.getBoolean(C.PLAYER_USE_CUSTOM_PROXY, false)
         val warm = warmUp && prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP) == C.OKHTTP
         synchronized(entries) {
@@ -74,11 +74,11 @@ object TvStreamPrefetch {
             // pass the freshness check and fire the access-token request twice
             entries[channelLogin] = Entry(scope.async {
                 // a custom proxy in use: the player goes through it, nothing is asked here
-                if (useCustomProxy && app.xtraModule.playerRepository.getCustomProxies().any { it.enabled && !it.url.isNullOrBlank() }) {
+                if (useCustomProxy && app.twitchProModule.playerRepository.getCustomProxies().any { it.enabled && !it.url.isNullOrBlank() }) {
                     return@async null
                 }
                 val url = try {
-                    ExoPlayerService.loadStreamPlaylistUrl(app, app.xtraModule, channelLogin)
+                    ExoPlayerService.loadStreamPlaylistUrl(app, app.twitchProModule, channelLogin)
                 } catch (e: Exception) {
                     null
                 }
@@ -94,10 +94,10 @@ object TvStreamPrefetch {
      * The connections to the servers of Twitch (list of the qualities, then the server of the video) are opened while the
      * player opens, the player uses the same network client and finds them ready. Nothing is kept from the answers.
      */
-    private fun warmUpConnections(app: XtraApp, url: String) {
+    private fun warmUpConnections(app: TwitchProApp, url: String) {
         scope.async {
             try {
-                val client = app.xtraModule.okHttpClient.value
+                val client = app.twitchProModule.okHttpClient.value
                 val master = client.newCall(okhttp3.Request.Builder().url(url).build()).execute().use { response ->
                     if (response.isSuccessful) response.body.string() else null
                 } ?: return@async

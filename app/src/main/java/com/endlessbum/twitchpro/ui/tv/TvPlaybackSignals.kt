@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import android.media.AudioFocusRequest
@@ -6,7 +6,7 @@ import android.media.AudioManager
 import android.os.Build
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.util.prefs
 
 /**
  * TV: what the system and the launchers see of a playback, as the usual players of Android show it (Nuvio, YouTube...):
@@ -48,7 +48,7 @@ object TvPlaybackSignals {
             AudioManager.AUDIOFOCUS_LOSS -> {
                 held = false
                 lostToOtherApp = true
-                if (appContext?.prefs()?.getBoolean(com.github.andreyasadchy.xtra.util.C.PLAYER_AUDIO_FOCUS, false) == true) {
+                if (appContext?.prefs()?.getBoolean(com.endlessbum.twitchpro.util.C.PLAYER_AUDIO_FOCUS, false) == true) {
                     owners.values.toList().forEach { it() }
                 }
             }

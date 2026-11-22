@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.player
+package com.endlessbum.twitchpro.ui.player
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -33,14 +33,14 @@ import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.hls.HlsManifest
 import androidx.media3.exoplayer.hls.playlist.HlsMediaPlaylist
 import androidx.navigation.fragment.findNavController
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.VideoQuality
-import com.github.andreyasadchy.xtra.ui.game.GameMediaFragmentDirections
-import com.github.andreyasadchy.xtra.ui.game.GamePagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.VideoQuality
+import com.endlessbum.twitchpro.ui.game.GameMediaFragmentDirections
+import com.endlessbum.twitchpro.ui.game.GamePagerFragmentDirections
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
 import org.json.JSONArray
 import org.json.JSONException
 import kotlin.time.Instant
@@ -228,10 +228,10 @@ class ExoPlayerFragment : PlayerFragment() {
                 } else if (
                     playbackState == Player.STATE_ENDED &&
                     playbackService?.type == BasePlaybackService.CLIP &&
-                    com.github.andreyasadchy.xtra.ui.view.TvUi.isTv(requireContext()) &&
+                    com.endlessbum.twitchpro.ui.view.TvUi.isTv(requireContext()) &&
                     requireContext().prefs().getBoolean(C.TV_CLIPS_AUTOPLAY, true)
                 ) {
-                    if ((activity as? com.github.andreyasadchy.xtra.ui.main.MainActivity)?.playNextClip(1) == true) {
+                    if ((activity as? com.endlessbum.twitchpro.ui.main.MainActivity)?.playNextClip(1) == true) {
                         return
                     }
                 }
@@ -385,7 +385,7 @@ class ExoPlayerFragment : PlayerFragment() {
 
             override fun toast(resId: Int, duration: Int) {
                 if (view != null) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), resId, duration).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), resId, duration).show()
                     if (resId == R.string.stream_ended) {
                         onTvStreamEnded()
                     }
@@ -394,7 +394,7 @@ class ExoPlayerFragment : PlayerFragment() {
 
             override fun toast(text: CharSequence, duration: Int) {
                 if (view != null) {
-                    com.github.andreyasadchy.xtra.ui.tv.TvToast.makeText(requireContext(), text, duration).show()
+                    com.endlessbum.twitchpro.ui.tv.TvToast.makeText(requireContext(), text, duration).show()
                 }
             }
 
@@ -625,7 +625,7 @@ class ExoPlayerFragment : PlayerFragment() {
             return service.durationSeconds?.takeIf { it > 0 }?.let { it * 1000L }
                 ?: service.createdAt?.let { Instant.parseOrNull(it)?.toEpochMilliseconds() }
                     ?.takeIf { service.videoId == null }
-                    ?.let { com.github.andreyasadchy.xtra.util.TwitchClock.nowMs() - it }
+                    ?.let { com.endlessbum.twitchpro.util.TwitchClock.nowMs() - it }
                     ?.takeIf { it > 0 }
         }
         return null

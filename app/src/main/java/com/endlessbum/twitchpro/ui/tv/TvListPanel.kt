@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.ui.SettingsDragListItem
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.model.ui.SettingsDragListItem
 
 /**
  * TV: the lists of the settings (tabs, favorites...) in a side panel like the proxies of the player: each row checked or

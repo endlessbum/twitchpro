@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.following.streams
+package com.endlessbum.twitchpro.ui.following.streams
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,22 +17,22 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.CommonRecyclerViewLayoutBinding
-import com.github.andreyasadchy.xtra.databinding.SortBarBinding
-import com.github.andreyasadchy.xtra.model.ui.Stream
-import com.github.andreyasadchy.xtra.ui.common.PagedListFragment
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.common.Sortable
-import com.github.andreyasadchy.xtra.ui.common.StreamsAdapter
-import com.github.andreyasadchy.xtra.ui.common.StreamsCompactAdapter
-import com.github.andreyasadchy.xtra.ui.following.streams.FollowedStreamsViewModel.Companion.FollowedStreamsViewModelFactory
-import com.github.andreyasadchy.xtra.ui.top.TopStreamsFragmentDirections
-import com.github.andreyasadchy.xtra.ui.tv.TvDialogs
-import com.github.andreyasadchy.xtra.ui.view.TvUi
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.CommonRecyclerViewLayoutBinding
+import com.endlessbum.twitchpro.databinding.SortBarBinding
+import com.endlessbum.twitchpro.model.ui.Stream
+import com.endlessbum.twitchpro.ui.common.PagedListFragment
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.common.Sortable
+import com.endlessbum.twitchpro.ui.common.StreamsAdapter
+import com.endlessbum.twitchpro.ui.common.StreamsCompactAdapter
+import com.endlessbum.twitchpro.ui.following.streams.FollowedStreamsViewModel.Companion.FollowedStreamsViewModelFactory
+import com.endlessbum.twitchpro.ui.top.TopStreamsFragmentDirections
+import com.endlessbum.twitchpro.ui.tv.TvDialogs
+import com.endlessbum.twitchpro.ui.view.TvUi
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -98,7 +98,7 @@ class FollowedStreamsFragment : PagedListFragment(), Scrollable, Sortable {
         viewLifecycleOwner.lifecycleScope.launch {
             // a channel added to the favorites or removed: the list is sorted again (favorites first) with their star
             var first = true
-            com.github.andreyasadchy.xtra.ui.tv.TvFavorites.items.collect {
+            com.endlessbum.twitchpro.ui.tv.TvFavorites.items.collect {
                 if (first) {
                     first = false
                 } else {

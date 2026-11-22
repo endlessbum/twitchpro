@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.model
+package com.endlessbum.twitchpro.model
 
 import kotlinx.serialization.Serializable
 

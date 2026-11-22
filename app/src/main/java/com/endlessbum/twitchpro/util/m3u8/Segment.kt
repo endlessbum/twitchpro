@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.util.m3u8
+package com.endlessbum.twitchpro.util.m3u8
 
 data class Segment(
     val uri: String,

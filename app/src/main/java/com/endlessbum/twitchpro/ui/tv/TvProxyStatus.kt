@@ -1,9 +1,9 @@
-package com.github.andreyasadchy.xtra.ui.tv
+package com.endlessbum.twitchpro.ui.tv
 
 import android.content.Context
 import androidx.core.net.toUri
-import com.github.andreyasadchy.xtra.XtraApp
-import com.github.andreyasadchy.xtra.util.NetworkUtils.executeAsync
+import com.endlessbum.twitchpro.TwitchProApp
+import com.endlessbum.twitchpro.util.NetworkUtils.executeAsync
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
@@ -27,7 +27,7 @@ object TvProxyStatus {
         synchronized(results) {
             results[proxyUrl]?.takeIf { System.currentTimeMillis() - it.at < 3 * 60_000L }?.let { return@withContext it.online }
         }
-        val module = (context.applicationContext as XtraApp).xtraModule
+        val module = (context.applicationContext as TwitchProApp).twitchProModule
         val url = (proxyUrl.toUri().takeIf { it.host != null } ?: "https://$proxyUrl".toUri()).buildUpon().apply {
             path("ping")
         }.build().toString()
@@ -54,7 +54,7 @@ object TvProxyStatus {
      * connection, timeout) counts as offline: a proxy without "/ping" is still tried.
      */
     suspend fun reachable(context: Context, proxyUrl: String): Boolean = withContext(Dispatchers.IO) {
-        val module = (context.applicationContext as XtraApp).xtraModule
+        val module = (context.applicationContext as TwitchProApp).twitchProModule
         val url = (proxyUrl.toUri().takeIf { it.host != null } ?: "https://$proxyUrl".toUri()).buildUpon().apply {
             path("ping")
             clearQuery()

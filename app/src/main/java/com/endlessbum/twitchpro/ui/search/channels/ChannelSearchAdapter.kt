@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.search.channels
+package com.endlessbum.twitchpro.ui.search.channels
 
 import android.view.LayoutInflater
 import android.view.View
@@ -14,13 +14,13 @@ import coil3.request.crossfade
 import coil3.request.target
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentSearchChannelsListItemBinding
-import com.github.andreyasadchy.xtra.model.ui.User
-import com.github.andreyasadchy.xtra.ui.channel.ChannelPagerFragmentDirections
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.prefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentSearchChannelsListItemBinding
+import com.endlessbum.twitchpro.model.ui.User
+import com.endlessbum.twitchpro.ui.channel.ChannelPagerFragmentDirections
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.prefs
 
 class ChannelSearchAdapter(
     private val fragment: Fragment,
@@ -109,11 +109,11 @@ class ChannelSearchAdapter(
                         val live = item.isLive == true || item.liveViewers != null
                         userRing?.visibility = if (live) View.VISIBLE else View.INVISIBLE
                         liveBadge.visibility = if (live) View.VISIBLE else View.GONE
-                        favoriteStar?.visibility = if (com.github.andreyasadchy.xtra.ui.tv.TvFavorites.isFavorite(item.login)) View.VISIBLE else View.GONE
+                        favoriteStar?.visibility = if (com.endlessbum.twitchpro.ui.tv.TvFavorites.isFavorite(item.login)) View.VISIBLE else View.GONE
                         typeText.visibility = View.GONE
                         item.name?.let { userName.text = it }
-                        root.setOnFocusChangeListener { _, hasFocus -> com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(userName, hasFocus) }
-                        com.github.andreyasadchy.xtra.ui.view.TvMarquee.update(userName, root.hasFocus())
+                        root.setOnFocusChangeListener { _, hasFocus -> com.endlessbum.twitchpro.ui.view.TvMarquee.update(userName, hasFocus) }
+                        com.endlessbum.twitchpro.ui.view.TvMarquee.update(userName, root.hasFocus())
                     }
                 }
             }

@@ -1,4 +1,4 @@
-package com.github.andreyasadchy.xtra.ui.following
+package com.endlessbum.twitchpro.ui.following
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,24 +14,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.databinding.FragmentMediaBinding
-import com.github.andreyasadchy.xtra.ui.common.FragmentHost
-import com.github.andreyasadchy.xtra.ui.common.Scrollable
-import com.github.andreyasadchy.xtra.ui.common.Sortable
-import com.github.andreyasadchy.xtra.ui.following.channels.FollowedChannelsFragment
-import com.github.andreyasadchy.xtra.ui.following.games.FollowedGamesFragment
-import com.github.andreyasadchy.xtra.ui.following.streams.FollowedStreamsFragment
-import com.github.andreyasadchy.xtra.ui.following.videos.FollowedVideosFragment
-import com.github.andreyasadchy.xtra.ui.login.LoginActivity
-import com.github.andreyasadchy.xtra.ui.main.MainActivity
-import com.github.andreyasadchy.xtra.ui.search.SearchPagerFragmentDirections
-import com.github.andreyasadchy.xtra.ui.settings.SettingsActivity
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.TwitchApiHelper
-import com.github.andreyasadchy.xtra.util.getAlertDialogBuilder
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.tokenPrefs
+import com.endlessbum.twitchpro.R
+import com.endlessbum.twitchpro.databinding.FragmentMediaBinding
+import com.endlessbum.twitchpro.ui.common.FragmentHost
+import com.endlessbum.twitchpro.ui.common.Scrollable
+import com.endlessbum.twitchpro.ui.common.Sortable
+import com.endlessbum.twitchpro.ui.following.channels.FollowedChannelsFragment
+import com.endlessbum.twitchpro.ui.following.games.FollowedGamesFragment
+import com.endlessbum.twitchpro.ui.following.streams.FollowedStreamsFragment
+import com.endlessbum.twitchpro.ui.following.videos.FollowedVideosFragment
+import com.endlessbum.twitchpro.ui.login.LoginActivity
+import com.endlessbum.twitchpro.ui.main.MainActivity
+import com.endlessbum.twitchpro.ui.search.SearchPagerFragmentDirections
+import com.endlessbum.twitchpro.ui.settings.SettingsActivity
+import com.endlessbum.twitchpro.util.C
+import com.endlessbum.twitchpro.util.TwitchApiHelper
+import com.endlessbum.twitchpro.util.getAlertDialogBuilder
+import com.endlessbum.twitchpro.util.prefs
+import com.endlessbum.twitchpro.util.tokenPrefs
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
 class FollowMediaFragment : Fragment(), Scrollable, FragmentHost {

@@ -539,7 +539,7 @@
     <string name="external_login_message">Вы можете авторизоваться, используя внешний браузер.\n\nСледуйте этим шагам:\n• Нажмите \"Открыть URL\" для перехода к странице входа.\n• Войдите в свой аккаунт и нажмите \"Авторизоваться\".\n• Должна появиться страница с ошибкой. Скопируйте URL этой страницы, вставьте его в поле ниже и нажмите \"OK\".</string>
     <string name="loading">Загрузка…</string>
     <string name="copy_code">Скопировать код</string>
-    <string name="external_tv_login_message">Для получения доступа ко всем возможностям вам нужно авторизоваться как устройство Android TV.\n\nСледуйте этим шагам:\n• Скопируйте код, показанный на экране.\n• Нажмите кнопку \"Открыть URL\".\n• Введите код и нажмите \"Активировать\".\n• Нажмите \"Авторизоваться\".\n• Вернитесь в Xtra и нажмите \"Далее\".</string>
+    <string name="external_tv_login_message">Для получения доступа ко всем возможностям вам нужно авторизоваться как устройство Android TV.\n\nСледуйте этим шагам:\n• Скопируйте код, показанный на экране.\n• Нажмите кнопку \"Открыть URL\".\n• Введите код и нажмите \"Активировать\".\n• Нажмите \"Авторизоваться\".\n• Вернитесь в TwitchPro и нажмите \"Далее\".</string>
     <string name="activate_notifications_when_following">Включить уведомления после отслеживания</string>
     <string name="account">Аккаунт</string>
     <string name="downloading_update_progress">Загрузка обновления… %1$s / %2$s</string>
@@ -587,8 +587,8 @@
     <string name="tv_more_actions">Другие действия</string>
     <string name="tv_account">Аккаунт</string>
     <string name="tv_stream_preview">Предпросмотр выбранного стрима (ТВ)</string>
-    <string name="xtratv_settings">Настройки Xtra TV</string>
-    <string name="xtratv_settings_summary">Блокировщик рекламы, подстройка частоты кадров, превью, главная и кнопки пульта</string>
+    <string name="twitchpro_settings">Настройки TwitchPro</string>
+    <string name="twitchpro_settings_summary">Блокировщик рекламы, подстройка частоты кадров, превью, главная и кнопки пульта</string>
     <string name="tv_preview_sound">Звук превью</string>
     <string name="close_player">Закрыть</string>
     <string name="tv_back_minimizes_player">Кнопка «Назад» сворачивает плеер, а не закрывает его</string>
@@ -666,7 +666,7 @@
     <string name="tv_back_audio">Только звук</string>
     <string name="tv_dpad_up_down">Кнопки вверх и вниз на стримах и VOD</string>
     <string name="tv_dpad_up_down_summary">Когда управление скрыто: вверх — другие трансляции, вниз — показать или скрыть чат</string>
-    <string name="tv_1440p_warning">⚠ 1440p не работает с публичными прокси (Luminous и др.), они ограничены 1080p. Для 1440p отключите свой прокси и используйте блокировщик рекламы (настройки Xtra TV) или собственный прокси с поддержкой 1440p.</string>
+    <string name="tv_1440p_warning">⚠ 1440p не работает с публичными прокси (Luminous и др.), они ограничены 1080p. Для 1440p отключите свой прокси и используйте блокировщик рекламы (настройки TwitchPro) или собственный прокси с поддержкой 1440p.</string>
     <string name="tv_login_with_code">С кодом на twitch.tv/activate</string>
     <string name="tv_login_with_page">Через страницу входа Twitch (нужно для 1440p)</string>
     <string name="tv_login_code_help">На телефоне или компьютере откройте twitch.tv/activate и введите этот код. Вход продолжится сам. Для 1440p нужен вход через страницу Twitch.</string>
@@ -811,7 +811,7 @@
     <string name="tv_pip_pos_c">По центру</string>
     <string name="tv_pip_pos_mr">Посередине справа</string>
     <string name="tv_pip_pos_bc">Снизу по центру</string>
-    <string name="tv_enable_unknown_sources">Разрешите Xtra TV установку неизвестных приложений, затем нажмите Назад, чтобы начать обновление</string>
+    <string name="tv_enable_unknown_sources">Разрешите TwitchPro установку неизвестных приложений, затем нажмите Назад, чтобы начать обновление</string>
     <string name="tv_pip_size">Размер</string>
     <string name="tv_pip_size_small">Маленькое</string>
     <string name="tv_pip_size_medium">Среднее</string>
@@ -856,7 +856,7 @@
     <string name="tv_proxy_all_settings">Все настройки прокси…</string>
     <string name="tv_focus_switch">Переключать страницу без OK</string>
     <string name="tv_focus_switch_summary">Вкладки и боковое меню показывают страницу, как только получают фокус</string>
-    <string name="tv_update_title_version">Доступна Xtra TV %1$s</string>
+    <string name="tv_update_title_version">Доступна TwitchPro %1$s</string>
     <string name="tv_update_now">Обновить</string>
     <string name="tv_update_ignore">Пропустить</string>
     <string name="tv_proxy_add">Добавить прокси</string>
@@ -1187,7 +1187,7 @@
     <string name="tv_remote_action_pip_close">Маленькое окно: закрыть</string>
     <string name="tv_adblock_and_proxies_title">Блокировщик рекламы и прокси</string>
     <string name="tv_adblock_and_proxies_subtitle">Экспериментальный блокировщик рекламы или свои HLS-прокси для стримов</string>
-    <string name="tv_update_install_blocked">Android заблокировал установку. Разрешите «Установка неизвестных приложений» для Xtra TV в системных настройках или скачайте обновление через браузер.</string>
+    <string name="tv_update_install_blocked">Android заблокировал установку. Разрешите «Установка неизвестных приложений» для TwitchPro в системных настройках или скачайте обновление через браузер.</string>
     <string name="tv_update_try_again">Повторить</string>
     <string name="tv_remote_action_pip_swap_default">Маленькое окно: поменять стримы (по умолчанию)</string>
     <string name="tv_remote_action_show_controls">Показать управление</string>
@@ -1346,7 +1346,7 @@
     <string name="tv_osd_chat_shown">Чат показан</string>
     <string name="tv_osd_chat_hidden">Чат скрыт</string>
     <string name="tv_backup_perm_title">Требуется доступ к файлам</string>
-    <string name="tv_backup_perm_summary">Чтобы перезаписать или прочитать XtraTV-backup.zip в папке Загрузки, разрешите доступ к файлам на следующем экране.</string>
+    <string name="tv_backup_perm_summary">Чтобы перезаписать или прочитать TwitchPro-backup.zip в папке Загрузки, разрешите доступ к файлам на следующем экране.</string>
     <string name="tv_backup_perm_grant">Разрешить доступ к файлам</string>
     <string name="tv_backup_perm_continue_anyway">Продолжить без разрешения</string>
     <string name="tv_backup_save_failed">Не удалось сохранить файл резервной копии</string>
