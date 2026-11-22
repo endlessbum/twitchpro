@@ -1,0 +1,3 @@
+# Keep the Unix launcher script executable and LF-only (works from clean checkout and ZIP)
+gradlew text eol=lf
+*.bat text eol=crlf
