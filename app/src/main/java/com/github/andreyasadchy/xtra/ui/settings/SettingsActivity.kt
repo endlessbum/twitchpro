@@ -727,7 +727,8 @@ class SettingsActivity : AppCompatActivity() {
                                     when (it) {
                                         "id" -> "in"
                                         "pt" -> "pt-BR"
-                                        "zh" -> "zh-TW"
+                                        // simplified (Hans/CN) and traditional (Hant/TW/HK) must not both fall to zh-TW
+                                        "zh" -> if (lang.toLanguageTags().contains("Hans") || lang.toLanguageTags().contains("-CN") || lang.toLanguageTags().contains("-SG")) "zh-CN" else "zh-TW"
                                         else -> it
                                     }
                                 }

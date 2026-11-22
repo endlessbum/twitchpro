@@ -2030,6 +2030,8 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     }
 
     fun updateViewerCount(viewerCount: Int?) {
+        // chat-driven callback: the view can already be gone between onDestroyView and the chat child stopping
+        val binding = _binding ?: return
         with(binding.playerControls) {
             if (viewerCount != null) {
                 viewersText.text = TwitchApiHelper.formatCount(viewerCount, requireContext().prefs().getBoolean(C.UI_TRUNCATE_VIEW_COUNT, true))
@@ -2087,6 +2089,8 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
     }
 
     private fun updateUptime(uptimeMs: Long?) {
+        // chat-driven callback: the view can already be gone between onDestroyView and the chat child stopping
+        val binding = _binding ?: return
         with(binding.playerControls) {
             if (uptimeMs != null && !streamOfflineReceived && requireContext().prefs().getBoolean(C.PLAYER_SHOW_UPTIME, true)) {
                 val rawElapsedMs = (com.github.andreyasadchy.xtra.util.TwitchClock.nowMs() - uptimeMs).coerceAtLeast(0L)
@@ -4129,8 +4133,10 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                         val useNow = activity.prefs().getBoolean(C.PLAYER_USE_CUSTOM_PROXY, false)
                         val useStreamNow = activity.prefs().getBoolean(C.PLAYER_USE_STREAM_PROXY, false)
                         val modeNow = activity.prefs().getString(C.PLAYER_CUSTOM_PROXY_MODE, "0")
-                        if (swapNow != swapBefore || expNow != expBefore || useNow || useNow != useBefore ||
-                            useStreamNow || useStreamNow != useStreamBefore || streamListChanged || modeNow != modeBefore
+                        // only a real change restarts: the bare useNow/useStreamNow terms would
+                        // restart on every panel close even when nothing was touched
+                        if (swapNow != swapBefore || expNow != expBefore || useNow != useBefore ||
+                            useStreamNow != useStreamBefore || streamListChanged || modeNow != modeBefore
                         ) {
                             activity.restartCurrentStream()
                         }

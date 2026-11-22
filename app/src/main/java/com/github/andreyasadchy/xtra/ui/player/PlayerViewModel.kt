@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -421,7 +422,8 @@ class PlayerViewModel(
                     thumbnail.takeIf { !it.isNullOrBlank() }?.let { url ->
                         File(filesDir, "thumbnails").mkdir()
                         val path = filesDir + File.separator + "thumbnails" + File.separator + id
-                        viewModelScope.launch(Dispatchers.IO) {
+                        // awaited before the save: the bookmark must not point at a file still downloading
+                        async(Dispatchers.IO) {
                             try {
                                 when {
                                     networkLibrary == C.HTTP_ENGINE && httpEngine.value != null -> @SuppressLint("NewApi") {
@@ -481,15 +483,16 @@ class PlayerViewModel(
                             } catch (e: Exception) {
 
                             }
+                            path
                         }
-                        path
                     }
                 }
                 val downloadedLogo = channelId.takeIf { !it.isNullOrBlank() }?.let { id ->
                     channelImage.takeIf { !it.isNullOrBlank() }?.let { url ->
                         File(filesDir, "profile_pics").mkdir()
                         val path = filesDir + File.separator + "profile_pics" + File.separator + id
-                        viewModelScope.launch(Dispatchers.IO) {
+                        // awaited before the save: the bookmark must not point at a file still downloading
+                        async(Dispatchers.IO) {
                             try {
                                 when {
                                     networkLibrary == C.HTTP_ENGINE && httpEngine.value != null -> @SuppressLint("NewApi") {
@@ -549,14 +552,14 @@ class PlayerViewModel(
                             } catch (e: Exception) {
 
                             }
+                            path
                         }
-                        path
                     }
                 }
                 val userTypes = channelId?.let {
                     try {
                         val response = graphQLRepository.loadQueryUsersType(networkLibrary, gqlHeaders, listOf(channelId))
-                        response.data!!.users?.firstOrNull()?.let {
+                        response.data?.users?.firstOrNull()?.let {
                             User(
                                 id = it.id,
                                 broadcasterType = when {
@@ -602,13 +605,13 @@ class PlayerViewModel(
                         userName = channelName,
                         userType = userTypes?.type,
                         userBroadcasterType = userTypes?.broadcasterType,
-                        userLogo = downloadedLogo,
+                        userLogo = downloadedLogo?.await(),
                         gameId = gameId,
                         gameSlug = gameSlug,
                         gameName = gameName,
                         title = title,
                         createdAt = uploadDate,
-                        thumbnail = downloadedThumbnail,
+                        thumbnail = downloadedThumbnail?.await(),
                         type = type,
                         duration = durationSeconds.toString(),
                         animatedPreviewURL = animatedPreviewUrl

@@ -86,7 +86,11 @@ class TvSeekPreview(
 
     private var board: Board? = null
     private var chapters: List<Game> = emptyList()
-    private val sprites = HashMap<String, Bitmap>()
+    // decoded storyboard sheets, a few MB each: capped so a long scrub of a long VOD
+    // cannot hold tens of MB of bitmaps, and recycled when the preview is released
+    private val sprites = object : android.util.LruCache<String, Bitmap>(24 * 1024 * 1024) {
+        override fun sizeOf(key: String, value: Bitmap): Int = value.byteCount
+    }
     private val loading = HashSet<String>()
     private var lastPosition = -1L
     private var lastDuration = 0L
@@ -552,6 +556,8 @@ class TvSeekPreview(
         container.removeCallbacks(releaseAction)
         hide()
         releaseVideo()
+        sprites.evictAll()
+        loading.clear()
     }
 
     companion object {

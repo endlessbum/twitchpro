@@ -2131,7 +2131,8 @@ class TvSettingsFragment : Fragment() {
                                 val short = when (tag.substringBefore("-")) {
                                     "id" -> "in"
                                     "pt" -> "pt-BR"
-                                    "zh" -> "zh-TW"
+                                    // simplified (Hans/CN) and traditional (Hant/TW/HK) must not both fall to zh-TW
+                                    "zh" -> if (tag.contains("Hans") || tag.contains("-CN") || tag.contains("-SG")) "zh-CN" else "zh-TW"
                                     else -> tag.substringBefore("-")
                                 }
                                 if (short in values) short else "en"

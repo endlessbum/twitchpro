@@ -34,9 +34,18 @@ object TvStreamPrefetch {
     /** The streams of left / right while a stream plays: their access only. */
     fun prepareNeighbors(context: Context, channelLogins: List<String?>) {
         val keep = channelLogins.filterNotNull().toSet()
+        val app = context.applicationContext as XtraApp
         synchronized(entries) {
-            // the streams that are no longer next to the one watched are forgotten
-            entries.keys.retainAll(keep + entries.filterValues { SystemClock.elapsedRealtime() - it.at < 10_000L }.keys)
+            // the streams that are no longer next to the one watched are forgotten, and their
+            // requests cancelled: a dropped prefetch must not finish its token request
+            val iterator = entries.entries.iterator()
+            while (iterator.hasNext()) {
+                val (login, entry) = iterator.next()
+                if (login !in keep && SystemClock.elapsedRealtime() - entry.at >= 10_000L) {
+                    entry.request.cancel()
+                    iterator.remove()
+                }
+            }
         }
         keep.forEach { prepare(context, it, warmUp = false) }
     }
@@ -50,34 +59,34 @@ object TvStreamPrefetch {
         if (prefs.getBoolean(C.ENABLE_INTEGRITY, false) || prefs.getBoolean(C.PLAYER_USE_STREAM_PROXY, false)) {
             return
         }
+        val app = context.applicationContext as XtraApp
+        val useCustomProxy = prefs.getBoolean(C.PLAYER_USE_CUSTOM_PROXY, false)
+        val warm = warmUp && prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP) == C.OKHTTP
         synchronized(entries) {
             entries[channelLogin]?.let { entry ->
                 // already asked a moment ago (a stream of left / right): used as it is
                 if (SystemClock.elapsedRealtime() - entry.at < MAX_AGE - 30_000L) {
                     return
                 }
+                entry.request.cancel()
             }
-        }
-        val app = context.applicationContext as XtraApp
-        val useCustomProxy = prefs.getBoolean(C.PLAYER_USE_CUSTOM_PROXY, false)
-        val warm = warmUp && prefs.getString(C.NETWORK_LIBRARY, C.OKHTTP) == C.OKHTTP
-        val request = scope.async {
-            // a custom proxy in use: the player goes through it, nothing is asked here
-            if (useCustomProxy && app.xtraModule.playerRepository.getCustomProxies().any { it.enabled && !it.url.isNullOrBlank() }) {
-                return@async null
-            }
-            val url = try {
-                ExoPlayerService.loadStreamPlaylistUrl(app, app.xtraModule, channelLogin)
-            } catch (e: Exception) {
-                null
-            }
-            if (url != null && warm) {
-                warmUpConnections(app, url)
-            }
-            url
-        }
-        synchronized(entries) {
-            entries[channelLogin] = Entry(request, SystemClock.elapsedRealtime())
+            // check and insert in one lock: two prepares for the same channel must not both
+            // pass the freshness check and fire the access-token request twice
+            entries[channelLogin] = Entry(scope.async {
+                // a custom proxy in use: the player goes through it, nothing is asked here
+                if (useCustomProxy && app.xtraModule.playerRepository.getCustomProxies().any { it.enabled && !it.url.isNullOrBlank() }) {
+                    return@async null
+                }
+                val url = try {
+                    ExoPlayerService.loadStreamPlaylistUrl(app, app.xtraModule, channelLogin)
+                } catch (e: Exception) {
+                    null
+                }
+                if (url != null && warm) {
+                    warmUpConnections(app, url)
+                }
+                url
+            }, SystemClock.elapsedRealtime())
         }
     }
 

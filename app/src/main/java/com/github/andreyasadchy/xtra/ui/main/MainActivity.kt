@@ -942,6 +942,8 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         if (isTv) {
             com.github.andreyasadchy.xtra.ui.tv.TvAmbient.removeDynamicListener(tvAmbientListener)
+            // idempotent: releases the slot players (hardware decoders) if any were left open
+            tvPip.close()
         }
         networkCallback?.let {
             val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
