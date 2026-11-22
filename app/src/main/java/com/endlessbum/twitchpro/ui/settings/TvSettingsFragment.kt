@@ -2681,7 +2681,7 @@ class TvSettingsFragment : Fragment() {
             "check_updates" -> {
                 settingsViewModel.checkUpdates(
                     context.prefs().getString(C.NETWORK_LIBRARY, C.OKHTTP),
-                    context.prefs().getString(C.UPDATE_URL, null) ?: "https://api.github.com/repos/endlessbum/twitch/releases/latest",
+                    context.prefs().getString(C.UPDATE_URL, null) ?: context.getString(R.string.update_check_url),
                     context.tokenPrefs().getLong(C.UPDATE_LAST_CHECKED, 0),
                 )
             }

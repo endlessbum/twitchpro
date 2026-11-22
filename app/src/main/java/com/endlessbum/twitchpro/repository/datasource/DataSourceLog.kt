@@ -8,7 +8,7 @@ import com.endlessbum.twitchpro.BuildConfig
  * in debug builds each fallback is logged, so a silent "empty page" can be traced back to its cause.
  */
 object DataSourceLog {
-    private const val TAG = "XtraDataSource"
+    private const val TAG = "TwitchProDataSource"
 
     fun log(e: Throwable) {
         if (BuildConfig.DEBUG) {

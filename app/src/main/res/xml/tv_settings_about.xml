@@ -12,7 +12,7 @@
 
     <Preference
         android:key="about_github"
-        android:summary="https://github.com/endlessbum/twitch"
+        android:summary="https://github.com/endlessbum/twitchpro"
         android:title="@string/tv_about_github"
         app:iconSpaceReserved="false"
         app:singleLineTitle="false" />

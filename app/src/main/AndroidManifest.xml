@@ -105,11 +105,19 @@
 
         <service
             android:name=".ui.download.VideoDownloadService"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Downloads Twitch VODs to device storage for offline playback while the app is in the background" />
+        </service>
 
         <service
             android:name=".ui.download.StreamDownloadService"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Downloads Twitch live streams to device storage for offline playback while the app is in the background" />
+        </service>
 
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"

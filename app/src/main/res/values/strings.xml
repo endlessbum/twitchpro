@@ -7,6 +7,8 @@
     <string name="notification_live_channel_id" translatable="false">twitchpro_live_channel</string>
     <string name="notification_playback_channel_id" translatable="false">twitchpro_playback_channel</string>
     <string name="CronetProviderClassName" translatable="false">com.endlessbum.twitchpro.util.PlayServicesCronetProvider</string>
+    <!-- single source of truth for the update check endpoint (used by update_preferences.xml and all checkUpdates call sites) -->
+    <string name="update_check_url" translatable="false">https://api.github.com/repos/endlessbum/twitchpro/releases/latest</string>
     <string name="lang_de" translatable="false">Deutsch</string>
     <string name="lang_en" translatable="false">English</string>
     <string name="lang_es" translatable="false">Español</string>
