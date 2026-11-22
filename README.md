@@ -2,8 +2,8 @@
 
 <img src="docs/icon.png" align="left" width="110"/>
 
-**TwitchPro** is a Twitch player and browser made for **Android TV**, built on top of [Xtra](https://github.com/crackededed/Xtra).
-It brings a full TV interface designed for the remote, a built-in ad blocker (Proxy & VAFT), streams up to **1440p60**, multi-stream up to 4 channels, a live DVR timeline, and much more.
+**TwitchPro** — плеер и браузер Twitch, созданный для **Android TV** на основе [Xtra](https://github.com/crackededed/Xtra).
+Полноценный TV-интерфейс, спроектированный под пульт, встроенный блокировщик рекламы (Proxy & VAFT), стримы до **1440p60**, мультистрим до 6 каналов, живая DVR-шкала и многое другое.
 
 <br clear="left"/>
 
@@ -12,65 +12,65 @@ It brings a full TV interface designed for the remote, a built-in ad blocker (Pr
   <img src="docs/screenshots/player.jpg" width="49%"/>
 </p>
 
-## Download
+## Установка
 
-Get the latest APK from the [Releases](https://github.com/endlessbum/twitchpro/releases/latest) page.
+Скачайте последний APK со страницы [Релизов](https://github.com/endlessbum/twitchpro/releases/latest).
 
-On a TV, the easiest way is the **Downloader** app (or any file manager): download the APK and install it (allow the installation of unknown apps for that app). From a computer: `adb install TwitchPro.apk`.
+На ТВ проще всего через приложение **Downloader** (или любой файловый менеджер): скачайте APK и установите его (разрешите установку неизвестных приложений для этого приложения). С компьютера: `adb install TwitchPro.apk`.
 
-TwitchPro has its own package name, so it installs next to the original Xtra / Xtra TV as a separate app: settings and login are not carried over automatically (use the TV backup / restore feature to migrate them).
+TwitchPro имеет собственное имя пакета и устанавливается **рядом** с оригинальным Xtra / Xtra TV как отдельное приложение: настройки и вход не переносятся автоматически (для переноса используйте функцию бэкапа/восстановления в настройках ТВ).
 
-## Features
+## Возможности
 
-- **Made for Android TV**: Leanback side menu, rows of live channels and categories, instant ad-free live video previews right inside focused cards, voice search, and quick D-pad actions.
-- **Built-in Ad Blocker (Proxy & VAFT)**: Automatically switches to a proxy or an ad-free backup stream during pre-roll and mid-roll ads with a live progress badge, returning to the main stream with near-zero delay.
-- **Up to 1440p60 - 4K (Enhanced Broadcasting)**: Plays the highest available stream quality automatically on Wi-Fi / Ethernet, with display **frame rate matching** and **audio normalization** (including during ad breaks).
-- **Multi-stream & Picture-in-Picture**: Watch up to **4 live streams at once** (side-by-side, 2×2 grid, or Focus mode) with chats, same-category stream suggestions, live search, and per-stream audio controls, or open a second stream in a floating PiP window.
-- **Live DVR & Sub-only VODs**: Rewind any live broadcast on the timeline with live video thumbnails, and watch subscriber-only VODs.
-- **Customizable TV Chat & Quick Stream Switch**: Display chat as an overlay, side panel, or bottom ticker (with voice dictation), and switch between live channels instantly with D-pad Left / Right or Channel Up / Down.
-- **QR Code Settings Backup**: Save and restore your settings directly on the TV, or transfer them to and from your phone over Wi-Fi by scanning a QR code.
+- **Создано для Android TV**: боковое меню Leanback, ряды живых каналов и категорий, мгновенные превью без рекламы прямо внутри карточки в фокусе, голосовой поиск и быстрые действия с пульта.
+- **Встроенный блокировщик рекламы (Proxy & VAFT)**: автоматически переключается на прокси или стрим без рекламы во время pre-roll и mid-roll рекламы с живым индикатором прогресса и возвратом к основному стриму почти без задержки.
+- **До 1440p60 - 4K (Enhanced Broadcasting)**: автоматически включает максимальное доступное качество стрима на Wi-Fi / Ethernet, с подгонкой частоты обновления экрана и нормализацией громкости (в том числе во время рекламных пауз).
+- **Мультистрим и Picture-in-Picture**: смотрите до **6 живых стримов одновременно** (рядом, сеткой или в режиме фокуса) с чатами, предложениями стримов той же категории, живым поиском и раздельным управлением звуком — или откройте второй стрим в плавающем окне PiP.
+- **Живой DVR и подписочные VOD**: перематывайте любой прямой эфир по шкале с живыми превью видео и смотрите VOD, доступные только подписчикам.
+- **Настраиваемый ТВ-чат и быстрое переключение стримов**: чат как оверлей, боковая панель или нижняя бегущая строка (с голосовым вводом), мгновенное переключение между живыми каналами кнопками Left / Right или Channel Up / Down.
+- **Резервная копия настроек по QR-коду**: сохраняйте и восстанавливайте настройки прямо на ТВ или переносите их на телефон по Wi-Fi, сканируя QR-код.
 
-## Log in
+## Вход
 
-Two ways on TV: a **code to enter on twitch.tv/activate** from a phone or computer, or the **Twitch login page** inside the app.
+Два способа на ТВ: **код для ввода на twitch.tv/activate** с телефона или компьютера, либо **страница входа Twitch** внутри приложения.
 
 ## 1440p - 4K (Enhanced Broadcasting)
 
-Twitch only serves the 1440p - 4K streams to its website client with a logged-in account. To enable them:
-1. Log in with your Twitch account using the **Twitch login page** in the app (code login does not grant 1440p - 4K).
-2. Public proxies stop at 1080p: use the built-in ad blocker (**During ads** or **VAFT**), or your own proxy.
-3. Keep **"Include token for streams"** enabled (default).
-4. Your TV must support **H.265 (HEVC)** or **AV1** hardware decoding.
+Twitch отдаёт стримы 1440p - 4K только клиенту сайта с залогиненным аккаунтом. Чтобы включить их:
+1. Войдите через **страницу входа Twitch** в приложении (вход по коду не даёт 1440p - 4K).
+2. Публичные прокси останавливаются на 1080p: используйте встроенный блокировщик рекламы или собственный прокси.
+3. Держите включённой опцию передачи токена для стримов (включена по умолчанию).
+4. Ваш ТВ должен поддерживать аппаратное декодирование **H.265 (HEVC)** или **AV1**.
 
-## Screenshots
+## Скриншоты
 
 | | |
 |:-:|:-:|
-| ![Side menu](docs/screenshots/menu.jpg) | ![Home](docs/screenshots/home.jpg) |
-| Leanback side menu | Home with rows and live preview |
-| ![Player](docs/screenshots/player.jpg) | ![Multi-stream](docs/screenshots/multistream.jpg) |
-| Player with HUD and chat overlay | Multi-stream (up to 4 streams) |
-| ![Games](docs/screenshots/games.jpg) | ![Category](docs/screenshots/category.jpg) |
-| Games | Category with live preview |
-| ![Sort panel](docs/screenshots/sort.jpg) | ![Search](docs/screenshots/search.jpg) |
-| Sort and filters panel | Voice search |
+| ![Боковое меню](docs/screenshots/menu.jpg) | ![Главная](docs/screenshots/home.jpg) |
+| Боковое меню Leanback | Главная с рядами и живым превью |
+| ![Плеер](docs/screenshots/player.jpg) | ![Мультистрим](docs/screenshots/multistream.jpg) |
+| Плеер с HUD и чат-оверлеем | Мультистрим (до 6 стримов) |
+| ![Игры](docs/screenshots/games.jpg) | ![Категория](docs/screenshots/category.jpg) |
+| Игры | Категория с живым превью |
+| ![Панель сортировки](docs/screenshots/sort.jpg) | ![Поиск](docs/screenshots/search.jpg) |
+| Панель сортировки и фильтров | Голосовой поиск |
 
-## Deep Links & Automation
+## Глубокие ссылки и автоматизация
 
-TwitchPro can open live streams, channel pages, VODs (with timestamps), clips, and categories directly from ADB, Home Assistant, tvQuickActions, or custom launchers. See [**docs/deeplinks.md**](docs/deeplinks.md) for all supported URLs and examples.
+TwitchPro открывает живые стримы, страницы каналов, VOD (с таймкодами), клипы и категории прямо из ADB, Home Assistant, tvQuickActions или кастомных лаунчеров. Все поддерживаемые URL и примеры — в [**docs/deeplinks.md**](docs/deeplinks.md).
 
-## Building
+## Сборка
 
 ```bash
 ./gradlew assembleRelease
 ```
-The APK is generated in `app/build/outputs/apk/release/`.
+APK генерируется в `app/build/outputs/apk/release/`.
 
-## Credits
+## Благодарности
 
-TwitchPro is a fork of [Xtra](https://github.com/crackededed/Xtra) (originally by [AndreyAsadchy](https://github.com/AndreyAsadchy/Xtra)).
-The ad blocker follows the logic of the [VAFT userscript](https://github.com/pixeltris/TwitchAdSolutions).
+TwitchPro — форк [Xtra](https://github.com/crackededed/Xtra) (автор оригинала — [AndreyAsadchy](https://github.com/AndreyAsadchy/Xtra)).
+Блокировщик рекламы следует логике userscript [VAFT](https://github.com/pixeltris/TwitchAdSolutions).
 
-## License
+## Лицензия
 
-TwitchPro is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+TwitchPro распространяется под лицензией [GNU Affero General Public License v3.0](LICENSE).
