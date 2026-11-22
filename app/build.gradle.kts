@@ -57,8 +57,8 @@ android {
         applicationId = "com.endlessbum.twitchpro"
         minSdk = 24
         targetSdk = 37
-        versionCode = 165
-        versionName = "1.4.6.4-tv"
+        versionCode = 166
+        versionName = "1.1.0-tv"
     }
 
     buildTypes {
