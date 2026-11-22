@@ -51,6 +51,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
@@ -4152,7 +4154,18 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
         val context = requireContext()
         com.endlessbum.twitchpro.ui.tv.TvDialogs.show(context) { dismiss ->
             com.endlessbum.twitchpro.ui.tv.SidePanel(title = getString(R.string.tv_video_color), scrollable = true) {
-                val requester = androidx.compose.runtime.remember { androidx.compose.ui.focus.FocusRequester() }
+                // the D-pad directions belong to the sliders: never leak them into the player seek timeline
+                val sliderGuard = androidx.compose.ui.Modifier.onKeyEvent { event ->
+                    when (event.key) {
+                        androidx.compose.ui.input.key.Key.DirectionLeft,
+                        androidx.compose.ui.input.key.Key.DirectionRight,
+                        androidx.compose.ui.input.key.Key.DirectionUp,
+                        androidx.compose.ui.input.key.Key.DirectionDown -> true
+                        else -> false
+                    }
+                }
+                androidx.compose.foundation.layout.Box(sliderGuard) {
+                    val requester = androidx.compose.runtime.remember { androidx.compose.ui.focus.FocusRequester() }
                 fun applyColor() {
                     (playbackService as? ExoPlayerService)?.player?.let {
                         VideoColorAdjustment.applyTo(it, context)
@@ -4199,6 +4212,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                 }
                 androidx.compose.runtime.LaunchedEffect(Unit) {
                     runCatching { requester.requestFocus() }
+                }
                 }
             }
         }
@@ -5581,7 +5595,7 @@ abstract class PlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment
                     button.contentDescription = getString(label)
                 }
                 button
-            } + listOfNotNull(tvGoLive, streamList, statsForNerds, chatMessage, multiStream, tvDim, tvProxy, tvPipSettings, chatLayoutSettings, tvPollsPredictions, tvPoints, tvClip)
+            } + listOfNotNull(tvGoLive, streamList, statsForNerds, chatMessage, multiStream, tvDim, tvProxy, tvPipSettings, chatLayoutSettings, videoColorSettings, tvPollsPredictions, tvPoints, tvClip)
             buttons.forEach { button ->
                 button.setOnFocusChangeListener { v, hasFocus ->
                     if (hasFocus) {

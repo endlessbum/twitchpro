@@ -12,10 +12,24 @@ import com.endlessbum.twitchpro.util.prefs
  * 100/100/100 produces the identity matrix, so the neutral state never alters the picture.
  */
 class VideoColorAdjustmentEffect(
-    private val brightness: Int,
-    private val contrast: Int,
-    private val saturation: Int,
+    brightness: Int,
+    contrast: Int,
+    saturation: Int,
 ) : RgbMatrix {
+
+    var brightness: Int = brightness
+        private set
+    var contrast: Int = contrast
+        private set
+    var saturation: Int = saturation
+        private set
+
+    /** Live slider update: the effects pipeline reads the matrix per frame, no re-init is needed. */
+    fun update(brightness: Int, contrast: Int, saturation: Int) {
+        this.brightness = brightness
+        this.contrast = contrast
+        this.saturation = saturation
+    }
 
     override fun getMatrix(presentationTimeUs: Long, isInputTextureSrgb: Boolean): FloatArray {
         val m = identity4x5()
@@ -106,21 +120,33 @@ object VideoColorAdjustment {
     fun isNeutral(context: Context) =
         brightness(context) == 100 && contrast(context) == 100 && saturation(context) == 100
 
-    /** Neutral values disable the effects pipeline entirely — the picture is untouched by default. */
+    private var attachedEffect: VideoColorAdjustmentEffect? = null
+    private var attachedPlayer: java.lang.ref.WeakReference<androidx.media3.exoplayer.ExoPlayer>? = null
+
+    /**
+     * Neutral values disable the effects pipeline entirely — the picture is untouched by default.
+     * While the effect is attached, slider changes MUTATE the attached instance instead of replacing
+     * the effects list: ExoPlayer re-initializes the whole video pipeline on setVideoEffects, which
+     * restarts the stream on every slider step.
+     */
     fun applyTo(player: androidx.media3.common.Player?, context: Context) {
         if (player !is androidx.media3.exoplayer.ExoPlayer) return
         if (isNeutral(context)) {
-            player.setVideoEffects(emptyList())
+            if (attachedEffect != null) {
+                player.setVideoEffects(emptyList())
+                attachedEffect = null
+                attachedPlayer = null
+            }
         } else {
-            player.setVideoEffects(
-                listOf(
-                    VideoColorAdjustmentEffect(
-                        brightness(context),
-                        contrast(context),
-                        saturation(context),
-                    )
-                )
-            )
+            val existing = attachedEffect
+            if (existing != null && attachedPlayer?.get() === player) {
+                existing.update(brightness(context), contrast(context), saturation(context))
+            } else {
+                val newEffect = VideoColorAdjustmentEffect(brightness(context), contrast(context), saturation(context))
+                player.setVideoEffects(listOf(newEffect))
+                attachedEffect = newEffect
+                attachedPlayer = java.lang.ref.WeakReference(player)
+            }
         }
     }
 
