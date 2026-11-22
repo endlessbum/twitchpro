@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -13,19 +15,45 @@ kotlin {
 }
 
 android {
+    // Release signing lives outside the repo: keystore.properties (gitignored) points to it.
+    // Without it any Release task fails loudly instead of silently falling back to the debug key.
+    val keystorePropsFile = rootProject.file("keystore.properties")
+    val keystoreProps = Properties().apply {
+        if (keystorePropsFile.exists()) keystorePropsFile.reader(Charsets.UTF_8).use { load(it) }
+    }
+    val wantsReleaseBuild = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+    if (wantsReleaseBuild && !keystorePropsFile.exists()) {
+        throw GradleException(
+            "Release signing is not configured: create keystore.properties in the project root " +
+                "(storeFile, storePassword, keyAlias, keyPassword) pointing at a non-committed keystore."
+        )
+    }
+
     signingConfigs {
         getByName("debug") {
-            keyAlias = "debug"
-            keyPassword = "123456"
-            storeFile = file("debug-keystore.jks")
-            storePassword = "123456"
+            // the project debug keystore is not committed; when it is absent (fresh clone)
+            // the debug build falls back to the default ~/.android debug keystore
+            if (file("debug-keystore.jks").exists()) {
+                keyAlias = "debug"
+                keyPassword = "123456"
+                storeFile = file("debug-keystore.jks")
+                storePassword = "123456"
+            }
+        }
+        if (keystorePropsFile.exists()) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProps["storeFile"] as String)
+                storePassword = keystoreProps["storePassword"] as String
+                keyAlias = keystoreProps["keyAlias"] as String
+                keyPassword = keystoreProps["keyPassword"] as String
+            }
         }
     }
     namespace = "com.endlessbum.twitchpro"
     compileSdk = 37
 
     defaultConfig {
-        // own package: installs next to the original TwitchPro
+        // separate applicationId: installs next to the original Xtra / Xtra TV
         applicationId = "com.endlessbum.twitchpro"
         minSdk = 24
         targetSdk = 37
@@ -37,13 +65,17 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
-            signingConfig = signingConfigs.getByName("debug")
+            if (file("debug-keystore.jks").exists()) {
+                signingConfig = signingConfigs.getByName("debug")
+            }
         }
         release {
             isShrinkResources = true
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("debug")
+            if (keystorePropsFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
     buildFeatures {
@@ -136,11 +168,3 @@ apollo {
     }
 }
 
-// Delete large build log files from ~/.gradle/daemon/X.X/daemon-XXX.out.log
-// Source: https://discuss.gradle.org/t/gradle-daemon-produces-a-lot-of-logs/9905
-File("${project.gradle.gradleUserHomeDir.absolutePath}/daemon/${project.gradle.gradleVersion}").listFiles()?.forEach {
-    if (it.name.endsWith(".out.log")) {
-        // println("Deleting gradle log file: $it") // Optional debug output
-        it.delete()
-    }
-}
