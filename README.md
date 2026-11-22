@@ -1,6 +1,6 @@
 # TwitchPro
 
-<img src="docs/icon.png" align="left" width="110"/>
+<img src="docs/icon.jpg" align="left" width="150"/>
 
 **TwitchPro** — плеер и браузер Twitch, созданный для **Android TV** на основе [Xtra](https://github.com/crackededed/Xtra).
 Полноценный TV-интерфейс, спроектированный под пульт, встроенный блокировщик рекламы (Proxy & VAFT), стримы до **1440p60**, мультистрим до 6 каналов, живая DVR-шкала и многое другое.
